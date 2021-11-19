@@ -1,0 +1,239 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+    ViewData["Title"] = "Home Page";
+
+    // note: these are defined in _layout.cshtml, 
+    // but this page doesn't use the default layout
+
+    bool is_admin = (bool)ViewData["IsAdmin"];
+    bool is_manager = (bool)ViewData["IsManager"];
+    bool is_auditor = (bool)ViewData["IsAuditor"];
+    bool is_editor = (bool)ViewData["IsEditor"];
+    bool is_viewer = (bool)ViewData["IsViewer"];
+
+    string announcement = (string)ViewData["Announcement"];
+}
+
+
+<div id="app">
+    <v-app style="background-color: #318182;">
+        <v-content id="content">
+            <div class="flex-row" >
+                <img class="banner-image" src='~/assets/CAT_break1_color_.png' />
+            </div>
+            <br />
+            <v-container grid-list-xl text-xs-center>
+                <div class="flex-main">
+
+                    <v-card flat class="mycard" text-xs-center>
+                        <v-card-title class="headline">
+                            <img src='~/assets/Bolles/CAT_UI_Icons_Inventory.png' class='tile-image' onclick='goto_page("Home/Inventory")'>
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="tile-label"><span>Inventory</span></div>
+                        </v-card-text>
+                    </v-card>
+
+                    <v-card flat class="mycard" text-xs-center>
+                        <v-card-title class="headline">
+                            <img src='~/assets/Bolles/CAT_UI_Icons_Search.png' class='tile-image' onclick='goto_page("Home/SiteSearch")'>
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="tile-label"><span>Search</span></div>
+                        </v-card-text>
+                    </v-card>
+
+
+                    <v-card flat class="mycard">
+                        <v-card-title class="headline">
+                            <img src='~/assets/Bolles/CAT_UI_Icons_Reports.png' class='tile-image' onclick='goto_page("Report/Index")'>
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="tile-label"><span>Reports</span></div>
+                        </v-card-text>
+                    </v-card>
+
+                    @if (is_admin || is_auditor)
+                    {
+                        <v-card flat class="mycard">
+                            <v-card-title class="headline">
+                                <img src='~/assets/Bolles/CAT_UI_Icons_StockCheck.png' class='tile-image' onclick='goto_page("Home/StockCheck3")'>
+                            </v-card-title>
+                            <v-card-text>
+                                <div class="tile-label"><span>Audit</span></div>
+                            </v-card-text>
+                        </v-card>
+                    }
+                    
+                    @if (is_admin || is_manager)
+                    {
+                        <v-card flat class="mycard">
+                            <v-card-title class="headline">
+                                <img src='~/assets/Bolles/CAT_UI_Icons_Settings.png' class='tile-image' onclick='goto_page("Admin")'>
+                            </v-card-title>
+                            <v-card-text>
+                                <div class="tile-label"><span>Settings</span></div>
+                            </v-card-text>
+                        </v-card>
+                    }
+
+
+                    <v-card flat class="mycard">
+                        <v-card-title class="headline">
+                            <img src='~/assets/Bolles/CAT_UI_Icons_About.png' class='tile-image' onclick='goto_page("Home/About")'>
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="tile-label"><span>About</span></div>
+                        </v-card-text>
+                    </v-card>
+
+
+                </div>
+            </v-container>
+
+            <v-container grid-list-xl>
+                <div class="flex-main">
+                </div>
+            </v-container>
+        </v-content>
+    </v-app>
+
+    <v-dialog v-model="show_announcement" persistent  max-width="800">
+        <v-card flag dark>
+            <v-card-title class="headline">Announcement</v-card-title>
+            <v-card-text>
+                <div v-html="announcement"></div>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" flat @@click="dismiss_announcement">Dismiss</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</div>
+
+
+
+
+
+
+@section Scripts  {
+
+    <script src="~/assets/cms_data.js"></script>
+    <script src="~/js/modernizr.js"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+        Vue.config.devtools = true;
+
+        var announcement_flag = '@ViewData["SHOW_ANNOUNCEMENT"]';
+
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                announcement: "",
+                show_announcement: false,
+            },
+            created: function () {
+            },
+            mounted: function () {
+                $('#content').show();
+                this.get_announcement();
+            },
+            methods: {
+                dismiss_announcement: function () {
+                    this.show_announcement = false;
+                    $('#content').show();
+                },
+
+                get_announcement: function () {
+                    if (announcement_flag == 'TRUE') {
+                        let self = this;
+                        api.axios_get({
+                            url: utils.api_url("announcement"),
+                            calls: 'get_announcement',
+                            verbose: true,
+                            onsuccess: function (result) {
+                                self.announcement = result.Data.Announcement;
+                                if (self.announcement.length > 0) {
+                                    self.show_announcement = true;
+                                }
+                            }
+                        });
+                    }
+                },
+
+                force_announcement: function () {
+                    announcement_flag = 'TRUE';
+                    this.get_announcement();
+                },
+            }
+        })
+
+        function goto_page(page) {
+            document.location = utils.root_url() + page;
+        }
+
+
+
+        $(document).ready(function () {
+            //load_data();
+        });
+
+    </script>
+
+
+}
+
+@section styles {
+
+    <style>
+
+        .flex-main {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .flex-row {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            background: white;
+            justify-content: center;
+            height: 100px;
+        }
+
+        .banner-image {
+            height: 90px;
+        }
+
+        .mycard {
+            background-color: #318182 !important;
+            margin: 8px;
+        }
+
+        .tile-image {
+            width: 25vw;
+            height: auto;
+            max-width: 300px;
+            min-width: 40px;
+        }
+
+        .tile-label {
+            width: 100%;
+            background: transparent;
+            color: #CDD;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+
+    </style>
+
+
+}

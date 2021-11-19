@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Performance Statistics";
+}
+
+<v-app data-app>
+    <div id='app'>
+        <v-content>
+            <v-container fluid>
+                <v-layout>
+                    <v-flex>
+                        <div class="headline">Performance Statistics</div>
+                        <div v-if="stats" class="stats">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Operation</th>
+                                        <th style="text-align:right;">Count</th>
+                                        <th style="text-align:right;">Min (ms)</th>
+                                        <th style="text-align:right;">Max (ms)</th>
+                                        <th style="text-align:right;">Mean (ms)</th>
+                                        <th style="text-align:right;">Total (ms)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(stat, ix) in stats">
+                                        <td>{{stat.key}}</td>
+                                        <td style="text-align:right;">{{stat.stats.samplecount}}</td>
+                                        <td style="text-align:right;">{{stat.stats.mintime | decimal}}</td>
+                                        <td style="text-align:right;">{{stat.stats.maxtime | decimal}}</td>
+                                        <td style="text-align:right;">{{stat.stats.meantime | decimal}}</td>
+                                        <td style="text-align:right;">{{stat.stats.totaltime | decimal}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-if="!stats">
+                            There are no performance statistics for this session.
+                        </div>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+@section Scripts
+{
+    <script src="~/dist/bundle.js" asp-append-version="true"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        let vueapp = new Vue({
+            el: '#app',
+            components: {
+            },
+            data: {
+                title: 'Performance Statistics',
+                stats: undefined,
+            },
+
+            mounted: function () {
+                stats = api.get_timing_stats();
+                let keys = Object.keys(stats);
+                let stat_array = [];
+                keys.map(function (key) {
+                    let stat = stats[key];
+                    stat_array.push({ key: key, stats: stats[key] });
+                });
+                stat_array.sort(function (a, b) { if (a.stats.totaltime < b.stats.totaltime) return 1;  else return -1; });
+                this.stats = stat_array;
+            },
+
+            methods: {
+            },
+
+            filters: {
+                decimal: function (val) {
+                    if (typeof val == 'number') {
+                        let v = numeral(val);
+                        return v.format('0,0.00');
+                    }
+                }
+            }
+        });
+
+    </script>
+}
+
+@section Styles
+{
+
+    <style>
+
+        .stats {
+            max-width: 60rem;
+        }
+    </style>
+
+}
+

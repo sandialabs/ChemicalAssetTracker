@@ -1,0 +1,370 @@
+﻿
+@{
+    ViewData["Title"] = "Report Management";
+}
+
+<div class="banner">Report Management</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout>
+                    <v-flex class="xs12 md6">
+                        <v-card dark flat class="noborder" style="height: 70vh; overflow-y:auto;">
+                            <v-card-title class="headline">
+                                Reports
+                                <v-spacer></v-spacer>
+                                <v-btn flat icon style="margin:0;  padding: 0;" @@click='add_report()'><v-icon>add_circle</v-icon></v-btn>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-select :items="report_definitions" item-text="ReportName" label="Reports" :return-object="true" v-model="selected_report" @@change="on_report_selected"></v-select>
+                                <div v-if="edit_report">
+                                    <v-layout>
+                                        <v-flex xs6>
+                                            <v-text-field label='Name' v-model="edit_report.ReportName"></v-text-field>
+                                            <v-text-field label='Widgets' v-model='edit_report.Widgets'></v-text-field>
+                                            <v-text-field label='QueryID' v-model='edit_report.DatabaseQueryID'></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs6>
+                                            <v-text-field label='Description' v-model='edit_report.Description'></v-text-field>
+                                            <v-text-field label='Roles' v-model='edit_report.Roles'></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-flex xs12>
+                                            <v-textarea style="font-family:Courier New, Courier" auto-grow rows="5" outline dark label="Column Defs" :value='edit_report.ColumnDefinitions'></v-textarea>
+                                        </v-flex>
+                                    </v-layout>
+                                    <div v-if="edit_report">
+                                        <v-text-field type='number' v-model='maxrows' class='small-field' label='Maxrows'></v-text-field>
+                                        <v-btn small class='red white--text' @@click='delete_report()'>Delete</v-btn>
+                                        <v-btn small class='blue white--text' @@click='save_report()'>Save</v-btn>
+                                        <v-btn small class='green white--text' @@click='run_report()'>Run</v-btn>
+                                    </div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <v-flex class="xs12 md6 ml-4">
+                        <v-card dark flat class="noborder" style="height: 70vh; overflow-y:auto;">
+                            <v-card-title class="headline">
+                                Queries
+                                <v-spacer></v-spacer>
+                                <v-btn flat icon style="margin:0;  padding: 0;" @@click='on_add_query()'><v-icon>add_circle</v-icon></v-btn>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-select :items="query_definitions" item-text="Name" label="Database Queries" :return-object="true" v-model="selected_query"  @@change='on_query_selected'></v-select>
+                                <div v-if="edit_query">
+                                    <v-layout>
+                                        <v-flex xs6>
+                                            <v-text-field label='Name' v-model="edit_query.Name"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs6>
+                                            <v-text-field label='QueryID' v-model='edit_query.DatabaseQueryID' readonly></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-flex xs12>
+                                            <v-textarea style="font-family:Courier New, Courier" auto-grow rows="5" outline dark label="Query SQL" v-model='edit_query.QueryText'></v-textarea>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-flex xs12>
+                                            <div>Parameters</div>
+                                            <v-layout>
+                                                <v-flex xs2>
+                                                    <v-text-field type='date' label="From Date" v-model="fromdate"></v-text-field>
+                                                </v-flex>
+                                                <v-flex xs2>
+                                                    <v-text-field type='date' label="To Date" v-model="todate"></v-text-field>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                    </v-layout>
+                                    <div>
+                                        <v-text-field type='number' v-model='maxrows' class='small-field' label='Maxrows'></v-text-field>
+                                        <v-btn small class='red white--text' @@click='delete_query()'>Delete</v-btn>
+                                        <v-btn small class='blue white--text' @@click='save_query()'>Save</v-btn>
+                                        <v-btn small class='green white--text' @@click='run_query()'>Run</v-btn>
+                                    </div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+                <v-layout v-if='query_result'>
+                    <v-flex xs12>
+                        <div class='headline my-4'>Query Results</div>
+                        <table class="queryresults">
+                            <thead>
+                                <tr>
+                                    <th v-for='label in query_columns'>{{label}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="row in query_result">
+                                    <td v-for='label in query_columns'>
+                                        {{row[label]}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+        <infodialog width="300px" ref="infodialog"></infodialog>
+    </div>
+</v-app>
+
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"></script>
+
+    <script>
+
+        var app;
+        var ReportResult;
+        var QueryResult;
+
+        function api_url(method) {
+            return utils.root_url() + "Report/" + method;
+        }
+
+        $(document).ready(function () {
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+            },
+            data: {
+                report_definitions: [],
+                query_definitions: [],
+                selected_report: undefined,
+                selected_query: undefined,
+                edit_report: undefined,
+                edit_query: undefined,
+                maxrows: 20,
+                status_text: "",
+                query_result: undefined,
+                query_columns: undefined,
+                fromdate: undefined,
+                todate: undefined,
+            },
+            mounted: function () {
+                this.refresh();
+            },
+            methods: {
+                refresh: function () {
+                    console.log("In refresh()");
+                    let self = this;
+                    let url = api_url("getreports");
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        caller: 'refresh',
+                        onsuccess: function(ajax_result) {
+                            ReportResult = ajax_result;
+                            self.report_definitions = ajax_result.Data.reports;
+                        }
+                    });
+                    url = api_url("getqueries");
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        caller: 'refresh',
+                        onsuccess: function(ajax_result) {
+                            QueryResult = ajax_result;
+                            console.log("Query Definitions", ajax_result.queries);
+                            self.query_definitions = ajax_result.Data.queries;
+                        }
+                    });
+                },
+
+                add_report: function() {
+                    this.edit_report = {
+                        ReportID: 0,
+                        DatabaseQueryID: 0,
+                        ReportName: '',
+                        Description: '',
+                        Roles: '',
+                        Widgets: '',
+                        ColumnDefinitions: ''
+                    }
+                },
+
+                delete_report: function () {
+                },
+
+                save_report: function () {
+                    if (this.edit_report.ReportName == '' || this.edit_report.Description == ''  ||  this.edit_report.DatabaseQueryID == 0 || this.edit_report.Roles == '') {
+                        this.notify("Save Report", "Please enter a report name, description, roles, and query id.");
+                        return;
+                    }
+                    let self = this;
+                    let url = api_url('savereport');
+                    let postdata = this.edit_report;
+                    api.axios_post({
+                        url: url,
+                        caller: 'save_report',
+                        verbose: true,
+                        data: postdata,
+                        onsuccess: function (result) {
+                            console.log("Have result from save_report", result);
+                            if (self.edit_report.ReportID == 0) {
+                                // new report, just refresh
+                                self.edit_report = undefined;
+                                self.refresh();
+                            }
+                            else if (self.selected_report) {
+                                let updated_report = result.Data.report;
+                                Object.assign(self.selected_report, updated_report);
+                            }
+                            self.notify("Save Report", result.Message);
+                            //let qdef = self.query_definitions.filter(function (x) { return (x.QueryDefinitionID == self.selected_query.QueryDefinitionID); })[0];
+                            //if (qdef) Object.assign(qdef, updated_query);
+                        }
+                    });
+
+                },
+
+
+                on_add_query: function () {
+                    this.edit_query = { DatabaseQueryID: 0, Name: '', QueryText: '' };
+                },
+
+                delete_query:  function() {
+
+                },
+
+                save_query: function() {
+                    let self = this;
+                    let url = api_url('savequery');
+                    let postdata = this.edit_query;
+                    api.axios_post({
+                        url: url,
+                        caller: 'save_query',
+                        verbose: true,
+                        data: postdata,
+                        onsuccess: function (result) {
+                            console.log("Have result from save_query", result);
+                            if (self.edit_query.DatabaseQueryID == 0) {
+                                self.edit_query = undefined;
+                                self.refresh()
+                            }
+                            else if (self.selected_query) {
+                                let updated_query = result.Data.query;
+                                Object.assign(self.selected_query, updated_query);
+                            }
+                            self.notify("Save Query", result.Message);
+                            //let qdef = self.query_definitions.filter(function (x) { return (x.QueryDefinitionID == self.selected_query.QueryDefinitionID); })[0];
+                            //if (qdef) Object.assign(qdef, updated_query);
+                        }
+                    });
+                },
+
+                run_query: function() {
+                    let self = this;
+                    let url = api_url('runquery');
+                    console.log("run_query " + url);
+                    let parameters = [];
+                    if (this.fromdate) parameters.push({ DataType: 'datetime', Name: "FromDate", Value: this.fromdate });
+                    if (this.todate) parameters.push({ DataType: 'datetime', Name: "ToDate", Value: this.todate });
+                    let postdata = {
+                        DatabaseQueryID: this.edit_query.DatabaseQueryID,
+                        Parameters: parameters,
+                        MaxRows: this.maxrows
+                    };
+                    api.axios_post({
+                        url: url,
+                        caller: 'run_query',
+                        verbose: true,
+                        data: postdata,
+                        onsuccess: function(result) {
+                            console.log("Have result from run_query", result);
+                            let rows_read = result.Data.RowsRead;
+                            let rows = result.Data.Rows;
+                            if (rows_read > 0) {
+                                let row = result.Data.Rows[0];
+                                self.query_columns = Object.keys(row);
+                                self.query_result = result.Data.Rows;
+                            }
+                            else {
+                                self.query_result = undefined;
+                                self.notify("Run Query", "0 rows returned.")
+                            }
+                        }
+                    });
+                },
+
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+                on_report_selected: function() {
+                    this.edit_report = utils.deep_copy(this.selected_report)
+                },
+
+                on_query_selected: function() {
+                    this.edit_query = utils.deep_copy(this.selected_query)
+                },
+            }
+        });
+
+
+
+    </script>
+
+}
+
+@section Styles {
+
+    <style>
+
+        .code {
+            font-family: 'Courier New', Courier, monospace,
+            font-size: 0.75rem;
+            color: yellow;
+        }
+
+        .small-field {
+            width: 4rem;
+        }
+
+            table.queryresults {
+                border: collapse;
+                padding: 0;
+                margin: 0;
+                background-color: #959698;
+            }
+
+            table.queryresults thead tr {
+                color: white;
+                background-color: #525355;
+            }
+
+            table.queryresults td,
+            th {
+                border: 1px solid gray;
+                padding: 0.25rem;
+                margin: 0;
+            }
+
+            tbody tr:nth-child(even) {
+                color: gray;
+                background-color: #DDD;
+            }
+
+            tbody tr:nth-child(odd) {
+                color: gray;
+                background-color: #EEE;
+            }
+
+    </style>
+}

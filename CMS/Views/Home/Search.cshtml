@@ -1,0 +1,425 @@
+﻿
+@{
+    ViewData["Title"] = "Search";
+    string userroles = ViewData["Roles"].ToString();
+}
+
+
+
+<div class="banner">Search</div>
+<div id="app" v-if="ready" data-app>
+    <div class="text-center loading" style="display:none" id="loading">
+        <div style="margin-bottom:2em;">Loading inventory items ...</div>
+        <div>
+            <v-progress-circular :size="50"
+                                 color="green"
+                                 indeterminate></v-progress-circular>
+        </div>
+    </div>
+    <div id="content" style="display:none;">
+        <v-layout row align-center>
+            <inventory-component readonly :rootid="0" ref="inventory" v-on:begin-load="on_begin_inventory_load" v-on:end-load="on_end_inventory_load" v-on:mounted="on_inventory_mounted" style="height: 2em;"></inventory-component>
+        </v-layout>
+        <v-layout>
+            <v-flex>
+                <div style="margin-bottom: 0.1em; min-height: 2em;">
+                    <span style="margin-left: 0;">{{message_to_user}}</span>
+                </div>
+                <img id="barcode-img" src="~/assets/Barcodes-icon.png" style="height: 3em; display: none;" title="Click to scan a barcode" />
+            </v-flex>
+        </v-layout>
+        <v-layout>
+            <v-flex ml-0 xs12 style="display: flex; align-items: center; justify-content: flex-start;">
+                <v-checkbox v-for="item in grid_config.columns" :label="item.header" v-model="item.enabled" style="flex: none;  margin-right: 1em;"></v-checkbox>
+                <v-btn icon @@click="save_csv()"><v-icon large class="white blue--text">cloud_download</v-icon></v-btn>
+            </v-flex>
+        </v-layout>
+        <v-layout>
+            <v-flex xs12>
+                <grid ref='grid' :config="grid_config" :rowdata="inventory" v-on:rowclick="on_row_clicked" style="height: 100%;"></grid>
+            </v-flex>
+        </v-layout>
+
+        <itemdialog ref='itemdialog' :owners="settings.Owners" :groups="settings.Groups" :locations="settings.Locations" :readonly="true"></itemdialog>
+        <textinputdialog ref="textinputdialog" width="400px"></textinputdialog>
+        @*
+        <infodlg ref="infodlg" width="400px"></infodlg>
+        <searchsettings ref="searchsettings"></searchsettings>
+        <confirmdlg ref="confirmdlg" width="400px"></confirmdlg>
+        *@
+    </div> <!-- content -->
+</div> <!-- app -->
+
+@section Scripts
+    {
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/textinputdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/confirmdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/grid.js" asp-append-version="true"></script>
+    <script src="~/dist/location.js" asp-append-version="true"></script>
+    <script src="~/dist/locationpicker.js" asp-append-version="true"></script>
+    <script src="~/dist/itemdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/searchsettings.js" asp-append-version="true"></script>
+    <script src="~/dist/inventory.js" asp-append-version="true"></script>
+
+    <script>
+        var Inventory;
+        var app;
+
+        $(document).ready(function () {
+            console.log("ready");
+            app = create_vue();
+            //app.refresh();
+            if (utils.is_mobile()) $('#barcode-img').show();
+        });
+
+        Vue.use(Vuetify);
+
+        function create_vue() {
+            app = new Vue({
+                el: '#app',
+                components: {
+                    'grid': VueComponents.Grid,
+                    //'confirmdlg': VueComponents.ConfirmDialog,
+                    //'infodlg': VueComponents.InfoDialog,
+                    'searchsettings': VueComponents.SearchSettings,
+                    'textinputdialog': VueComponents.TextInputDialog,
+                    'itemdialog': VueComponents.ItemEditorDialog,
+                    //'locationpicker': VueComponents.LocationPicker,
+                    'inventory-component': VueComponents.Inventory,
+                },
+                data: {
+                    ready: false,
+                    debug: false,
+                    userroles: "@userroles",
+                    can_edit: false,
+                    readonly: true,
+                    message_to_user: '',
+                    selected_item: {
+                        Barcode: '',
+                        ChemicalName: '',
+                        CASNumber: ' ',
+                        Location: {},
+                        ShortLocation: '',
+                        Group: {},
+                        Owner: {}
+                    },
+                    grid_config: {
+                        height: "60vh",
+                        filter: true,
+                        rowkey: 'InventoryID',
+                        columns: [
+                            { header: "Barcode", width: 100, align: "center", sortable: false, field: "Barcode", filtered: true, enabled: true },
+                            { header: "CAS#", field: "CASNumber", align: 'center', width: 100, filtered: true, enabled: true },
+                            { header: "Chemical", field: "ChemicalName", align: 'center', width: 180, filtered: true, enabled: true },
+                            { header: "Location", field: "Location.FullLocation", width: 400, align: 'center', filtered: true, enabled: true },
+                            { header: "Date In", field: "DateIn", width: 100, align: 'center', filtered: true, type: 'date', enabled: true },
+                            { header: "Expiry", field: "ExpirationDate", width: 100, align: 'center', filtered: true, type: 'date', enabled: true },
+                            { header: "Owner", field: "Owner.Name", width: 150, align: 'center', filtered: true, enabled: true },
+                            { header: "Storage Group", field: "Group.Name", width: 150, align: 'center', filtered: true, enabled: false },
+                            { header: "Size", field: "ContainerSize", width: 70, align: 'center', filtered: true, enabled: false },
+                            { header: "Units", field: "Units", width: 70, align: 'center', filtered: true, enabled: false },
+                            { header: "Rem", field: "RemainingQuantity", width: 70, align: 'center', filtered: true, enabled: false },
+                            { header: "State", field: "State", width: 70, align: 'center', filtered: true, enabled: false },
+                            { header: "Notes", field: "Notes", width: 300, align: 'left', filtered: true, enabled: false },
+                        ],
+                    },
+                    selected_owner: undefined,
+                    flags: {},
+                    flagnames: ['ACUTETOXICITY', 'CARCINOGEN', 'COMPRESSEDGAS', 'CORROSIVE', 'EXPLOSIVE', 'FLAMABLE', 'HEALTHHAZARD',
+                        'IRRITANT', 'OTHERHAZARD', 'OTHERSECURITY', 'OXIDIZER', 'THEFT'],
+                    inventory: [],
+                    settings: {},
+                    sites: [],
+                    current_site: { LocationID: 0, FullLocation: '' },
+                    location_list: [],
+                    saved_current_site: {},
+                    editor_visible: false,
+                    units: [
+                        { value: 'cm3', text: 'Cubic centimeters (cm^3)' },
+                        { value: 'm3', text: 'Cubic meters (m^3)' },
+                        { value: 'g', text: 'Gram (g)' },
+                        { value: 'kg', text: 'Kilogram (kg)' },
+                        { value: 'L', text: 'Liter (L)' },
+                        { value: 'mg', text: 'Milligram (mg)' },
+                        { value: 'mL', text: 'Milliliter (mL)' },
+                        { value: 'ft3', text: 'Cubic feet (ft^3)' },
+                        { value: ' ', text: '(blank)' },
+                    ],
+                    states: [
+                        { value: 'solid', text: 'solid' },
+                        { value: 'liquid', text: 'liquid' },
+                        { value: 'gas', text: 'gas' },
+                        { value: 'other', text: 'other' },
+                    ],
+                    hazard_images: [
+                        { name: "ACUTETOXICITY", image: "/assets/acute_toxicity.png", text: "Skull and Crossbones" },
+                        { name: "COMPRESSEDGAS", image: "/assets/compressed_gas.png", text: "Gas Cylinder" },
+                        { name: "CORROSIVE", image: "/assets/corrosive.png", text: "Corrosion" },
+                        { name: "EXPLOSIVE", image: "/assets/explosive.png", text: "Exploding Bomb" },
+                        { name: "FLAMABLE", image: "/assets/flamable.png", text: "Flame" },
+                        { name: "HEALTHHAZARD", image: "/assets/health_hazard.png", text: "Health Hazard" },
+                        { name: "IRRITANT", image: "/assets/irritant.png", text: "Exclamation Mark" },
+                        { name: "OXIDIZER", image: "/assets/oxidizer.png", text: "Flame Over Circle" },
+                    ],
+                },
+                methods: {
+                    //-----------------------------------------------------
+                    // refresh - fetch settings
+                    //-----------------------------------------------------
+                    refresh: function (loc_id, search_settings) {
+                        var self = this;
+
+                        this.editor_visible = false;
+                        $('#content').hide(0);
+                        $('#loading').show(0);
+                        api.fetch_settings(function (result) {
+                            console.log("Have response from fetch_settings:", result);
+                            let data = result.Data;
+                            self.saved_current_site = self.current_site;
+                            self.settings = data.Settings;
+                            self.sites = data.Settings.Sites;
+                            self.HomeLocation = data.HomeLocation;
+                            //self.root_location = data.RootLocation;
+                            self.ready = true;
+                        });
+                    },
+
+                    on_inventory_mounted: function () {
+                        console.log("on_inventory_mounted", this.$refs);
+                        this.$refs['inventory'].set_root_location(this.HomeLocation);                    },
+
+                    on_begin_inventory_load: function () {
+                        console.log("ON BEGIN LOAD");
+                    },
+
+
+                    on_end_inventory_load: function (inventory) {
+                        console.log("ON END LOAD");
+                        this.inventory = inventory;
+                        $('#loading').hide(0);
+                        $('#content').show(0);
+                    },
+
+                    //-----------------------------------------------------
+                    // prepare_item_for_edit
+                    //
+                    // Format inventory item fields prior to editing/viewing
+                    //-----------------------------------------------------
+                    prepare_item_for_edit: function (item) {
+                        if (item.DateIn) item.date_in = utils.format_date(item.DateIn);
+                        if (item.ExpirationDate) item.expiration_date = utils.format_date(item.ExpirationDate);
+                        this.set_binary_flags();
+                        this.flags.CWC = item.ItemFlags.CWC;
+                    },
+
+                    //-----------------------------------------------------
+                    // prepare_item_for_edit
+                    //
+                    // Parse inventory item fields prior to saving
+                    //-----------------------------------------------------
+                    prepare_item_for_save: function (item) {
+                        if (item.date_in) item.DateIn = moment(item.date_in).toDate();
+                        else item.DateIn = null;
+                        if (item.expiration_date) item.ExpirationDate = moment(item.expiration_date).toDate();
+                        else item.ExpirationDate = null;
+                        this.set_item_flags();
+                    },
+
+                    //-----------------------------------------------------
+                    // set_selected_item
+                    //
+                    // Make a deep copy of an item and save in selected_item
+                    //-----------------------------------------------------
+                    set_selected_item: function (item) {
+                        this.selected_item = utils.deep_copy(item);
+                        this.prepare_item_for_edit(this.selected_item);
+                    },
+
+
+                    //-----------------------------------------------------
+                    // check_unsaved_changes
+                    //
+                    // Prompt the user if there are unsaved changes to an item
+                    //-----------------------------------------------------
+                    check_unsaved_changes: function () {
+                        return true;
+                    },
+
+                    //-----------------------------------------------------
+                    // edit_item
+                    //
+                    // Show item editor/viewer
+                    //
+                    // TODO: use set_selected_item to make a deep copy
+                    //-----------------------------------------------------
+                    edit_item: function (item) {
+                        this.selected_item = item;
+                        //this.prepare_item_for_edit(this.selected_item);
+                        //this.editor_visible = true;
+                        let self = this;
+                        let config = {
+                            header: "Inventory Item",
+                            item: item,
+                            readonly: true,
+                            root_location_id: this.HomeLocation.LocationID
+                        };
+
+                        this.$refs['itemdialog'].open(config, function (updated_item) {
+                            //self.save_edits(updated_item);
+                            console.log("Save Edits");
+                            //self.selected_item = updated_item;
+                            //self.save_selected_item();
+                        });
+
+                    },
+
+                    //-----------------------------------------------------
+                    // on_row_clicked
+                    //
+                    // Handle grid row click event
+                    //-----------------------------------------------------
+                    on_row_clicked: function (row) {
+                        console.log("on_row_clicked", row);
+                        //let ix = this.find_inventory_item(row.InventoryID);
+                        //this.edit_item(this.inventory[ix]);
+                    },
+
+
+                    //-----------------------------------------------------
+                    // find_inventory_item
+                    //
+                    // Search for an item by its InventoryID, returning the
+                    // index of the item in this.inventory.
+                    //-----------------------------------------------------
+                    find_inventory_item: function (id) {
+                        let result = -1;
+                        for (let i = 0; i < this.inventory.length; i++) {
+                            if (this.inventory[i].InventoryID == id) {
+                                result = i;
+                                break;
+                            }
+                        }
+                        return result;
+                    },
+
+                    user_in_role: function (rolename) {
+                        return (this.userroles.indexOf(rolename) >= 0);
+                    },
+
+
+                    select_top_level_location: function () {
+                        let self = this;
+                        let current_site = this.current_site;
+                        this.search_settings.RootID = this.HomeLocation.LocationID;
+                        this.$refs['searchsettings'].open(this.search_settings, function (result) {
+                            console.log("searchsettings returned ", result.RootID);
+                            self.search_settings = result;
+                            let location_id = result.RootID;
+                            self.refresh(location_id, result);
+                        });
+                    },
+
+                    // https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+                    download_data: function (filename, data) {
+                        var blob = new Blob([data], { type: 'text/csv' });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            window.navigator.msSaveBlob(blob, filename);
+                        }
+                        else {
+                            var elem = window.document.createElement('a');
+                            elem.href = window.URL.createObjectURL(blob);
+                            elem.download = filename;
+                            document.body.appendChild(elem);
+                            elem.click();
+                            document.body.removeChild(elem);
+                        }
+                    },
+
+                    save_csv: function () {
+                        let data = "";
+                        let self = this;
+                        this.$refs['grid'].generate_csv(function (line) {
+                            data += line + "\n";
+                        });
+                        this.$refs['textinputdialog'].open("Enter the filename for the downloaded CSV file", "Save As CSV", function (op, filename) {
+                            if (op == 'save') {
+                                if (!filename.toLowerCase().endsWith(".csv")) filename += ".csv";
+                                console.log("Save as " + filename);
+                                self.download_data(filename, data);
+                            }
+                        })
+                    }
+
+                },
+                created: function () {
+                    console.log("In created()");
+                    this.can_edit = this.user_in_role('admin') || this.user_in_role('edit') || this.user_in_role('manager');
+                    this.readonly = !this.can_edit;
+                    this.refresh(0);
+                }
+            });
+            return app;
+        }
+
+
+        </script>
+}
+
+@section Styles
+    {
+
+    <style>
+
+        .attribute {
+            height: 32px;
+        }
+
+        .search {
+            margin-left: 0.5em;
+        }
+
+        .itemprop {
+            width: 100%;
+        }
+
+        /* Grid CSS */
+        .my-div {
+            height: 400px;
+        }
+
+        .my-grid {
+            height: 300px;
+            font-size: smaller;
+        }
+
+        .attribute {
+            width: 500px;
+        }
+
+
+        .invisible {
+            display: none
+        }
+
+        .filter {
+            font-size: smaller;
+        }
+
+        .inventory-detail {
+            margin-left: 1em;
+            margin-top: 4em;
+        }
+
+        .loading {
+            width: 100vw;
+            height: 80vh;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+    </style>
+
+}

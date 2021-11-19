@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewData["Title"] = "Upload SDS";
+}
+
+<div class="banner">Upload SDS</div>
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout>
+                    <v-flex class="xs12 lg6">
+                        <div class="headline">
+                            SDS Files
+                            <v-btn flat icon class="green--text font-weight-bold"  @@click="on_upload"><v-icon>control_point</v-icon></v-btn>
+                        </div>
+                        <grid :config="grid_config" :rowdata="sdsfiles"></grid>
+                    </v-flex>
+                    <v-flex>
+
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+
+        <!-- -------------------------------------------------- -->
+        <!-- File Upload Dialog                                 -->
+        <!-- -------------------------------------------------- -->
+        <v-dialog v-model="show_upload_dialog" width="600px">
+            <v-card>
+                <v-card-text>
+                    <v-text-field v-model="casnum" label="CAS #"></v-text-field>
+                    <upload v-if="is_valid_casnum()" style="width: 100%;
+                                    font-size: large;"
+                            :url="upload_url"
+                            title="Upload SDS File"
+                            extensions=".pdf"
+                            owner="none"
+                            :tag="casnum"
+                            description="none"
+                            v-on:complete="on_upload_complete"
+                            v-on:error="on_upload_error"></upload>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary"
+                           flat
+                           @@click="show_upload_dialog = false">
+                        Dismiss
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <infodialog ref="infodialog" width="400px"></infodialog>
+
+    </div>
+</v-app>
+
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/grid.js"></script>
+    <script src="~/dist/upload.js"></script>
+
+    <script>
+
+        var cas_regex = /^.*\d+-\d+-\d+$/;
+
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+                "grid": VueComponents.Grid,
+                "upload": VueComponents.Upload
+            },
+            data: {
+                show_upload_dialog: false,
+                upload_url: utils.mvc_page_url("admin", "uploadsds"),
+                sdsfiles: [],
+                casnum: '',
+                grid_config: {
+                    height: '400px',
+                    filter: true,
+                    columns: [
+                        { header: 'CAS #', width: 200, sortable: true, field: 'CASNumber', filtered: true },
+                        { header: 'File Name', width: 300, sortable: true, field: 'FileName', filtered: true },
+                    ]
+                },
+            },
+            created: function () {
+            },
+
+            mounted: function () {
+                this.refresh();
+            },
+
+            methods: {
+
+                refresh: function () {
+                    let self = this;
+                    let url = utils.mvc_page_url('admin', 'GetSDSFiles');
+                    console.log("Calling " + url);
+                    api.axios_get({
+                        caller: 'refresh',
+                        verbose: true,
+                        url: url,
+                        onsuccess: function (result) {
+                            self.sdsfiles = result.Data.files;
+                        }
+                    });
+                },
+
+                is_valid_casnum: function () {
+                    return (cas_regex.exec(this.casnum));
+                },
+
+                on_upload: function () {
+                    this.show_upload_dialog = true;
+                },
+
+                on_upload_complete: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    this.casnum = '';
+                    console.log("on_upload_complete", ajax_result);
+                    this.notify("Upload SDS", ajax_result.Message);
+                    this.refresh();
+                },
+
+                on_upload_error: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    this.casnum = '';
+                    console.log("on_upload_error", ajax_result);
+                    this.notify("Upload SDS", ajax_result.Message);
+                },
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+            }
+        });
+
+
+
+    </script>
+
+}
+

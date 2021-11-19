@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Status";
+}
+
+
+<v-app data-app>
+    <div id='app'>
+        <v-content>
+            <v-container fluid>
+                <v-layout row mr-1>
+                    <v-flex xs3 mr-1>
+                        <v-card dark flat>
+                            <v-card-title class="headline justify-center"><span>@ViewData["Operation"]</span></v-card-title>
+                            <v-card-text style="border: 2px solid white;">
+                                <p>@ViewData["Message"]</p>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn text href='@ViewData["ReturnURL"]'>Back</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+@section Scripts
+{
+
+    <script src="~/dist/bundle.js" asp-append-version="true"></script>
+    <script src="~/dist/upload.js" asp-append-version="true"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        let vueapp = new Vue({
+            el: '#app',
+        });
+
+    </script>
+
+
+}
+
+

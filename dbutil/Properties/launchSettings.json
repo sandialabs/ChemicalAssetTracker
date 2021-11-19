@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dbutil": {
+      "commandName": "Project",
+      "commandLineArgs": "-create -noprompt -hostname catdemodb.mysql.database.azure.com"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData.AddActivePage(ManageNavPages.Index);
+}
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+
+<v-app>
+    <div id='app'>
+        <v-content>
+            <v-container>
+
+                <v-layout row wrap>
+                    <v-flex xs4>
+                        <h1>Test data: {{testdata}}</h1>
+                        <v-text-field label="TEST FIELD" v-model="testdata"></v-text-field>
+
+                        <form method="post">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Username"></label>
+                                <input asp-for="Username" class="form-control" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email"></label>
+                                @if (Model.IsEmailConfirmed)
+                                {
+                                    <div class="input-group">
+                                        <input asp-for="Email" class="form-control" />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="Email" class="form-control" />
+                                    <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                                }
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber"></label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </form>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+
+        Vue.use(Vuetify);
+        app = new Vue({
+            el: '#app',
+            data: {
+                testdata: 'This is a test'
+            }
+        });
+
+    </script>
+
+
+}

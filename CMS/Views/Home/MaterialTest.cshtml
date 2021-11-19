@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewData["Title"] = "MaterialTest";
+}
+
+<h2>Material CSS Test</h2>
+
+<div class="row" id="app">
+    <confirmdialog ref='confirmdialog' width="500px" v-on:confirmed="on_confirmed()" v-on:declined="on_declined()"></confirmdialog>
+    <button class="btn" v-on:click="on_confirm()">Confirm</button>
+    <usereditor ref="usereditor" :userdata="userdata"></usereditor>
+    <button class="btn" v-on:click="on_edit_user()">Edit User</button>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <p class="hide-on-small-only">hide-on-small-only</p>
+        <p class="hide-on-med-only">hide-on-med-only</p>
+        <p class="hide-on-med-and-up">hide-on-med-and-up</p>
+        <p class="hide-on-large-only">hide-on-large-only</p>
+        <p class="hide-on-small-only">hide-on-small-only</p>
+        <p class="hide-on-medium-only">hide-on-medium-only</p>
+        <p class="hide-on-large">hide-on-large</p>
+        <p class="hide-on-med-and-up">hide-on-med-and-up</p>
+        <p class="hide-on-med-and-down">hide-on-med-and-down</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s4 left-align"><div>hide</div></div>
+    <div class="col s4 left-align hide test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align"><div>hide-on-small-only</div></div>
+    <div class="col s4 left-align hide-on-small-only test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align"><div>hide-on-med-only</div></div>
+    <div class="col s4 left-align hide-on-med-only test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>hide-on-med-and-up</div></div>
+    <div class="col s4 left-align hide-on-med-and-up test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>hide-on-large-only</div></div>
+    <div class="col s4 left-align hide-on-large-only test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>show-on-small</div></div>
+    <div class="col s4 left-align hidden show-on-small test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>show-on-medium</div></div>
+    <div class="col s4 left-align hidden show-on-medium test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>show-on-large</div></div>
+    <div class="col s4 left-align hidden show-on-large test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>show-on-medium-and-up</div></div>
+    <div class="col s4 left-align hidden show-on-medium-and-up test"></div>
+</div>
+<div class="row">
+    <div class="col s4 left-align h32"><div>show-on-medium-and-down</div></div>
+    <div class="col s4 left-align hidden show-on-medium-and-down test"></div>
+</div>
+
+@section scripts {
+    <script src="~/js//httpVueLoader.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            console.log("Ready");
+            $('.modal').modal();
+        });
+
+        var testvue = new Vue({
+            el: '#app',
+            components: {
+                'confirmdialog': httpVueLoader('/vue-components/confirmdialog.vue'),
+                'usereditor': httpVueLoader('/vue-components/usereditor.vue')
+            },
+            data: {
+                userdata: {
+                    UserName: "alincoln",
+                    FirstName: "Abraham",
+                    MiddleName: "M",
+                    LastName: "Lincoln",
+                    Phone: "",
+                    Email: "alincoln@whitehouse.gov",
+                    IsViewer: true
+                }
+            },
+            methods: {
+                on_confirm: function () {
+                    let refs = this.$refs;
+                    let dlg = refs['confirmdialog'];
+                    let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+                    dlg.open(text, "Confirm Dialog Test");
+                },
+
+                on_confirmed: function () {
+                    console.log("Received confirmation");
+                },
+
+                on_declined: function () {
+                    console.log("Declined");
+                },
+
+                on_edit_user: function () {
+                    let refs = this.$refs;
+                    let dlg = refs['usereditor'];
+                    dlg.open("Edit User");
+                },
+
+                on_save: function () {
+                    console.log("Save user");
+                },
+
+                on_cancel: function () {
+                    console.log("Cancel");
+                },
+
+            }
+        })
+
+    </script>
+
+}
+
+@section styles {
+
+
+    <style>
+
+        .test {
+            height: 32px;
+            background-color: red;
+            color: white;
+        }
+
+        .h32 {
+            height: 32px;
+        }
+    </style>
+
+}

@@ -1,0 +1,807 @@
+﻿
+@{
+    ViewData["Title"] = "UserManagement";
+    string username = ViewData["UserName"] as string;
+}
+
+
+
+<div class="row" id="uservue">
+    <div class="banner">LOCATION / Access Editor</div>
+    <div class="body-content">
+        <div class="col s3">
+            <div style="font-size: larger;">
+                <label>Select User</label>
+                <select class="browser-default" v-model="selected_user" v-on:change="on_user_selected()">
+                    <option v-for="user in users" v-bind:value="user">{{user.UserName}}</option>
+                </select>
+
+            </div>
+            <div v-show="location_info_visible" style="display: none;">
+                <div class="card grey lighten-2" style="height: 300px;">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <p class="card-title">Location Information</p>
+                            <hr />
+                        </div>
+                        <div class="input-field">
+                            <input type="text" style="width: 50%;" id="location-name" placeholder="Location name" v-model="selected_location.Name" />
+                            <label>Location Name</label>
+                            <a href="#" v-on:click="on_rename_location(selected_location)">Rename</a>
+                        </div>
+                        <div>
+                            <span>Full Name: </span>
+                            <span>{{selected_location.FullLocation}}</span>
+                        </div>
+                        <div>
+                            <span>Location ID: </span>
+                            <span>{{selected_location.LocationID}}</span>
+                        </div>
+                        <div>
+                            <span>User Access: </span>
+                            <span>{{format_user_access(selected_location)}}</span>
+                            <v-checkbox v-model="selected_location.Access.CanView" label="Can View"></v-checkbox>
+                        </div>
+                    </div> <!-- card-content -->
+                    <div class="card-action">
+                        <a href="#" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel === 0">Add Site</a>
+                        <a href="#" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel === 1">Add Building</a>
+                        <a href="#" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel === 2">Add Room</a>
+                        <a href="#" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel === 3">Add Storage</a>
+                        <a href="#" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel === 4">Add Shelf</a>
+                        <a href="#" class="red-text" v-on:click="on_delete_location(selected_location)">Delete</a>
+                    </div>
+                </div> <!-- card -->
+            </div>
+            <div id="status-message" class="error-message" style="min-height: 2em; margin-top: 1em;">&nbsp;</div>
+            <div style="margin-top: 1em;">
+                <p>To see location access permissions for a user, select the user from the dropdown list above.</p>
+                <p>To view or change a location, click on the location in the location tree.  To change a user's access to inventory locations, shift-click on a location in the location tree.</p>
+                <p>Click the Save button to save your changes to a user's permission.</p>
+            </div>
+        </div>
+        <div class="col s9">
+            <div v-show="user_access_visible" style="display: none;">
+                <div class="valign-wrapper" style="height: 3rem;">
+                    <div style="font-size: larger;">Storage Locations</div>
+                    <div style="margin-left: auto;">
+                        <button class="btn small" style="margin-bottom: 0px;" v-on:click="on_save_user_access()">Save</button>
+                    </div>
+                </div>
+                <div id="location-network"></div>
+            </div>
+        </div>
+    </div> <!-- content -->
+    <!-- Confirmation Dialog -->
+    <div id="confirm-dialog" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{confirm_options.prompt}}</p>
+                </div> <!-- modal-body -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" v-on:click="on_confirm_response(true)">{{confirm_options.yes}}</button>
+                    <button type="button" class="btn btn-danger" v-on:click="on_confirm_response(false)">{{confirm_options.no}}</button>
+                </div> <!-- modal-footer -->
+            </div> <!-- modal-content -->
+        </div> <!-- modal-dialog -->
+    </div> <!-- confirm-dialog -->
+    <!-- Location Name Dialog -->
+    <textinputdialog ref="textinputdialog"></textinputdialog>
+    <confirmdialog ref="confirmdialog"></confirmdialog>
+
+
+</div> <!-- row/userview -->
+
+
+
+@section Scripts
+    {
+
+    <script src="~/visjs/vis.js"></script>
+    <script src="~/js/materialize.js"></script>
+    <script src="~/js//httpVueLoader.js"></script>
+
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        $(document).ready(function () {
+            console.log("READY");
+            $('select').formSelect();
+        });
+        var status_timer;
+        var saved_user = {};
+
+        // view_stack tracks changing network views:
+        //   root: root location
+        //   selected: selected location
+        //   view: { positions: { x: X, y: y} , zoom: Z }
+        var view_stack = [];
+
+        function has_value(x) {
+            if (typeof x == 'string') return x.length > 0;
+            if (x == null) return false;
+            return x;
+        }
+
+        function show_message(text, duration_ms) {
+            console.log("show_message", text, duration_ms);
+            if (status_timer) {
+                clearTimeout(status_timer);
+            }
+            if (!duration_ms) duration_ms = 3000;
+            $('#status-message').text(text);
+            status_timer = setTimeout(function () { $('#status-message').text(''); }, duration_ms);
+        }
+
+
+        var uservue = new Vue({
+            el: '#uservue',
+            components: {
+                'textinputdialog': httpVueLoader('/vue-components/textinputdialog.vue'),
+                'confirmdialog': httpVueLoader('/vue-components/confirmdialog.vue'),
+            },
+            data: {
+                users: [],
+                selected_user: {
+                    UserName: "Select a user ...",
+                    Email: "",
+                    Password: '',
+                    IsAdmin: false,
+                    IsEditor: false,
+                    IsViewer: true,
+                    IsNew: true,
+                    IsChanged: true,
+                },
+                selected_location: {
+                    Access: {
+                        CanView: false,
+                        CanModify: false,
+                        IsSticky: false
+                    }
+                },
+                popup_location: {},
+                error_message: '',
+                changed: false,
+                user_access_visible: false,
+                location_info_visible: false,
+                selected_user: {},
+                new_location_name: "",
+                confirm_options: {
+                    prompt: "Do you want to continue?",
+                    yes: "Yes",
+                    no: "No",
+                    on_yes: function () { console.log("Confirmed"); },
+                    on_no: function () { console.log("Not confirmed"); },
+                }
+            },
+            methods: {
+
+                on_user_selected: function () {
+                    console.log("User selected: ", this.selected_user.UserName);
+                    this.on_edit_user_access(this.selected_user);
+                },
+
+                on_edit_user_access: function (user) {
+                    console.log("on_edit_user_access", user);
+                    this.location_info_visible = false;
+                    this.user_access_visible = true;
+                    this.selected_user = user;
+                    let self = this;
+                    api.axios_get({
+                        url: '/api/getuserlocations/' + user.UserName,
+                        caller: 'on_edit_user_access',
+                        verbose: true,
+                        id: user.UserName,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            if (ajax_result.Success) {
+                                self.locations = ajax_result.Data.locations;
+                                show_locations(self.locations);
+                                setTimeout(function () { zoom_to(1); }, 200);
+                            }
+                        }
+                    });
+                },
+
+                zoom_to_location: function (location) {
+                    if (typeof location === 'number') location = location_map[location];
+                    console.log("zoom_to_location", location);
+                    this.location_info_visible = false;
+                    this.user_access_visible = true;
+                    let self = this;
+                    api.axios_get({
+                        url: '/api/getuserlocationsubtree/' + self.selected_user.UserName + "/" + location.LocationID + "/3",
+                        caller: 'zoom_to_location',
+                        verbose: true,
+                        id: self.selected_user.UserName,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            if (ajax_result.Success) {
+                                self.locations = ajax_result.Data.subtree;
+                                //self.refresh();
+                                show_locations(self.locations);
+                                setTimeout(function () { zoom_to(location.LocationID); }, 1000);
+                            }
+                        }
+                    });
+                },
+
+                on_save_user_access: function () {
+                    if (this.selected_user.UserName) {
+                        let permissions = get_user_permissions(this.selected_user.UserName, this.locations);
+                        console.log("New user permissions", permissions)
+                        api.axios_post({
+                            url: '/api/updateuserlocations',
+                            caller: 'on_save_user_access',
+                            verbose: true,
+                            id: this.selected_user.UserName,
+                            data: permissions
+                        });
+                    }
+                },
+
+                on_delete_location: function (location) {
+                    let self = this;
+                    this.$refs['confirmdialog'].open('Delete location "' + location.FullLocation + '"?', 'Delete Location', function (response) {
+                        console.log("In delete callback: " + response);
+                        if (response == 'confirmed') {
+                            api.axios_delete({
+                                url: "/api/deletelocation/" + location.LocationID,
+                                caller: "on_delete_location",
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    show_message(ajax_result.Message);
+                                    self.refresh_network(ajax_result.Data.locations);
+                                },
+                                onfailure: function (ajax_result) { show_message(ajax_result.Message); },
+                            });
+                        }
+                    });
+                },
+
+                // called when user clicks AddXXX button
+                on_add_child: function (parent) {
+                    let parent_level = parent.LocationLevel;
+                    let child_level = parent_level + 1;
+                    let child_level_name = this.location_level_name(child_level);
+                    let self = this;
+                    //let dig = this.$refs['textinputdialog'];
+                    this.$refs["textinputdialog"].open("Enter " + child_level_name + " name", "New " + child_level_name, function (op, name) {
+                        console.log("Create new " + child_level_name + " named " + name);
+                        self.on_create_locations(parent, name);
+                    });
+                },
+
+                on_create_locations: function (parent, location_names) {
+                    let self = this;
+                    console.log("on_create_location", location_names, parent);
+                    if (location_name.length > 0) {
+                        api.axios_post({
+                            url: '/api/addlocations',
+                            caller: 'on_create_location',
+                            verbose: true,
+                            id: '',
+                            data: { ChildLocationNames: location_names, ParentID: parent.LocationID },
+                            onsuccess: function (ajax_result) {
+                                show_message(ajax_result.Message);
+                                self.refresh_network(ajax_result.Data.locations);
+                            },
+                            onfailure: function (ajax_result) {
+                                show_message(ajax_result.Message);
+                            }
+                        });
+                    }
+                },
+
+                on_rename_location: function (location) {
+                    let self = this;
+                    api.axios_post({
+                        url: '/api/updatelocation',
+                        caller: 'on_rename_location',
+                        verbose: true,
+                        id: '',
+                        data: location,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            update_location(location);
+                        }
+                    });
+                },
+
+
+                on_handle_location_doubleclick: function (location) {
+                    let current_access = location.Access;
+                    let new_access = {
+                        Login: this.selected_user.UserName,
+                        LocationID: location.LocationID,
+                        CanView: current_access.CanView,
+                        CanModify: current_access.CanModify,
+                        IsSticky: current_access.IsSticky
+                    };
+                    if (current_access.IsSticky) {
+                        if (current_access.CanView) {
+                            new_access.CanView = !current_access.CanView;
+                            new_access.CanModify = !current_access.CanModify;
+                        }
+                        else {
+                            new_access.IsSticky = false;
+                        }
+                    }
+                    else {
+                        new_access.CanView = !current_access.CanView;
+                        new_access.CanModify = !current_access.CanModify;
+                        new_access.IsSticky = true;
+                    }
+                    console.log("New access: ", new_access);
+                    let self = this;
+                    let postdata = {
+                        Login: new_access.Login,
+                        SubtreeRoot: this.locations[0].LocationID,
+                        Updates: [new_access]
+                    }
+                    api.axios_post({
+                        url: utils.api_url("updateuserlocations"),
+                        data: postdata,
+                        verbose: true,
+                        caller: 'network.on.shiftclick',
+                        onsuccess: function (result) {
+                            console.log("OnSuccess", result);
+                            result.Data.accessdata.forEach(function (x) {
+                                let loc = location_map[x.LocationID];
+                                if (loc) {
+                                    loc.Access.CanModify = x.CanModify;
+                                    loc.Access.CanView = x.CanView;
+                                    loc.Access.IsSticky = x.IsSticky;
+                                }
+                            });
+                            self.locations.forEach(function (l) { compute_location_color(l); })
+                        }
+                    });
+                },
+
+                on_confirm_response: function (is_confirmed) {
+                    $('#confirm-dialog').modal('hide');
+                    if (is_confirmed && this.confirm_options.on_yes) this.confirm_options.on_yes();
+                    if (!is_confirmed && this.confirm_options.on_no) this.confirm_options.on_no();
+                },
+
+                location_level_name: function (level) {
+                    switch (level) {
+                        case 1:
+                            return "Site";
+                            break;
+                        case 2:
+                            return "Building";
+                            break;
+                        case 3:
+                            return "Room";
+                            break;
+                        case 4:
+                            return "Cabinet"
+                            break;
+                        case 5:
+                            return "Shelf";
+                            break;
+                        default:
+                            return "undefined";
+                    }
+                },
+
+                confirm: function (options) {
+                    let std_options = {
+                        prompt: "Do you want to continue?",
+                        yes: "Yes",
+                        no: "No",
+                        on_yes: function () { console.log("Confirmed"); },
+                        on_no: function () { console.log("Not confirmed"); },
+                    };
+                    this.confirm_options = std_options;
+                    if (options.prompt) this.confirm_options.prompt = options.prompt;
+                    if (options.yes) this.confirm_options.yes = options.yes;
+                    if (options.no) this.confirm_options.no = options.no;
+                    this.confirm_options.on_yes = options.on_yes;
+                    this.confirm_options.on_no = options.on_no;
+
+                    $('#confirm-dialog').modal('show');
+                },
+
+                refresh: function () {
+                    let url = utils.mvc_page_url("Admin", "GetUsers");
+                    let self = this;
+                    let username = utils.get_url_parameter('user');
+                    if (username == null) username = "@username";
+                    console.log("In refresh: " + url);
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        onsuccess: function (ajax_result) {
+                            self.users = ajax_result.Data.Users;
+                            if (username) {
+                                let user = self.users.filter(function (x) { return x.UserName === username; })[0];
+                                if (user) {
+                                    console.log("selecting user " + username);
+                                    self.selected_user = user;
+                                    self.on_edit_user_access(user);
+                                }
+                            }
+                        }
+                    });
+                },
+
+                refresh_network: function (locations) {
+                    this.locations = locations;
+                    console.log("refresh_network", this.locations);
+                    show_locations(this.locations);
+                    console.log("refresh complete")
+                },
+
+                get_descendents: function (loc, depth) {
+                    if (typeof loc === 'number') loc = location_map[loc];
+                    console.log("Processing ", loc.LocationID, loc.Name);
+                    if (depth > 0) {
+                        var result = loc.children.slice(0);
+                        var self = this;
+                        loc.children.forEach(function (l) {
+                            result.push.apply(result, self.get_descendents(l, depth - 1));
+                        })
+                        return result;
+                    }
+                    else return ([loc]);
+                    return result;
+                },
+
+                show_subtree: function (root_node_id, depth) {
+
+                },
+
+                // location access is in coded in Access
+                //     location.Access.CanView
+                //     location.Access.CanModify
+                //     location.Access.IsSticky
+                format_user_access: function (location) {
+                    if (location  &&  location.Name) {
+                        let access = "Blocked";
+                        if (location.Access.CanView) {
+                            if (location.Access.CanModify) access = "Read/Write";
+                            else access = "ReadOnly";
+                        }
+                        let sticky = location.Access.IsSticky ? " (explicit)" : " (inherited)";
+                        return access + sticky;
+                    }
+                    else return "";
+                },
+
+                update_selected_location: function (access, sticky) {
+                    this.selected_location.access = access;
+                    this.selected_location.is_access_sticky = sticky;
+                    this.$forceUpdate();
+                }
+
+            },
+            created: function () {
+                this.locations = null;
+
+                this.refresh();
+            }
+        });
+
+        window.onresize = function () {
+
+
+        }
+
+        //#############################################################
+        //
+        // Permission Network
+        //
+        //#############################################################
+
+        const DENY = 0;
+        const ALLOW = 1;
+        const UNDEFINED = 2;
+
+        var network = null;
+        var nodes = null;
+        var location_root = null;
+        var location_map = {};  // maps location id to location object
+        var node_map = {};      // maps location id to node object
+        var level_names = ['', 'Site:', 'Bldg', 'Room:', 'Shelf:'];
+
+        function initialize_location_map(locations) {
+            location_map = {};
+            locations.forEach(function (loc) {
+                location_map[loc.LocationID] = loc;
+            });
+            locations.forEach(function (loc) {
+                let children = locations.filter(function (x) { return x.ParentID === loc.LocationID; });
+                //console.log(loc.FullLocation + " has " + children.length + ' children');
+                loc['children'] = children;
+            });
+        }
+
+        function format_loc(loc) {
+            return "Location " + loc.LocationID + ": " + loc.Name + ' (' + loc.FullLocation + ')'
+        }
+
+        function create_node(loc) {
+            let node = {
+                id: loc.LocationID,
+                label: loc.Name,
+                color: {
+                    border: 'black',
+                    background: 'white',
+                    highlight: {
+                        border: 'black',
+                        background: 'white'
+                    },
+                },
+                font: {
+                    color: 'black'
+                },
+                shape: 'box'
+            };
+            return node;
+        }
+
+        function create_network_nodes(locations) {
+            return locations.map(function (loc) {
+                let node = create_node(loc);
+                loc.network_node = node;
+                return node;
+            });
+        }
+
+        function get_edges(loc) {
+            //console.log("Get edges for location", loc);
+            let result = loc.children.map(function (child) { return { from: loc.LocationID, to: child.LocationID }; });
+            loc.children.forEach(function (child) {
+                let child_edges = get_edges(child);
+                result = result.concat(child_edges);
+            });
+            return result;
+        }
+
+        function find_network_node(location) {
+            if (typeof location == 'number') location = location_map[location];
+            return location.network_node;
+        }
+
+        function set_location_color(location, fg, bg) {
+            if (typeof location == 'number') location = location_map[location];
+            let node = location.network_node;
+            node.color.background = bg;
+            node.color.highlight.background = bg;
+            node.color.highlight.border = fg;
+            node.font.color = fg;
+            nodes.update(location.network_node);
+        }
+
+        function update_location(location) {
+            if (typeof location == 'number') location = location_map[location];
+            let node = location.network_node;
+            console.log("update_location", location);
+            node.label = location.Name;
+            nodes.update(node);
+        }
+
+        function compute_location_color(location) {
+            let is_sticky = location.Access.IsSticky;
+            let can_view = location.Access.CanView;
+            location.is_sticky = is_sticky;
+            if (can_view) {
+                let fg = is_sticky ? "white" : "black";
+                let bg = is_sticky ? "green" : "palegreen";
+                set_location_color(location, fg, bg);
+            }
+            else {
+                let fg = is_sticky ? "white" : "black";
+                let bg = is_sticky ? "red" : "pink";
+                set_location_color(location, fg, bg);
+            }
+        }
+
+
+        function dump_loc(id) {
+            let loc = location_map[id];
+            if (loc) {
+                console.log(format_loc(loc) + "  CanView: " + loc.Access.CanView + "  CanModify: " + loc.Access.CanModify + "   Sticky: " + loc.Access.IsSticky);
+                loc.children.forEach(function (child) { console.log("    " + format_loc(child)); } );
+            }
+        }
+
+
+        function get_node_position(node_id) {
+            var positions = network.getPositions(node_id);
+            return positions[node_id];
+        }
+
+        function push_view(root_id, selected_id, position, zoom) {
+            view_stack.unshift({ root_id: root_id, selected_id: selected_id, position: position, zoom: zoom });
+        }
+
+        function pop_view() {
+            if (view_stack.length > 1) return view_stack.shift();
+            else return view_stack[0];
+        }
+
+        function zoom_to(node_id) {
+            var position = get_node_position(node_id);
+            console.log("In zoom_to:", node_id, position);
+            let zoom = 1.0;
+            network.focus(node_id, { scale: zoom });
+            zoom_position = { position: { x: 300, y: position.y } };
+            network.moveTo(zoom_position);
+            push_view(location_root.LocationID, node_id, zoom_position, zoom);
+        }
+
+        function unzoom() {
+            let last_view = pop_view();
+            location_root = last_view.root_id;
+            network.focus(last_view.selected_id, { scale: last_view.zoom });
+            network.moveTo(last_view.position);
+        }
+
+
+        //-------------------------------------------------------------
+        //
+        // show_locations
+        //
+        // This code assumes that the root of the tree is the first
+        // location in "locations"
+        //
+        //-------------------------------------------------------------
+        function show_locations(locations) {
+            console.log("In show_locations", locations);
+
+            var initialized = false;
+
+            location_root = locations[0];
+            initialize_location_map(locations);
+            // create the nodes and edges of the network
+            nodes = new vis.DataSet(create_network_nodes(locations));
+            let edges = get_edges(location_root);
+            console.log("locations", locations);
+            console.log("nodes", nodes);
+            console.log("edges", edges);
+
+            locations.forEach(function (l) {
+                compute_location_color(l);
+            })
+
+            // create a network
+            if (network === null) {
+                var container = document.getElementById('location-network');
+                var data = {
+                    nodes: nodes,
+                    edges: edges
+                };
+                var options = {
+                    autoResize: false,
+                    physics: true,
+                    layout: {
+                        hierarchical: {
+                            enabled: true,
+                            sortMethod: 'directed',
+                            parentCentralization: false,
+                            direction: 'LR'
+                        }
+                    }
+                };
+                network = new vis.Network(container, data, options);
+
+                network.on('initRedraw', function () {
+                    console.log("Handling network redraw message.  initialized = " + initialized);
+                    if (!initialized) {
+                        zoom_to(location_root.LocationID);
+                    } ;
+                    initialized = true;
+                });
+
+                network.on('click', function (properties) {
+                    properties.event.stopPropagation();
+                    let jsevent = properties.event.srcEvent;
+                    let is_ctrl_click = jsevent.ctrlKey;
+                    let is_alt_click = jsevent.altKey;
+                    let is_shift_click = jsevent.shiftKey;
+                    console.log("Network Click:", properties);
+                    if (properties.nodes.length > 0) {
+                        let location_id = properties.nodes[0];
+                        let location = location_map[location_id];
+                        console.log("    Location:", location);
+                        if (is_shift_click) {
+                            uservue.on_handle_location_doubleclick(location);
+                        }
+                        else {
+                            uservue.location_info_visible = true;
+                            uservue.selected_location = location;
+                        }
+                    }
+                });
+
+                network.on('doubleClick', function (properties) {
+                    properties.event.stopPropagation();
+                    let jsevent = properties.event.srcEvent;
+                    let is_ctrl_click = jsevent.ctrlKey;
+                    let is_alt_click = jsevent.altKey;
+                    let is_shift_click = jsevent.shiftKey;
+                    console.log("Network double click:", properties);
+                    if (properties.nodes.length > 0) {
+                        let location_id = properties.nodes[0];
+                        let location = location_map[location_id];
+                        uservue.zoom_to_location(location);
+                    }
+                });
+
+                network.on("oncontext", function (properties) {
+                    properties.event.stopPropagation();
+                    console.log("In oncontext handler", properties);
+                    if (properties.nodes.length > 0) {
+                        let location_id = properties.nodes[0];
+                        let location = location_map[location_id];
+                        console.log("    Location:", location);
+                        uservue.popup_location = location;
+                    }
+                });
+            }
+            else {
+                network.setData({
+                    nodes: nodes,
+                    edges: edges
+                })
+            }
+        }
+
+
+
+    </script>
+
+
+
+}
+
+@section Styles
+    {
+    <link href="~/visjs/vis.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        .usertable {
+            max-width: 600px;
+        }
+
+        .header {
+            font-size: 1.5em;
+        }
+
+        .em4 {
+            width: 4em;
+        }
+
+        .tinybutton {
+            width: 16px;
+            height: 20px;
+            max-height: 16px;
+            max-width: 20px;
+            font-size: xx-small;
+        }
+
+        .error-message {
+            font-weight: bold;
+            color: red;
+        }
+
+        #location-network {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid blue;
+        }
+    </style>
+
+}

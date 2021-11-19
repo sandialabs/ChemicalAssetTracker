@@ -1,0 +1,1042 @@
+﻿
+@{
+    ViewData["Title"] = "Inventory";
+    List<string> userroles = ViewData["UserRoles"] as List<string>;
+    if (userroles == null)
+    {
+        userroles = new List<string>();
+    }
+    string roles = String.Join(", ", userroles);
+    bool can_edit = userroles.Contains("admin") || userroles.Contains("edit");
+}
+
+
+<div class="banner" style="margin-bottom: 1em;">Inventory</div>
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-flex class="xs12">
+                    <!-- Spinner -->
+                    <div class="text-center loading" style="display:none" id="loading">
+                        <div style="margin-bottom:2em;">Loading inventory items ...</div>
+                        <div>
+                            <v-progress-circular :size="50"
+                                                 color="green"
+                                                 indeterminate></v-progress-circular>
+                        </div>
+                    </div>
+                    <inventory ref="inventory"
+                               v-on:begin-load="on_begin_inventory_load"
+                               v-on:end-load="on_end_inventory_load"
+                               v-on:mounted="on_inventory_mounted"
+                               v-on:location-changed="on_location_changed"
+                               v-on:action="on_inventory_action"
+                               style="height: 50px;"></inventory>
+
+                    <!-- Content -->
+                    <div id="content" class="row" style="display:none;">
+                        <div class="well" v-if="ready && inventory.length == 0">
+                            There is no data to display.  You may not have access to any of the locations in the currently selected Site.<br />
+                            You can change the current site from the Settings page or consult your System Administrator.
+                        </div>
+                        <!-- Mobile -->
+                        <div class="col s12 hide-on-large-only" style="margin-top: 4em;">
+                            <div v-for='item in inventory' style="font-size: smaller;">
+                                <div class='inventory-item'>
+                                    <div class='inventory-heading'>{{ item.ChemicalName }} ({{item.Barcode}})</div>
+                                    <div class='inventory-detail' v-on:click="show_detail(item.Barcode)">
+                                        Location: {{ item.ShortLocation }}&nbsp; &nbsp; Group: {{ get_embedded_name(item, 'Group')}}
+                                        <br> Owner: {{ get_embedded_name(item, 'Owner') }}&nbsp; &nbsp; Expires: {{get_date(item, 'ExpirationDate')}}
+                                        <br> Container Size: {{item.ContainerSize}}&nbsp; &nbsp; Remaining Qty: {{item.RemainingQuantity}}
+                                        {{item.Units}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Desktop -->
+                        <div class="col s12 show-on-large">
+                            <v-btn flat icon @@click="column_select_visible = !column_select_visible"><v-icon>view_column</v-icon></v-btn>
+                            <columnselect :visible="column_select_visible" :callback="on_columnselect_update"></columnselect>
+                            <div style='margin-right: 4em;' v-if="ready && inventory.length > 0">
+                                <table class="table-header-rotated" style='font-size: x-small; color:black; '>
+                                    <thead>
+                                        <tr>
+                                            <th style="width:80px;">Action</th>
+                                            <th v-if="visible['barcode']">Barcode</th>
+                                            <th v-if="visible['location']">Location</th>
+                                            <th v-if="visible['owner']">Owner</th>
+                                            <th v-if="visible['datein']">Date In</th>
+                                            <th v-if="visible['expiry']">Expiration<br />Date</th>
+                                            <th v-if="visible['chemical']">Chemical Name</th>
+                                            <th v-if="visible['casnumber']">CAS #</th>
+                                            <th v-if="visible['group']">Storage Group</th>
+                                            <th v-if="visible['size']">Container<br />Size</th>
+                                            <th v-if="visible['remaining']">Remaining<br />Quantity</th>
+                                            <th v-if="visible['units']">Units</th>
+                                            <th v-if="visible['state']">State</th>
+                                            <th v-if="visible['hazards']">Hazards</th>
+                                            <th v-if="visible['hazards']">COC</th>
+                                            <th v-if="visible['sds']" style="min-width:60px;">SDS</th>
+                                            <th v-if="visible['notes']">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-bind:class="item_class(item)" v-for='item in inventory' v-on:contextmenu="on_right_click(item, $event)" v-on:dblclick="on_row_dblclick(item, $event)" v-bind:class="{ active: item == selected_item } ">
+                                            <td>
+                                                <v-btn icon flat class="blue--text inline-button" title="Hazard Info" v-on:click="on_show_hazards(item)"><v-icon small>info</v-icon></v-btn>
+                                                <v-btn icon flat class="green-text inline-button" title="Edit" v-on:click="on_edit_item(item)"><v-icon small>edit</v-icon></v-btn>
+                                                <v-btn icon flat class="red--text inline-button" title="Delete" v-on:click="on_delete_item(item)"><v-icon small>delete</v-icon></v-btn>
+                                                <!--
+                                            <i class="material-icons" style="font-size: 16px; color: green;" v-on:click="on_edit_item(item)">edit</i>
+                                            <i class="material-icons" style="font-size: 16px; color: red;" v-on:click="on_delete_item(item)">delete</i>
+                                            -->
+                                            </td>
+                                            <td v-if="visible['barcode']">{{item.Barcode}}</td>
+                                            <td v-if="visible['location']">{{nice_item_location(item)}}</td>
+                                            <td v-if="visible['owner']">{{get_embedded_name(item, 'Owner')}}</td>
+                                            <td v-if="visible['datein']">{{get_date(item, 'DateIn')}}</td>
+                                            <td v-if="visible['expiry']">{{get_date(item, 'ExpirationDate')}}</td>
+                                            <td v-if="visible['chemical']">{{item.ChemicalName}}</td>
+                                            <td v-if="visible['casnumber']">{{item.CASNumber}}</td>
+                                            <td v-if="visible['group']">{{get_embedded_name(item, 'Group')}}</td>
+                                            <td v-if="visible['size']">{{item.ContainerSize}}</td>
+                                            <td v-if="visible['remaining']">{{item.RemainingQuantity}}</td>
+                                            <td v-if="visible['units']">{{item.Units}}</td>
+                                            <td v-if="visible['state']">{{item.State}}</td>
+                                            <td v-if="visible['hazards']" style="padding: 2px;">
+                                                <div style="display:inline-flex;  flex-direction: row; flex-wrap:wrap;  padding: 0; justify-content:space-around;">
+                                                    <v-img v-for="p in item_pictograms(item)"
+                                                           :src="p.src"
+                                                           v-bind:title="p.alt"
+                                                           @@click="on_pictogram_click(item, p)"
+                                                           style="width:32px; max-width: 32px; margin: 2px;" />
+                                                </div>
+                                            </td>
+                                            <td v-if="visible['hazards']"><v-icon large v-if="is_coc(item)" class="red--text" @@click="on_coc_click(item)">report</v-icon></td>
+                                            <td v-if="visible['sds']" style="min-width: 80px;">
+                                                <a v-for="(href, ix) in get_sds_hrefs(item)" :key='ix' target="SDS" v-bind:href="href"><v-icon>find_in_page</v-icon></a>
+                                            </td>
+                                            <td v-if="visible['notes']" style="min-width: 180px;">{{item.Notes}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <v-menu v-model="show_context_menu" :position-x="menu_x" :position-y="menu_y">
+                                    <v-list>
+                                        <v-list-tile-content class="blue" style="width: 100%; padding-left: 1rem;  padding-right: 1rem; font-size: larger;">
+                                            <v-list-tile-title>Item Actions</v-list-tile-title>
+                                        </v-list-tile-content>
+                                        <v-list-tile v-for="(item, index) in context_menu"
+                                                     :key="index"
+                                                     @@click="on_context_menu(item)">
+                                            <v-list-tile-title>{{ item }}</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                            </div>
+                        </div>
+                    </div>
+                </v-flex>
+            </v-container>
+        </v-content>
+
+        <v-dialog v-model="is_move_dialog_visible" width="800">
+            <v-card dark flat>
+                <v-card-text>
+                    <location ref="location" v-on:select="save_move_destination" width="100%"></location>
+                    <p>Select the destination location and then click the <i>Move</i> button</p>
+                    <v-btn @@click="on_move_item">Move</v-btn>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="is_hazardinfo_visible" width="1000">
+            <hazardinfo ref="hazardinfo" :item="hazard_item"></hazardinfo>
+        </v-dialog>
+
+
+        <itemdialog ref='itemdialog' :owners="owners" :groups="groups" :readonly="true" :debug="false"></itemdialog>
+        <confirmdialog ref="confirmdialog" width="400px"></confirmdialog>
+        <infodialog ref="infodialog" width="250px"></infodialog>
+        <pictogramdialog ref="pictogramdialog" width="300px"></pictogramdialog>
+        <cocdialog ref="cocdialog" width="300px"></cocdialog>
+    </div>
+</v-app>
+
+@section Scripts  {
+
+    <script src="~/assets/cms_data.js" asp-append-version="true"></script>
+    <script src="~/js/modernizr.js" asp-append-version="true"></script>
+    <script src="~/dist/confirmdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/location.js" asp-append-version="true"></script>
+    <script src="~/dist/locationpicker.js" asp-append-version="true"></script>
+    <script src="~/dist/searchsettings.js" asp-append-version="true"></script>
+    <script src="~/dist/itemdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/inventory.js" asp-append-version="true"></script>
+    <script src="~/dist/columnselect.js" asp-append-version="true"></script>
+    <script src="~/dist/hazardinfo.js" asp-append-version="true"></script>
+    <script src="~/js/ghs.js" asp-append-version="true"></script>
+    <script src="~/dist/pictogramdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/cocdialog.js" asp-append-version="true"></script>
+
+    <script>
+
+        var App;
+        var RootURL = utils.root_url();
+        var AjaxResult;
+        var UpdatedItem;
+        var SQLDateRegex = /(\d\d\d\d-\d\d-\d\d)/;
+        var userroles = "@roles";
+        var ExpiringDate = moment().add(60, 'days');
+        var is_user_readonly = !utils.has_role(userroles, ['admin', 'manage', 'edit']);
+        var ChemicalsOfConcern;
+        var FlagNames = ['THEFT', 'OTHERSECURITY', 'CARCINOGEN', 'HEALTHHAZARD', 'IRRITANT', 'ACUTETOXICITY', 'CORROSIVE', 'EXPLOSIVE', 'FLAMABLE', 'OXIDIZER', 'COMPRESSEDGAS', 'ENVIRONMENT', 'OTHERHAZARD'];
+
+        var inventory_component_mounted = false;
+        var have_user_home_site = false;
+
+        console.log("Roles: " + userroles);
+
+        Vue.use(Vuetify);
+
+
+        function boolean_flag_value(item, flagname) {
+            let val = item.ItemFlags[flagname];
+            let result = (val && val != ' ');
+            console.log("value of " + flagname + ' is "' + val + '"');
+            return (result);
+        }
+
+        function convert_item_flags(item) {
+            FlagNames.forEach(function (flag) {
+                item.ItemFlags[flag] = boolean_flag_value(item, flag);
+            });
+        }
+
+        function restore_item_flags(item) {
+            FlagNames.forEach(function (flagname) {
+                let flagval = item.ItemFlags[flagname];
+                if (typeof flagval == 'boolean') {
+                    item.ItemFlags[flagname] = (flagval ? 'X' : ' ');
+                }
+            });
+        }
+
+
+        function is_loading(is_true) {
+            if (is_true) {
+                $('#content').hide(0);
+                $('#loading').show(0);
+            }
+            else {
+                $('#loading').hide(0);
+                $('#content').show(0);
+            }
+        }
+
+        $(document).ready(function () {
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                'itemdialog': VueComponents.ItemEditorDialog,
+                'confirmdialog': VueComponents.ConfirmDialog,
+                'inventory': VueComponents.Inventory,
+                'columnselect': VueComponents.ColumnSelect,
+                "infodialog": VueComponents.InfoDialog,
+                "location": VueComponents.Location,
+                "hazardinfo": VueComponents.HazardInfo,
+                "pictogramdialog": VueComponents.PictogramDialog,
+                "cocdialog": VueComponents.COCDialog,
+            },
+            data: {
+                column_select_visible: false,
+                inventory_message: '',
+                inventory_message_class: 'normal',
+                ready: false,
+                is_readonly: is_user_readonly,
+                working: true,
+                error_message: "",
+                bookmark: undefined,
+                bookmark_location: undefined,
+                inventory: [],
+                settings: {},
+                have_data: false,
+                groups: [],
+                owners: [],
+                sds_files: [],
+                show_context_menu: false,
+                context_menu: [],
+                menu_x: 0,
+                menu_y: 0,
+                is_move_dialog_visible: false,
+                move_destination: undefined,
+                visible: {
+                    barcode: true,
+                    casnumber: true,
+                    chemical: true,
+                    location: true,
+                    datein: true,
+                    expiry: true,
+                    owner: true,
+                    group: true,
+                    size: true,
+                    remaining: true,
+                    state: true,
+                    notes: true,
+                    units: true,
+                    sds: true,
+                    hazards: true,
+                },
+                hazard_item: {},
+                is_hazardinfo_visible: false,
+                inventory_settings: {
+                    root_location: undefined
+                },
+                country: undefined,
+                current_site: { LocationID: 0, FullLocation: '' },
+                search_settings: { Barcode: '', CASNumber: '', Owner: '', Chemical: '', ItemsMatched: 0 },
+                selected_index: undefined,
+                selected_item: {},
+                edit_item: {
+                    ItemFlags: {}
+                },
+                units: [
+                    { value: 'cm3', text: 'Cubic centimeters (cm^3)' },
+                    { value: 'm3', text: 'Cubic meters (m^3)' },
+                    { value: 'g', text: 'Gram (g)' },
+                    { value: 'kg', text: 'Kilogram (kg)' },
+                    { value: 'L', text: 'Liter (L)' },
+                    { value: 'mg', text: 'Milligram (mg)' },
+                    { value: 'mL', text: 'Milliliter (mL)' },
+                    { value: 'ft3', text: 'Cubic feet (ft^3)' },
+                    { value: ' ', text: '(blank)' },
+                ],
+                states: [
+                    { value: 'solid', text: 'solid' },
+                    { value: 'liquid', text: 'liquid' },
+                    { value: 'gas', text: 'gas' },
+                    { value: 'other', text: 'other' },
+                ],
+            },
+            created: function () {
+                console.log("Inventory Page: Vue Created");
+            },
+            mounted: function () {
+                console.log("Inventory Page: Vue Mounted");
+                if (is_user_readonly) this.context_menu = ['View'];
+                else this.context_menu = ['Edit', 'Move', 'Duplicate', 'Dispose', 'Delete'];
+                this.refresh();
+            },
+            methods: {
+                refresh: function () {
+                    console.log("In refresh()");
+                    var self = this;
+
+                    this.working = true;
+                    is_loading(true);
+
+                    console.log("Calling getcoc")
+                    api.axios_get({
+                        url: utils.api_url("getcoc"),
+                        caller:  'refresh',
+                        verbose: true,
+                        onsuccess: function (result) {
+                            ChemicalsOfConcern = result.Data.ChemicalsOfConcern;
+                            console.log("Have COC", ChemicalsOfConcern);
+                        }
+                    });
+
+                    api.axios_get({
+                        url: utils.api_url("sdsfiles") + '/*',
+                        caller: 'refresh',
+                        verbose: true,
+                        onsuccess: function(result) {
+                            self.sds_files = result.Data.SDSFiles;
+
+                            console.log("calling fetch_settings")
+                            api.fetch_user_settings(function (result) {
+                                console.log("Have response from fetch_settings:", result);
+                                let data = result.Data;
+                                self.current_site = data.HomeLocation;
+                                self.user_home_site = data.HomeLocation;
+                                self.root_location = data.RootLocation;
+                                self.saved_current_site = self.current_site;
+                                if (data.Bookmark) self.bookmark_location = data.BookmarkLocation;
+                                if (inventory_component_mounted) self.initialize_inventory();
+                            });
+                        }
+                    });
+
+
+                    api.axios_get({
+                        caller: 'refresh',
+                        verbose: 'true',
+                        url: utils.api_url("ownersandgroups"),
+                        onsuccess: function (ajax_result) {
+                            self.owners = ajax_result.Data.owners;
+                            self.groups = ajax_result.Data.groups;
+                        }
+                    })
+                },
+
+
+                //-----------------------------------------------------
+                //
+                // inventory component events
+                //
+                //-----------------------------------------------------
+                initialize_inventory: function () {
+                    // this.user_home_site is set is set when fetch_settings returns
+                    if (this.user_home_site && this.$refs['inventory']) {
+                        let root_location = this.user_home_site;
+                        //if (this.bookmark_location) root_location = this.bookmark_location;
+                        console.log("Calling set_root_location", root_location);
+                        this.$refs['inventory'].set_root_location(root_location, this.bookmark_location);
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                },
+
+                on_inventory_mounted: function () {
+                    console.log("on_inventory_mounted", this.$refs, this.user_home_site);
+
+                    // in order for the inventory component to be able to load it's data,
+                    // it must have reached the "mounted" lifecycle and we must have a
+                    // value for this.user_home_site.
+                    inventory_component_mounted = true;
+                    this.initialize_inventory();
+                },
+
+                on_begin_inventory_load: function () {
+                    console.log("ON BEGIN LOAD");
+                },
+
+
+                on_end_inventory_load: function (inventory) {
+                    let self = this;
+                    console.log("ON END LOAD", inventory);
+                    // set the is_expiring flag in each inventory item
+                    inventory.forEach(function (i) {
+                        self.set_expiring_flag(i);
+                    });
+                    this.ready = true;
+                    this.inventory = inventory;
+                    this.$forceUpdate();
+                    is_loading(false);
+                },
+
+                on_location_changed: function (search_settings) {
+                    console.log("on_location_changed", search_settings);
+                    this.bookmark = search_settings;
+                },
+
+                on_inventory_action: function (action) {
+                    console.log("Inventory action: " + action);
+                    if (action == 'add') this.on_add_new();
+                    if (action == 'set-bookmark') {
+                        let bookmark = { Barcode: '', CASNumber: '', Owner: '', Chemical: '', RootID: this.user_home_site.LocationID };
+                        if (this.bookmark) bookmark = this.bookmark;
+                        console.log("Bookmark: ", bookmark);
+                        let url = utils.api_url("setbookmark");
+                        let postdata = bookmark;
+                        console.log("on_inventory_action - calling " + url, postdata);
+                        let self = this;
+                        api.axios_post({
+                            url: url,
+                            data: postdata,
+                            verbose: true,
+                            caller: 'on_inventory_action',
+                            onsuccess: function (result) {
+                                console.log("setbookmark result", result);
+                                self.notify("Bookmark", result.Message);
+                            }
+                        });
+                    }
+                },
+
+                on_columnselect_update: function (op, column_name, value) {
+                    console.log("on_column_select", op, column_name, value);
+                    if (op == 'update') {
+                        this.visible[column_name] = value;
+                    }
+                },
+
+                process_inventory_items: function () {
+                    this.inventory.forEach(function (x) {
+                        x.Class = function (i, color) {
+                            if (x.DisplayFlags[i] != ' ') return color;
+                            else return 'noclass';
+                        };
+                    });
+                },
+
+                get_embedded_name: function (item, prop) {
+                    if (item[prop]) return item[prop].Name;
+                    else return null;
+                },
+
+                get_date: function (item, prop) {
+                    if (item[prop]) return utils.format_date(item[prop]);
+                    else return null;
+                },
+
+                flag_class: function (item, color) {
+                    return color;
+                },
+
+                item_class: function (item) {
+                    if (item.DisposeFlag) return "disposing";
+                    if (item.is_expiring) return "expiring";
+                },
+
+                set_expiring_flag: function (item) {
+                    item.is_expiring = moment(item.ExpirationDate).isBefore(ExpiringDate);
+                },
+
+                item_pictograms: function (item) {
+                    let result = [];
+                    let flags = item.ItemFlags;
+                    if (flags.HEALTHHAZARD != ' ') result.push({ name:"health_hazard.png", src: '../../assets/health_hazard.png', alt: 'Health Hazard' });
+                    if (flags.IRRITANT != ' ') result.push({ name:"irritant.png",  src: '../../assets/irritant.png', alt: 'Irritant' });
+                    if (flags.ACUTETOXICITY != ' ') result.push({ name:"acute_toxicity.png", src: '../../assets/acute_toxicity.png', alt: 'Skull and Crossbones' });
+                    if (flags.CORROSIVE != ' ') result.push({ name:"corrosive.png", src: '../../assets/corrosive.png', alt: 'Corrosive' });
+                    if (flags.EXPLOSIVE != ' ') result.push({ name:"explosive.png", src: '../../assets/explosive.png', alt: 'Explosive' });
+                    if (flags.FLAMABLE != ' ') result.push({ name:"flamable.png", src: '../../assets/flamable.png', alt: 'Flamable' });
+                    if (flags.OXIDIZER != ' ') result.push({ name:"oxidizer.png", src: '../../assets/oxidizer.png', alt: 'Oxidizer' });
+                    if (flags.COMPRESSEDGAS != ' ') result.push({ name:"compressed_gas.png", src: '../../assets/compressed_gas.png', alt: 'Gas Cylinder' });
+                    if (flags.ENVIRONMENT != ' ') result.push({ name:"environmental.jpg", src: '../../assets/environmental.jpg', alt: 'Environment Hazard' });
+                    return result;
+                },
+
+                is_coc: function (item) {
+                    if (ChemicalsOfConcern) {
+                        let val = item.ItemFlags.OTHERSECURITY;
+                        if (typeof val == 'string') val = (val == 'X');
+                        return (val || ChemicalsOfConcern[item.CASNumber]);
+                    }
+                },
+
+                on_right_click: function (item, ev) {
+                    console.log("on_right_click", item, ev);
+                    this.selected_item = item;
+                    this.menu_x = ev.clientX;
+                    this.menu_y = ev.clientY;
+                    if (is_user_readonly) this.context_menu = ['View'];
+                    else {
+                        if (item.DisposeFlag) this.context_menu = ['Edit', 'Move', 'Duplicate', 'Cancel Disposal', 'Delete'];
+                        else this.context_menu = ['Edit', 'Move', 'Duplicate', 'Dispose', 'Delete'];
+                    }
+                    this.show_context_menu = true;
+                    ev.preventDefault();
+                },
+
+                on_context_menu: function (op) {
+                    console.log("on_context_menu", op, this.selected_item.Barcode);
+                    if (op == 'Edit' || op == 'View') this.on_edit_item(this.selected_item);
+                    if (op == 'Duplicate') this.on_add_new(this.selected_item);
+                    if (op == 'Delete') this.on_delete_item(this.selected_item);
+                    if (op == 'Move') {
+                        this.move_destination = undefined;
+                        this.is_move_dialog_visible = true;
+                    }
+                    if (op == 'Dispose') {
+                        this.selected_item.DisposeFlag = true;
+                        this.save_edits(this.selected_item);
+                    }
+                    if (op == 'Cancel Disposal') {
+                        this.selected_item.DisposeFlag = false;
+                        this.save_edits(this.selected_item);
+                    }
+                },
+
+                save_move_destination: function (loc) {
+                    console.log("save_move_destination", loc.Path);
+                    this.move_destination = loc;
+
+                },
+
+                on_move_item: function () {
+                    console.log("In on_move_item", this.selected_item);
+                    if (this.move_destination) {
+                        let destination = this.move_destination;
+                        this.move_destination = undefined;
+                        this.is_move_dialog_visible = false;
+                        let self = this;
+                        let url = utils.api_url("moveitem") + "/" + this.selected_item.InventoryID + "/" + destination.LocationID;
+                        this.selected_item = undefined;
+                        console.log("Calling " + url);
+                        api.axios_get({
+                            url: url,
+                            verbose: true,
+                            caller: "on_move_item",
+                            onsuccess: function (ajax_result) {
+                                console.log("om_move_item succeeded", ajax_result);
+                                let updated_item = ajax_result.Data.UpdatedItem;
+                                let barcode = updated_item.Barcode;
+                                let target = self.inventory.filter(function (x) { return (x.Barcode == barcode) })[0]
+                                if (target) {
+                                    target.Location = updated_item.Location;
+                                    target.LocationId = updated_item.LocationID;
+                                    console.log(target);
+                                }
+                            }
+                        });
+                    }
+                },
+
+                on_edit_item: function (item) {
+                    this.error_message = "";
+                    //console.log("on_row_dblclick", item, ev);
+                    this.selected_item = item;
+                    let config = {
+                        header: "Edit Inventory Item",
+                        item: item,
+                        readonly: is_user_readonly,
+                        root_location_id: this.user_home_site.LocationID
+                    };
+                    let self = this;
+                    this.$refs['itemdialog'].open(config, function (updated_item) {
+                        self.save_edits(updated_item);
+                    });
+                },
+
+                on_delete_item: function (item) {
+                    let self = this;
+                    this.$refs['confirmdialog'].open("Do you want to delete " + item.Barcode + '?', 'Delete Item', function (result) {
+                        console.log("Delete " + result);
+                        if (result == 'confirmed') {
+                            api.axios_delete({
+                                url: utils.api_url("delete_item"),
+                                id: item.InventoryID,
+                                caller: 'on_delete_item',
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    console.log("AjaxResult:", ajax_result);
+                                    self.$refs['inventory'].refresh();
+                                },
+                                onfailure: function (ajax_result) {
+                                    self.error_message = ajax_result.Message;
+                                }
+                            });
+                        }
+                    });
+                },
+
+                on_show_hazards: function (item) {
+                    this.hazard_item = item;
+                    this.is_hazardinfo_visible = true;
+                },
+
+                on_row_dblclick: function (item, ev) {
+                    this.error_message = "";
+                    //console.log("on_row_dblclick", item, ev);
+                },
+
+                on_add_new: function (dup) {
+                    console.log("on_add_new");
+                    this.error_message = "";
+                    this.selected_item = undefined;
+                    let self = this;
+                    let new_item = {
+                        InventoryID: 0,
+                        Barcode: "",
+                        CASNumber: "",
+                        ChemicalName: "",
+                        ContainerSize: null,
+                        DateIn: null,
+                        ExpirationDate: null,
+                        ItemFlags: {},
+                        Flags: "                ",
+                        DisplayFlags: "                ",
+                        Group: "",
+                        GroupID: null,
+                        InventoryID: 0,
+                        InventoryStatusID: null,
+                        InventoryStatus: null,
+                        Location: null,
+                        LocationID: null,
+                        LocationName: null,
+                        Notes: null,
+                        Owner: null,
+                        OwnerID: null,
+                        RemainingQuantity: null,
+                        SDS: "",
+                        State: "",
+                        StockCheckLocation: "",
+                        Units: "",
+                        date_in: moment().format('YYYY-MM-DD'),
+                        expiry: null
+                    };
+                    let config = {
+                        header: "New Inventory Item",
+                        item: new_item,
+                        readonly: false,
+                        root_location_id: this.current_site.LocationID
+                    };
+                    if (dup) {
+                        new_item.ChemicalName = dup.ChemicalName;
+                        new_item.CASNumber = dup.CASNumber;
+                        new_item.ContainerSize = dup.ContainerSize;
+                        new_item.ItemFlags = dup.ItemFlags;
+                        new_item.Flags = dup.Flags;
+                        new_item.DisplayFlags = dup.DisplayFlags;
+                        new_item.SDS = dup.SDS;
+                        new_item.State = dup.State;
+                        new_item.Units = dup.Units;
+                    }
+                    this.$refs['itemdialog'].open(config, function (updated_item) {
+                        console.log("update callback", updated_item);
+                        self.save_edits(updated_item);
+                    });
+                        @*this.edit_item.Class = function (i, color) {
+                            console.log("edit_item Class", this);
+                            if (this.DisplayFlags[i] != ' ') return color;
+                            else return 'noclass';
+                        };
+                        convert_item_flags(this.edit_item);*@
+                },
+
+                on_pictogram_click: function (item, pictogram) {
+                    console.log("on_pictogram_click", item, pictogram);
+                    this.$refs.pictogramdialog.open(pictogram.name);
+                },
+
+                on_coc_click: function (item) {
+                    console.log("on_coc_click", item);
+                    this.$refs.cocdialog.open(item);
+                },
+
+                save_edits: function (item) {
+                    console.log("In save_edits", item);
+                    UpdatedItem = item;
+                    var item_index = -1;
+                    this.error_message = "";
+                    restore_item_flags(item);
+                    item.Class = function (i, color) {
+                        if (item.DisplayFlags[i] != ' ') return color;
+                        else return 'noclass';
+                    };
+                    if (item.InventoryID > 0) {
+                        // use splice so that Vue detects the update
+                        let ix = this.locate_item(item.InventoryID);
+                        if (ix >= 0) {
+                            console.log("Updating inventory item # " + ix);
+                            this.inventory.splice(ix, 1, item);
+                            item_index = ix;  // we will replace this after saving
+                        }
+                        this.$forceUpdate();
+                    }
+                    let url = utils.api_url("update_item");
+                    console.log("Calling " + url);
+                    console.log("Calling with item:", item);
+                    let self = this;
+                    api.axios_post({
+                        caller: 'save_edits',
+                        verbose: true,
+                        url: url,
+                        data: item,
+                        onsuccess: function (ajax_result) {
+                            console.log("AjaxResult:", ajax_result)
+                            var updated_item = ajax_result.Data.UpdatedItem;
+                            self.set_expiring_flag(updated_item);
+                            //console.log("UpdatedItem:", updated_item);
+                            // add item method the Vue code uses
+                            updated_item.Class = function (i, color) {
+                                if (this.DisplayFlags[i] != ' ') return color;
+                                else return 'noclass';
+                            };
+                            convert_item_flags(updated_item);
+                            if (item_index < 0) {
+                                self.inventory.unshift(updated_item);
+                            }
+                            else {
+                                self.inventory.splice(item_index, 1, updated_item);
+                            }
+                            self.notify("Store Item", "Item saved");
+                        },
+                        onfailure: function (ajax_result) {
+                            self.notify("Store Item", ajax_result.Message);
+                        }
+                    });
+                    //axios({
+                    //    method: 'POST',
+                    //    url: url,
+                    //    data: item
+                    //}).then(function (response) {
+                    //    console.log("Response:", response);
+                    //    AjaxResult = response.data;
+                    //    if (AjaxResult.Success) {
+                    //        var updated_item = AjaxResult.Data.UpdatedItem;
+                    //        self.set_expiring_flag(updated_item);
+                    //        //console.log("UpdatedItem:", updated_item);
+                    //        // add item method the Vue code uses
+                    //        updated_item.Class = function (i, color) {
+                    //            if (this.DisplayFlags[i] != ' ') return color;
+                    //            else return 'noclass';
+                    //        };
+                    //        convert_item_flags(updated_item);
+                    //        if (item_index < 0) {
+                    //            self.inventory.unshift(updated_item);
+                    //        }
+                    //        else {
+                    //            self.inventory.splice(item_index, 1, updated_item);
+                    //        }
+                    //        console.log("SAVED");
+                    //    }
+                    //    else self.error_message = AjaxResult.Message;
+                    //}).catch(function (response) {
+                    //    console.log("Response:", response);
+                    //});
+                },
+
+                show_detail: function (barcode) {
+                    let page_url = utils.mvc_page_url('Home', 'InventoryDetail') + '/' + barcode;
+                    document.location = page_url;
+                },
+                get_sds_hrefs: function (item) {
+                    if (item.SDS == null || item.SDS.length == 0) {
+                        //console.log("get_sds_hrefs - " + item.Barcode + " has no SDS value");
+                        let target = item.CASNumber + ".";
+                        // find all the SDS files that start with "<casnumber>."
+                        let matches = this.sds_files.filter(function(x) {
+                            return(x.indexOf(target) == 0);
+                        });
+                        //console.log("get_sds_hrefs matches", matches);
+                        if (matches.length > 0) {
+                            let hrefs = matches.map(function(m) { return("/SDS/" + m); } );
+                            return hrefs;
+                        }
+                        return ([]);
+                    }
+                    lowref = item.SDS.toLowerCase();
+                    // backward compatibility for older SDS file format
+                    if (lowref.indexOf('msds_') == 0) return ["/SDS/" + item.SDS.substr(5)];
+                    // user-specified external page
+                    if (lowref.indexOf('http') == 0) return [item.SDS];
+                    // gemerate local ref
+                    else return ["/SDS/" + item.SDS];
+                },
+
+                locate_item: function (inventory_id) {
+                    for (let i = 0; i < this.inventory.length; i++) {
+                        let item = this.inventory[i];
+                        if (item.InventoryID == inventory_id) return i;
+                    }
+                    return -1;
+                },
+                nice_location: function (location) {
+                    if (location.LocationLevel == 0) return location.Name;
+                    let ix = location.FullLocation.indexOf('/', 1);
+                    if (ix > 0) return location.FullLocation.substr(ix + 1);
+                    return location.FullLocation;
+                },
+
+                nice_item_location: function (item) {
+                    let prefix = this.current_site.FullLocation;
+                    let full = item.Location.FullLocation;
+                    if (full.indexOf(prefix) == 0) return item.Location.FullLocation.substr(prefix.length + 1);
+                    else return full;
+                },
+
+                notify: function (title, text) {
+                    this.$refs['infodialog'].open(text, title);
+                },
+            }
+        });
+
+
+    </script>
+
+
+}
+
+@section Styles {
+
+    <style>
+
+        .loading {
+            width: 100vw;
+            height: 80vh;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .inline-button {
+            margin: 0;
+            padding: 0;
+            display: inline;
+            width: 20px;
+            height: 20px;
+        }
+
+        .inventory-item {
+            padding: 4px;
+            border: 2px solid gray;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .inventory-heading {
+            font-weight: bold;
+            background-color: lavender;
+            padding: 1% 0;
+        }
+
+        .inventory-detail {
+            font-weight: normal;
+            background-color: transparent;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        .normal {
+            background-color: transparent;
+        }
+
+        .disposing {
+            background-color: lightpink;
+        }
+
+        .expiring {
+            background-color: yellow;
+        }
+
+        .red {
+            color: white;
+            background-color: red;
+            border: 1px solid gray;
+        }
+
+        .light_red {
+            color: black;
+            background-color: lightpink;
+        }
+
+        .blue {
+            color: white;
+            background-color: blue;
+            border: 1px solid gray;
+        }
+
+        .light_blue {
+            color: black;
+            background-color: lightblue;
+        }
+
+
+        .yellow {
+            color: black;
+            background-color: yellow;
+            border: 1px solid gray;
+            width: 12px;
+        }
+
+        .light_yellow {
+            color: black;
+            background-color: lightgoldenrodyellow;
+        }
+
+
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+
+        tr.attributes {
+            width: 100%;
+            padding: 4px;
+        }
+
+        td.attribute {
+            width: 33%;
+            padding: 4px;
+        }
+
+        td.cwc {
+            width: 33%;
+            padding-left: 4px;
+            padding-top: 4px;
+            padding-bottom: 0px;
+        }
+
+        .field20 {
+            width: 20em;
+        }
+
+        .field11 {
+            width: 11em;
+        }
+
+        .field4 {
+            width: 4em;
+        }
+
+        .field2 {
+            width: 2em;
+        }
+
+        .active {
+            background-color: #EEE;
+        }
+
+        .security-check {
+            width: 5px !important;
+            max-width: 5px !important;
+        }
+
+        .health-check {
+            width: 20px
+        }
+
+        .physical-check {
+            width: 20px
+        }
+
+        th {
+            text-align: center;
+        }
+
+        tbody tr {
+            background-color: transparent;
+        }
+
+        .table-header-rotated {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .csstransforms .table-header-rotated td {
+            width: 30px;
+        }
+
+        .no-csstransforms .table-header-rotated th {
+            padding: 5px 10px;
+        }
+
+        .table-header-rotated td {
+            text-align: center;
+            padding: 10px 5px;
+            border: 1px solid #ccc;
+        }
+
+        .table-header-rotated th.row-header {
+            padding: 0 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+}

@@ -1,0 +1,558 @@
+﻿
+@{
+    ViewData["Title"] = "UserManagement";
+    string username = ViewData["UserName"] as string;
+}
+
+
+
+<div class="banner">Locations Management</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout row wrap v-show="status == 'loading'">
+                    <div class='headline' style='width: 100%'>
+                        Loading locations ...
+                    </div>
+                </v-layout>
+                <v-layout row wrap v-show="status == 'ready'">
+                    <v-flex sm12 md6  v-show="locations">
+                        <p>
+                            Use the trangles at the left of each location name to expand or collapse the location.
+                            To view or change a location, click on the location name.
+                        </p>
+                        <v-treeview :items="location_tree">
+                            <template slot="label" slot-scope="{ item }">
+                                <span flat @@click.stop="on_location_click(item, $event)">{{item.name}}</span>
+                            </template>
+                        </v-treeview>
+                    </v-flex>
+                    <v-flex  sm12 md6 v-show="location_info_visible">
+                        <div class="card grey lighten-2" style="height: 300px;">
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p class="card-title">Location Information</p>
+                                    <hr />
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" style="width: 50%;" id="location-name" placeholder="Location name" v-model="selected_location.Name" />
+                                    <a href="#" v-on:click="on_rename_location(selected_location)">Rename</a>
+                                </div>
+                                <div>
+                                    <span>Full Name: </span>
+                                    <span>{{selected_location.FullLocation}}</span>
+                                </div>
+                                <div>
+                                    <span>Location ID: </span>
+                                    <span>{{selected_location.LocationID}}</span>
+                                </div>
+                                <div>
+                                    <span>Accessible: </span>
+                                    <span>n/a</span>
+                                </div>
+                                <div>
+                                    <span>Access type: </span>
+                                    <span>n/a</span>
+                                </div>
+                            </div> <!-- card-content -->
+                            <div class="card-action">
+                                <a href="#" class="action-link" v-on:click="on_add_child(selected_location)" v-if="selected_location.LocationLevel< 6">Add {{child_level_name()}}</a>
+                                <a href="#" class="action-link" v-on:click="on_delete_location(selected_location)">Delete</a>
+                            </div>
+                            <div id="status-message" class="error-message" style="min-height: 2em; margin-top: 1em;">&nbsp;</div>
+                            <div v-show="location_info_visible"  style="margin-top: 1em;">
+                                <p>To rename the selected location, type its new name in the Location Name field and click <i>Rename</i></p>
+                                <p>To delete a location, click the <i>DELETE</i> button.  Note that only locations that have no child locations or
+                                inventory items can be deleted.</p>
+                            </div>
+                        </div> <!-- card -->
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+
+@section Scripts
+    {
+
+    <script src="~/visjs/vis.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        $(document).ready(function () {
+            console.log("READY");
+            $('select').formSelect();
+        });
+        var status_timer;
+        var saved_user = {};
+
+        // view_stack tracks changing network views:
+        //   root: root location
+        //   selected: selected location
+        //   view: { positions: { x: X, y: y} , zoom: Z }
+        var view_stack = [];
+
+        function has_value(x) {
+            if (typeof x == 'string') return x.length > 0;
+            if (x == null) return false;
+            return x;
+        }
+
+        function show_message(text, duration_ms) {
+            console.log("show_message", text, duration_ms);
+            if (status_timer) {
+                clearTimeout(status_timer);
+            }
+            if (!duration_ms) duration_ms = 3000;
+            $('#status-message').text(text);
+            status_timer = setTimeout(function () { $('#status-message').text(''); }, duration_ms);
+        }
+
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'textinputdialog': VueComponents.TextInputDialog,
+                'confirmdialog': VueComponents.ConfirmDialog,
+            },
+            data: {
+                status: 'loading',
+                users: [],
+                location_tree: [],
+                selected_user: {
+                    UserName: "Select a user ...",
+                    Email: "",
+                    Password: '',
+                    IsAdmin: false,
+                    IsEditor: false,
+                    IsViewer: true,
+                    IsNew: true,
+                    IsChanged: true,
+                },
+                selected_location: {
+                    LocationLevel: 0,
+                },
+                popup_location: {},
+                error_message: '',
+                changed: false,
+                user_access_visible: false,
+                location_info_visible: false,
+                selected_user: {},
+                new_location_name: "",
+                level_names: ['', '', '', '', '', '', ''],
+                confirm_options: {
+                    prompt: "Do you want to continue?",
+                    yes: "Yes",
+                    no: "No",
+                    on_yes: function () { console.log("Confirmed"); },
+                    on_no: function () { console.log("Not confirmed"); },
+                }
+            },
+            methods: {
+
+
+                on_location_click: function (item, ev) {
+                    if (this.selected_location.LocationID == item.id) {
+                        // item has already been selected
+                        this.on_change_access(item, ev);
+                    }
+                    else {
+                        // select a new item
+                        this.selected_location = this.location_map[item.id];
+                        this.location_info_visible = true;
+                    }
+                },
+
+
+
+
+                build_location_tree: function (loc) {
+                    let self = this;
+                    let result = { name: loc.Name, type: 'location', id: loc.LocationID, access: loc.Access }
+                    let children = this.locations.filter(function (x) { return (x.ParentID == loc.LocationID); });
+                    result.children = children.map(function (x) { return self.build_location_tree(x); });
+                    return result;
+                },
+
+
+                on_delete_location: function (location) {
+                    let self = this;
+                    this.$refs['confirmdialog'].open('Delete location "' + location.FullLocation + '"?', 'Delete Location', function (response) {
+                        console.log("In delete callback: " + response);
+                        if (response == 'confirmed') {
+                            api.axios_delete({
+                                url: "/api/deletelocation/" + location.LocationID,
+                                caller: "on_delete_location",
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    show_message(ajax_result.Message);
+                                    self.refresh_network(ajax_result.Data.locations);
+                                },
+                                onfailure: function (ajax_result) { show_message(ajax_result.Message); },
+                            });
+                        }
+                    });
+                },
+
+                // called when user clicks AddXXX button
+                on_add_child: function (parent) {
+                    let parent_level = parent.LocationLevel;
+                    let child_level = parent_level + 1;
+                    let child_level_name = this.level_names[child_level];
+                    let self = this;
+                    //let dig = this.$refs['textinputdialog'];
+                    this.$refs["textinputdialog"].open("Enter " + child_level_name + " name", "New " + child_level_name, function (op, name) {
+                        if (op == 'save') {
+                            console.log("Create new " + child_level_name + " named " + name);
+                            self.on_create_location(parent, name);
+                        }
+                    });
+                },
+
+                on_create_location: function (parent, location_name) {
+                    let self = this;
+                    if (location_name.length > 0) {
+                        let postdata = { ParentID: parent.LocationID, ChildLocationNames: location_name };
+                        console.log("on_create_location", postdata);
+                        api.axios_post({
+                            url: '/api/addlocations',
+                            caller: 'on_create_location',
+                            verbose: true,
+                            id: '',
+                            data: postdata,
+                            onsuccess: function (ajax_result) {
+                                show_message(ajax_result.Message);
+                                //self.refresh_network(ajax_result.Data.locations);
+                                self.refresh();
+                            },
+                            onfailure: function (ajax_result) {
+                                show_message(ajax_result.Message);
+                            }
+                        });
+                    }
+                },
+
+                on_rename_location: function (location) {
+                    let self = this;
+                    api.axios_post({
+                        url: '/api/updatelocation',
+                        caller: 'on_rename_location',
+                        verbose: true,
+                        id: '',
+                        data: location,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            update_location(location);
+                        }
+                    });
+                },
+
+
+
+                on_confirm_response: function (is_confirmed) {
+                    $('#confirm-dialog').modal('hide');
+                    if (is_confirmed && this.confirm_options.on_yes) this.confirm_options.on_yes();
+                    if (!is_confirmed && this.confirm_options.on_no) this.confirm_options.on_no();
+                },
+
+                child_level_name: function () {
+                    if (this.selected_location) {
+                        return this.level_names[this.selected_location.LocationLevel + 1];
+                    }
+                },
+
+                confirm: function (options) {
+                    let std_options = {
+                        prompt: "Do you want to continue?",
+                        yes: "Yes",
+                        no: "No",
+                        on_yes: function () { console.log("Confirmed"); },
+                        on_no: function () { console.log("Not confirmed"); },
+                    };
+                    this.confirm_options = std_options;
+                    if (options.prompt) this.confirm_options.prompt = options.prompt;
+                    if (options.yes) this.confirm_options.yes = options.yes;
+                    if (options.no) this.confirm_options.no = options.no;
+                    this.confirm_options.on_yes = options.on_yes;
+                    this.confirm_options.on_no = options.on_no;
+
+                    $('#confirm-dialog').modal('show');
+                },
+
+                refresh: function () {
+                    let url = utils.mvc_page_url("Admin", "MyUsers");
+                    let self = this;
+
+                    // The username that we are working on will be in the URL.
+                    // We will use the currently selected user if not specified
+                    let username = "@username";
+                    console.log("In refresh: " + username);
+                    api.axios_get({
+                        url: '/api/getuserlocationsubtree/' + username + '/0/99',
+                        caller: 'refresh',
+                        verbose: true,
+                        id: username,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            if (ajax_result.Success) {
+                                console.log("Data", ajax_result.Data);
+                                if (true) {
+                                    self.locations = ajax_result.Data.subtree;
+                                    self.level_names = ajax_result.Data.levelnames;
+                                    console.log("locations",self.locations)
+                                    self.location_map = {};
+                                    self.locations.forEach(function (x) {
+                                        self.location_map[x.LocationID] = x;
+                                    });
+                                    self.root_location = self.locations[0];
+                                    self.location_tree.length = 0;
+                                    self.location_tree.push(self.build_location_tree(self.root_location));
+                                    self.selected_location.LocationID = -1;
+                                    self.status = 'ready';
+                                    //show_locations(self.locations);
+                                }
+                            }
+                        }
+                    });
+
+                },
+
+                refresh_network: function (locations) {
+                    this.locations = locations;
+                    console.log("refresh_network", this.locations);
+                    show_locations(this.locations);
+                    console.log("refresh complete")
+                },
+
+                get_descendents: function (loc, depth) {
+                    if (typeof loc === 'number') loc = location_map[loc];
+                    console.log("Processing ", loc.LocationID, loc.Name);
+                    if (depth > 0) {
+                        var result = loc.children.slice(0);
+                        var self = this;
+                        loc.children.forEach(function (l) {
+                            result.push.apply(result, self.get_descendents(l, depth - 1));
+                        })
+                        return result;
+                    }
+                    else return ([loc]);
+                    return result;
+                },
+
+                show_subtree: function (root_node_id, depth) {
+
+                },
+
+
+
+
+            },
+            created: function () {
+                this.locations = null;
+
+                this.refresh();
+            }
+        });
+
+        window.onresize = function () {
+
+
+        }
+
+        //#############################################################
+        //
+        // Permission Network
+        //
+        //#############################################################
+
+        const DENY = 0;
+        const ALLOW = 1;
+        const UNDEFINED = 2;
+
+        var network = null;
+        var nodes = null;
+        var location_root = null;
+        var location_map = {};  // maps location id to location object
+        var node_map = {};      // maps location id to node object
+        var level_names = ['', 'Site:', 'Bldg', 'Room:', 'Shelf:'];
+
+        function initialize_location_map(locations) {
+            location_map = {};
+            locations.forEach(function (loc) {
+                location_map[loc.LocationID] = loc;
+            });
+            locations.forEach(function (loc) {
+                let children = locations.filter(function (x) { return x.ParentID === loc.LocationID; });
+                //console.log(loc.FullLocation + " has " + children.length + ' children');
+                loc['children'] = children;
+            });
+        }
+
+        function format_loc(loc) {
+            return "Location " + loc.LocationID + ": " + loc.Name + ' (' + loc.Path + ')'
+        }
+
+
+
+        function find_network_node(location) {
+            if (typeof location == 'number') location = location_map[location];
+            return location.network_node;
+        }
+
+        function set_location_color(location, fg, bg) {
+            if (typeof location == 'number') location = location_map[location];
+            let node = location.network_node;
+            node.color.background = bg;
+            node.color.highlight.background = bg;
+            node.color.highlight.border = fg;
+            node.font.color = fg;
+            nodes.update(location.network_node);
+        }
+
+        function update_location(location) {
+            if (typeof location == 'number') location = location_map[location];
+            let node = location.network_node;
+            console.log("update_location", location);
+            node.label = location.Name;
+            nodes.update(node);
+        }
+
+
+        function dump_loc(id) {
+            let loc = location_map[id];
+            if (loc) {
+                console.log(format_loc(loc));
+                loc.children.forEach(function (child) { console.log("    " + format_loc(child)); } );
+            }
+        }
+
+
+        function get_node_position(node_id) {
+            var positions = network.getPositions(node_id);
+            return positions[node_id];
+        }
+
+        function push_view(root_id, selected_id, position, zoom) {
+            view_stack.unshift({ root_id: root_id, selected_id: selected_id, position: position, zoom: zoom });
+        }
+
+        function pop_view() {
+            if (view_stack.length > 1) return view_stack.shift();
+            else return view_stack[0];
+        }
+
+        function zoom_to(node_id) {
+            var position = get_node_position(node_id);
+            console.log("In zoom_to:", node_id, position);
+            let zoom = 1.0;
+            network.focus(node_id, { scale: zoom });
+            zoom_position = { position: { x: 300, y: position.y } };
+            network.moveTo(zoom_position);
+            push_view(location_root.LocationID, node_id, zoom_position, zoom);
+        }
+
+        function unzoom() {
+            let last_view = pop_view();
+            location_root = last_view.root_id;
+            network.focus(last_view.selected_id, { scale: last_view.zoom });
+            network.moveTo(last_view.position);
+        }
+
+
+        //-------------------------------------------------------------
+        //
+        // show_locations
+        //
+        // This code assumes that the root of the tree is the first
+        // location in "locations"
+        //
+        //-------------------------------------------------------------
+        function show_locations(locations) {
+            console.log("In show_locations", locations);
+
+            var initialized = false;
+
+            location_root = locations[0];
+            initialize_location_map(locations);
+            // create the nodes and edges of the network
+            nodes = new vis.DataSet(create_network_nodes(locations));
+            let edges = get_edges(location_root);
+            console.log("locations", locations);
+            console.log("nodes", nodes);
+            console.log("edges", edges);
+
+            locations.forEach(function (l) {
+                compute_location_color(l);
+            })
+
+        }
+
+
+
+    </script>
+
+
+
+}
+
+@section Styles
+    {
+    <link href="~/visjs/vis.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        .action-link {
+            color: black !important;
+        }
+
+        .inherited_visible {
+            color: black;
+            background-color: palegreen;
+        }
+
+        .inherited_hidden {
+            color: black;
+            background-color: pink;
+        }
+
+        .usertable {
+            max-width: 600px;
+        }
+
+        .header {
+            font-size: 1.5em;
+        }
+
+        .em4 {
+            width: 4em;
+        }
+
+        .tinybutton {
+            width: 16px;
+            height: 20px;
+            max-height: 16px;
+            max-width: 20px;
+            font-size: xx-small;
+        }
+
+        .error-message {
+            font-weight: bold;
+            color: red;
+        }
+
+        #location-network {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid blue;
+        }
+    </style>
+
+}

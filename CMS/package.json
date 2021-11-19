@@ -1,0 +1,40 @@
+{
+    "name": "cat",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "watch": "webpack --mode development -w",
+        "bundle": "webpack --mode development",
+        "bundle.dev": "webpack --mode development",
+        "bundle.prod": "webpack --mode production",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/vis": "^4.21.19",
+        "axios": "^0.22.0",
+        "material-design-icons-iconfont": "^5.0.1",
+        "moment": "^2.24.0",
+        "numeral": "^2.0.6",
+        "promise-polyfill": "^8.1.0",
+        "ulog": "^1.1.0",
+        "vis": "^4.21.0-EOL",
+        "vis-network": "^7.6.4",
+        "vis-util": "^4.0.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.4",
+        "@babel/preset-env": "^7.4.4",
+        "babel-loader": "^8.0.6",
+        "css-loader": "^2.1.1",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.7.5",
+        "vue-loader": "^15.7.0",
+        "vue-template-compiler": "^2.6.10",
+        "webpack": "^4.32.0",
+        "webpack-cli": "^3.3.2"
+    }
+}

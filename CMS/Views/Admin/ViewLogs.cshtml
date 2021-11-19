@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "ViewLogs";
+}
+
+<div class="banner">System Logs</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-flex class="xs12">
+                    <grid ref='grid' :config="grid_config" :rowdata="logentries" style="height: 100%;"></grid>
+                </v-flex>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+@*
+<v-content>
+    <v-container fluid grid-list-md id="my-container" style="display:none;">
+        <h2>System Logs</h2>
+
+        <v-layout row wrap>
+            <v-flex grow d-flex align-center>
+                <grid ref='grid' :config="grid_config" :rowdata="logentries" style="height: 100%;"></grid>
+            </v-flex>
+        </v-layout>
+    </v-container>
+</v-content>
+*@
+
+@section Scripts {
+
+    <script src="~/dist/grid.js"></script>
+
+    <script>
+
+        var vueapp = new Vue(
+            {
+                el: '#app',
+                components: {
+                    'grid': VueComponents.Grid,
+                },
+                data: {
+                    drawer: false,
+                    page_title: "Log Viewer",
+                    logentries: [],
+                    grid_config: {
+                        height: "60vh",
+                        filter: true,
+                        rowkey: 'InventoryID',
+                        columns: [
+                            { header: "Date/Time", field: "EntryDateTime", align: 'left', width: 150, type: 'datetime', filtered: true },
+                            { header: "Level", field: "MessageLevel", align: 'center', width: 50, filtered: true },
+                            { header: "User", field: "Login", width: 120, align: 'left', filtered: true },
+                            { header: "Category", field: "Category", width: 200, align: 'left', filtered: true },
+                            { header: "Description", field: "Text", width: 500, align: 'left', filtered: true }
+                        ],
+                    },
+
+                },
+                methods: {
+                    fetch_data: function () {
+                        console.log("In fetch_data");
+                        let self = this;
+                        api.axios_get({
+                            url: "/api/logentries",
+                            verbose: true,
+                            caller: "ViewLogs.fetch_data",
+                            onsuccess: function (result) {
+                                console.log("Have log entries:", result);
+                                self.logentries = result.Data.entries;
+                                $('#my-container').show(0);
+                            }
+                        });
+                    }
+                },
+                created: function () {
+                    this.fetch_data();
+                }
+            }
+        );
+
+    </script>
+}
+

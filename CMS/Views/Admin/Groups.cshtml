@@ -1,0 +1,256 @@
+﻿
+@{
+    ViewData["Title"] = "Groups";
+}
+
+<div class="banner">Manage Groups</div>
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-flex class="xs12 lg6">
+                    <v-card dark flat class="noborder" style="height: 70vh; overflow-y:auto;">
+                        <v-card-title class="headline">
+                            Groups
+                            <span style="font-weight: bold; color: yellow; font-size: medium; margin-left: 1em;">{{status_text}}</span>
+                            <v-btn flat small text v-show="is_changed" v-on:click="save_changes()">Save Changes</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn small text icon v-on:click="add_group('_NEW GROUP')"><v-icon small>add_circle</v-icon></v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-text-field prepend-icon="clear"
+                                          v-on:click:prepend="on_delete(group)"
+                                          v-for="group in groups"
+                                          v-model="group.Name"
+                                          v-on:input="on_user_input('group', group)"
+                                          style="max-width: 200px;">
+                            </v-text-field>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-container>
+        </v-content>
+        <infodialog width="300px" ref="infodialog"></infodialog>
+        <confirm ref="confirm" width="400px"></confirm>
+    </div>
+</v-app>
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+
+    <script>
+
+        var App;
+        console.log('utils', utils);
+        var RootURL = utils.root_url();
+        var AjaxResult;
+
+
+        function api_url(method) {
+            var result = RootURL + "api/" + method;
+            return result;
+        }
+
+        function starts_with(x, ch) {
+            return (x.length > 0 && x[0] === ch);
+        }
+
+        function ends_with(x, ch) {
+            let l = x.length;
+            return (l > 0 && x[l - 1] === ch)
+        }
+
+        function trim_location(loc) {
+            while (starts_with(loc, '/')) loc = loc.substr(1);
+            while (ends_with(loc, '/')) loc = loc.substr(0, loc.length - 1);
+            return loc;
+        }
+
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+                "confirm": VueComponents.ConfirmDialog,
+            },
+            data: {
+                all_groups: [],
+                groups: [],
+                global_settings: [],
+                status_text: "",
+                is_changed: false,
+            },
+            created: function () {
+                console.log("Created");
+                this.refresh();
+            },
+            methods: {
+                update_model: function (ajax_result) {
+                    AjaxResult = ajax_result;
+                    console.log("update_model", ajax_result);
+                    if (AjaxResult.Success) {
+                        this.is_changed = false;
+                        this.status_text = "";
+                        let settings = ajax_result.Data.Settings;
+                        this.all_groups = settings.Groups;
+                        this.update_group_list();
+                    }
+                    else {
+                        this.notify(AjaxResult.Message);
+                    }
+                },
+
+                refresh: function () {
+                    console.log("In refresh()");
+                    this.is_changed = false;
+                    let self = this;
+                    axios({
+                        method: 'GET',
+                        url: api_url('settings')
+                    }).then(function (result) {
+                        console.log("Have result for refresh()", result);
+                        self.update_model(result.data);
+                    })
+                        .catch(function (error) { console.log(error); });
+                },
+
+
+                verify_changes: function () {
+                    let result = true;
+                    let errmsg = undefined;
+                    this.groups.forEach(function (x) {
+                        if (x.Name.length == 0) {
+                            result = false;
+                            errmsg = "Group names cannot be blank";
+                        }
+                    });
+                    if (errmsg) this.set_status_message(errmsg, 5000);
+                    return result;
+                },
+
+                save_changes: function () {
+                    if (this.verify_changes() === false) return;
+                    let self = this;
+                    // Owners look like { OwnerID: int, Name: string, IsChanged: bool }
+                    // Groups look like { GroupID: int, Name: string, IsChanged: bool }
+                    let postdata = {
+                        Groups: this.all_groups,
+                    }
+                    console.log("save_changes", postdata);
+                    axios({
+                        method: 'POST',
+                        url: api_url("update_settings"),
+                        data: postdata
+                    }).then(function (result) {
+                        console.log("Have result for save_changes()", result);
+                        self.update_model(result.data);
+                        self.notify("Your changes have been saved");
+                    })
+                        .catch(function (error) { console.log(error); });
+                },
+
+
+                confirm: function (title, text, callback) {
+                    let self = this;
+                    this.$refs.confirm.open(text, title, function (result) {
+                        console.log("Confirm result: ", result);
+                        if (callback && result == 'confirmed') {
+                            callback();
+                        }
+                    })
+                },
+
+
+                update_group_list: function () {
+                    this.groups = this.all_groups.filter(function (x) { return !x.IsDeleted; });
+                },
+
+                add_group: function (name) {
+                    this.all_groups.unshift({ Name: name, IsChanged: true });
+                    this.is_changed = true;
+                    this.status_text = "You have unsaved changes";
+                    this.update_group_list();
+                },
+
+
+                set_status_message: function (text, delay_ms) {
+                    this.status_text = text;
+                    if (delay_ms > 0) this.clear_status_message(delay_ms);
+                },
+
+                clear_status_message: function (delay_ms) {
+                    let self = this;
+                    if (delay_ms > 0) setTimeout(function () { self.status_text = ""; }, delay_ms);
+                    else this.status_text = "";
+                },
+
+                notify: function (msg) {
+                    this.$refs['infodialog'].open(msg, "Info");
+                },
+
+
+                on_user_input: function (table, item) {
+                    console.log("In on_user_input:", table, item);
+                    if (item) item.IsChanged = true;
+                    this.status_text = "You have unsaved changes";
+                    this.is_changed = true;
+                },
+
+                on_delete: function (group) {
+                    console.log("on_delete", group);
+                    let self = this;
+                    this.confirm("Delete Group", "Delete group " + group.Name + "?", function () {
+                        group.IsDeleted = true;
+                        self.update_group_list();
+                        self.is_changed = true;
+                        self.status_text = "You have unsaved changes";
+                    });
+                },
+
+            }
+        });
+
+
+
+    </script>
+
+}
+
+@section Styles {
+
+    <style>
+
+        .section-name {
+            font-size: larger !important;
+            font-weight: bold !important;
+        }
+
+        .location-label {
+            padding-left: 4px;
+            padding-right: 8px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .location-input {
+            margin: 4px;
+            width: 10em;
+        }
+
+        .action-button {
+            margin-left: 1rem;
+        }
+
+
+        .v-input__icon .v-icon {
+            color: red !important;
+        }
+    </style>
+}

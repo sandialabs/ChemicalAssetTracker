@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewData["Title"] = "BarcodeTest";
+}
+
+<div class="banner">System Settings</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-flex class="xs12">
+                    <div class="text-xs-center mb-4">
+                        <v-btn class="green white--text" v-on:click="select_location()">Select Location</v-btn>
+                    </div>
+                    <v-card dark flat class="noborder" style="height: 70vh; overflow-y:auto;" v-if="selected_location">
+                    <v-card-title class="headline">
+                        <div class="flex-container">
+                            <div>Barcode Test</div>
+                            <div class="subheading">{{selected_location.Path}}</div>
+                        </div>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-text-field v-model="barcode" label="barcode" v-on:keyup.enter="on_enter_key"></v-text-field>
+                        <table>
+                            <thead>
+                                <tr><th>Barcode</th><th>Chemical</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in inventory_items" v-bind:class="{ found: item.status == 'FOUND' }">
+                                    <td>{{item.Barcode}}</td>
+                                    <td>{{item.ChemicalName}}</td>
+                                    <td>{{item.status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-container>
+        </v-content>
+        <infodialog width="300px" ref="infodialog"></infodialog>
+        <locationpicker ref="locationpicker"></locationpicker>
+    </div>
+</v-app>
+
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/locationpicker.js"></script>
+
+    <script>
+
+        var App;
+        console.log('utils', utils);
+        var RootURL = utils.root_url();
+        var AjaxResult;
+
+
+        function starts_with(x, ch) {
+            return (x.length > 0 && x[0] === ch);
+        }
+
+        function ends_with(x, ch) {
+            let l = x.length;
+            return (l > 0 && x[l - 1] === ch)
+        }
+
+        function trim_location(loc) {
+            while (starts_with(loc, '/')) loc = loc.substr(1);
+            while (ends_with(loc, '/')) loc = loc.substr(0, loc.length - 1);
+            return loc;
+        }
+
+        $(document).ready(function () {
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+                "locationpicker": VueComponents.LocationPicker
+            },
+            data: {
+                barcode: '',
+                inventory_items: [
+                    { Barcode: '0001', ChemicalName: 'Hydrogen Peroxide', status: 'unknown' },
+                    { Barcode: '0002', ChemicalName: 'Arsenic', status: 'unknown' },
+                    { Barcode: '0003', ChemicalName: 'Chlorine', status: 'unknown' },
+                    { Barcode: '0004', ChemicalName: 'Alchohol', status: 'unknown' },
+                    { Barcode: '0005', ChemicalName: 'Magnesium Sulfate', status: 'unknown' },
+                    { Barcode: '0006', ChemicalName: 'Sodium Chloride', status: 'unknown' },
+                ],
+                locationpicker_settings: { root_location_id: 1 },
+                selected_location: undefined,
+            },
+            created: function () {
+                console.log("BarcodeTest created");
+            },
+            mounted: function () {
+                console.log("BarcodeTest mounted", this.$refs);
+            },
+            methods: {
+
+                notify: function (msg) {
+                    this.$refs['infodialog'].open(msg, "Info");
+                },
+
+                select_location: function () {
+                    let self = this;
+                    this.$refs['locationpicker'].open(this.locationpicker_settings, function (result) {
+                        console.log("In locationpicker callback: ", result);
+                        self.selected_location = result;
+                    });
+                },
+
+                on_enter_key: function () {
+                    console.log('Enter key pressed "' + this.barcode + '"');
+                    let barcode = this.barcode.trim();
+                    let selected = this.inventory_items.filter(function (x) { return x.Barcode == barcode; })[0];
+                    if (selected) selected.status = "FOUND";
+                    else this.notify('Barcode not found: "' + barcode + '"');
+                },
+            }
+        });
+
+
+
+    </script>
+
+}
+
+@section Styles {
+
+    <style>
+
+        .found {
+            background-color: green;
+            color: white;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+        }
+
+    </style>
+}

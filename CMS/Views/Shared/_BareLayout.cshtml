@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CMS</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/materialize.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="/material-icons/material-icons.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/materialize.min.css"
+              asp-fallback-href="~/css/materialize.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/material-icons/material-icons.css" />
+    </environment>
+    <link rel="stylesheet" type="text/css" href="~/css/flex.css" />
+
+    <!--
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    -->
+    <!--
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    -->
+    <link href="~/css/vuetify.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <style>
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-image {
+            width: 32px;
+            height: 32px;
+            margin-top: 16px;
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+
+
+<body>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper black" style="height: 75px;">
+                <a href="#" class="brand-logo" style="margin-left: 1rem;"><i class="material-icons" onclick="site.go_home()">home</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li>
+                        <a href="~/Home/About">
+                            <img class="nav-image"
+                                 src="~/assets/Bolles/CAT_UI_Icons_About.png"
+                                 title="About" />
+                        </a>
+                    </li>
+                    <!-- <li><div><a href="#" style="margin-left: 32px;">Logout</a></div></li> -->
+                    <li><div>@await Html.PartialAsync("_LoginPartial") </div></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="container-fluid body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2019 - CAT: Chemical Asset Tracker</p>
+        </footer>
+    </div>
+
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/js/materialize.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/materialize.js"></script>
+    </environment>
+
+    <script src="~/js/promise-polyfill.min.js"></script>
+    <script src="~/dist/bundle.js"  asp-append-version="true"></script>
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    -->
+    <script src="~/js/vue.js" asp-append-version="true"></script>
+    <script src="~/js/vuetify.min.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

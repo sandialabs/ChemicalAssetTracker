@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+
+    <title>@ViewData["Title"] - CMS</title>
+
+    <style>
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-image {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-btn {
+            color: transparent;
+        }
+
+        .xnav-btn:hover:before {
+            background-color: white;
+        }
+
+        .xnav-btn:focus:before {
+            background-color: yellow;
+        }
+
+        .mycard {
+            background-color: #318182 !important;
+            margin: 8px;
+            width: 64px;
+        }
+
+        .tile-image {
+            height: auto;
+            width: 64px;
+            max-width: 300px;
+            min-width: 40px;
+        }
+
+        .tile-label {
+            width: 100%;
+            background: transparent;
+            color: #CDD;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .banner {
+            background-color: #318182;
+            color: white;
+            width: 100%;
+            height: 48px;
+            font-size: 20px;
+            font-variant: small-caps;
+            text-align: center;
+            margin-top: 64px;
+        }
+
+
+
+
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <v-app>
+        <div id="app">
+
+            <v-navigation-drawer v-model="drawer"
+                                 fixed
+                                 mini-variant
+                                 app>
+                <v-layout column justify-start align-center style="height: 100vh; background-color: #318182 !important;">
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Search.png' class='mt-4 tile-image' onclick='utils.go_to_page("Home/Search")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Inventory.png' class='tile-image' onclick='utils.go_to_page("Home/Inventory")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Reports.png' class='tile-image' onclick='utils.go_to_page("Report/Index")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_StockCheck.png' class='tile-image' onclick='utils.go_to_page("Home/StockCheck")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Users.png' class='tile-image' onclick='utils.go_to_page("Admin/UserManagement2")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Settings.png' class='tile-image' onclick='utils.go_to_page("Home/Settings")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_Locations.png' class='tile-image' onclick='utils.go_to_page("Admin/LocationPermissions")'>
+                    <img src='~/assets/Bolles/CAT_UI_Icons_About.png' class='tile-image' onclick='utils.go_to_page("Home/About")'>
+                </v-layout>
+            </v-navigation-drawer>
+
+            <v-toolbar dark app color="black">
+                <v-toolbar-side-icon @@click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <!-- <div class="headline">{{page_title}}</div> -->
+                <v-spacer></v-spacer>
+
+                <v-btn color="black" href="/Home/Search">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_Search.png" title="Search" />
+                </v-btn>
+
+                <v-btn color="black" href="/Report/Index">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_Reports.png" title="Stock Check" />
+                </v-btn>
+
+                <v-btn color="black" href="/Home/StockCheck">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_stockCheck.png" title="Stock Check" />
+                </v-btn>
+
+                <v-btn color="black" href="/Admin/UserManagement">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_Users.png" title="Users" />
+                </v-btn>
+
+                <v-btn color="black" href="/Home/Settings">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_Settings.png" title="Setings" />
+                </v-btn>
+
+                <v-btn color="black" href="/Admin/LocationPermissions">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_Locations.png" title="Locations" />
+                </v-btn>
+
+                <v-btn color="black" href="/Home/About">
+                    <img class="nav-image" src="~/assets/Bolles/CAT_UI_Icons_About.png" title="About" />
+                </v-btn>
+
+                <div>@await Html.PartialAsync("_LoginPartial")</div>
+
+            </v-toolbar>
+            <!--
+            <v-layout column align-center justify-center class="banner">
+                    <div>{{page_title}}</div>
+            </v-layout>
+            -->
+
+            @RenderBody()
+        </div>
+    </v-app>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src='~/dist/bundle.js?ver=20190521'></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

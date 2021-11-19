@@ -1,0 +1,440 @@
+﻿
+@{
+    ViewData["Title"] = "Location Management";
+    string username = ViewData["UserName"] as string;
+}
+
+
+
+<div class="banner">Location Management</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout row wrap v-show="status == 'loading'">
+                    <div class='headline' style='width: 100%'>
+                        Loading locations ...
+                    </div>
+                </v-layout>
+                <v-layout row wrap v-show="status == 'ready'">
+                    <v-flex sm12 md6 v-show="locations">
+                        <p>
+                            Use the triangles at the left of each location name to expand or collapse the location.
+                            To view or change a location, click on the location name.
+                        </p>
+                        <v-treeview :items="location_tree">
+                            <template slot="label" slot-scope="{ item }">
+                                <span flat @@click.stop="on_location_click(item, $event)">{{item.name}}</span>
+                            </template>
+                        </v-treeview>
+                    </v-flex>
+                    <v-flex sm12 md6 v-show="location_info_visible">
+                        <v-card flat class="grey lighten-2" style="height: 300px;">
+                            <v-card-title class="headline mb-0 pb-0">Location Information</v-card-title>
+                            <v-card-text class="mt-0 pt-0">
+                                <div class="input-field">
+                                    <input type="text" style="width: 50%;" id="location-name" placeholder="Location name" v-model="selected_location.Name" />
+                                    <a href="#" v-on:click="on_rename_location(selected_location)">Rename</a>
+                                </div>
+                                <div>
+                                    <span>Full Name: </span>
+                                    <span>{{selected_location.FullLocation}}</span>
+                                </div>
+                                <div>
+                                    <span>Location ID: </span>
+                                    <span>{{selected_location.LocationID}}</span>
+                                </div>
+                                <div>
+                                    <span>Location Type:</span>
+                                    <span>{{get_location_type(selected_location)}}</span>
+                                </div>
+                                <div>
+                                    <span>Location Level:</span>
+                                    <span>{{selected_location.LocationLevel}}</span>
+                                </div>
+                            </v-card-text> <!-- card-content -->
+                            <v-card-actions class="pl-0">
+                                <v-btn flat v-for="ctype in get_location_child_types(selected_location)"
+                                       v-on:click="on_add_child(selected_location, ctype)">
+                                    Add {{ctype}}
+                                </v-btn>
+                                <v-btn flat v-on:click="on_delete_location(selected_location)">Delete</v-btn>
+                            </v-card-actions>
+                        </v-card> <!-- card -->
+                        <div id="status-message" class="error-message" style="min-height: 2em; margin-top: 1em;">&nbsp;</div>
+                        <div v-show="location_info_visible" style="margin-top: 1em;">
+                            <p>To rename the selected location, type its new name in the Location Name field and click <i>Rename</i></p>
+                            <p>
+                                To delete a location, click the <i>DELETE</i> button.  Note that only locations that have no child locations or
+                                inventory items can be deleted.
+                            </p>
+                        </div>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+        <textinputdialog width="400px" ref="textinputdialog"></textinputdialog>
+        <confirmdialog width="400px" ref="confirmdialog"></confirmdialog>
+    </div>
+</v-app>
+
+
+@section Scripts
+    {
+
+    <script src="~/visjs/vis.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        $(document).ready(function () {
+            console.log("READY");
+            $('select').formSelect();
+        });
+        var status_timer;
+        var saved_user = {};
+
+        // view_stack tracks changing network views:
+        //   root: root location
+        //   selected: selected location
+        //   view: { positions: { x: X, y: y} , zoom: Z }
+        var view_stack = [];
+
+        function has_value(x) {
+            if (typeof x == 'string') return x.length > 0;s
+            if (x == null) return false;
+            return x;
+        }
+
+        function show_message(text, duration_ms) {
+            console.log("show_message", text, duration_ms);
+            if (status_timer) {
+                clearTimeout(status_timer);
+            }
+            if (!duration_ms) duration_ms = 10000;
+            $('#status-message').text(text);
+            status_timer = setTimeout(function () { $('#status-message').text(''); }, duration_ms);
+        }
+
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'textinputdialog': VueComponents.TextInputDialog,
+                'confirmdialog': VueComponents.ConfirmDialog,
+            },
+            data: {
+                status: 'loading',
+                users: [],
+                location_tree: [],
+                selected_location: {
+                    LocationLevel: 0,
+                },
+                location_types: {},
+                popup_location: {},
+                error_message: '',
+                changed: false,
+                location_info_visible: false,
+                new_location_name: "",
+                confirm_options: {
+                    prompt: "Do you want to continue?",
+                    yes: "Yes",
+                    no: "No",
+                    on_yes: function () { console.log("Confirmed"); },
+                    on_no: function () { console.log("Not confirmed"); },
+                }
+            },
+            methods: {
+
+
+                on_location_click: function (item, ev) {
+                    if (this.selected_location.LocationID != item.id) {
+                        // select a new item
+                        this.selected_location = this.location_map[item.id];
+                        this.location_info_visible = true;
+                    }
+                },
+
+
+
+
+                build_location_tree: function (loc) {
+                    let self = this;
+                    let result = { name: loc.Name, type: 'location', id: loc.LocationID, access: loc.Access }
+                    loc.network_node = result;
+                    let children = this.locations.filter(function (x) { return (x.ParentID == loc.LocationID); });
+                    result.children = children.map(function (x) { return self.build_location_tree(x); });
+                    return result;
+                },
+
+
+                on_delete_location: function (location) {
+                    let self = this;
+                    this.$refs['confirmdialog'].open('Delete location "' + location.FullLocation + '"?', 'Delete Location', function (response) {
+                        console.log("In delete callback: " + response);
+                        if (response == 'confirmed') {
+                            api.axios_delete({
+                                url: "/api/deletelocation/" + location.LocationID,
+                                caller: "on_delete_location",
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    show_message(ajax_result.Message);
+                                    self.refresh_network(ajax_result.Data.locations);
+                                    setTimeout(function () { self.location_info_visible = false; }, 10000);
+                                },
+                                onfailure: function (ajax_result) { show_message(ajax_result.Message); },
+                            });
+                        }
+                    });
+                },
+
+                // called when user clicks AddXXX button
+                on_add_child: function (parent, location_type) {
+                    console.log("on_add_child", parent, location_type);
+                    let parent_level = parent.LocationLevel;
+                    let self = this;
+                    //let dig = this.$refs['textinputdialog'];
+                    this.$refs["textinputdialog"].open("Enter " + location_type + " name", "New " + location_type, function (op, name) {
+                        if (op == 'save') {
+                            console.log("Create new " + location_type + " named " + name);
+                            self.create_location(parent, name, location_type);
+                        }
+                    });
+                },
+
+                create_location: function (parent, location_name, location_type) {
+                    let self = this;
+                    if (location_name.length > 0) {
+                        let loctype = this.location_types[location_type];
+                        let postdata = {
+                            LocationID: 0,
+                            ParentID: parent.LocationID,
+                            Name: location_name,
+                            LocationTypeID: loctype.LocationTypeID,
+                            LocationLevel: parent.LocationLevel + 1
+                        };
+                        console.log("on_create_location", postdata);
+                        api.axios_post({
+                            url: '/api/updatelocation',
+                            caller: 'on_create_location',
+                            verbose: true,
+                            id: '',
+                            data: postdata,
+                            onsuccess: function (ajax_result) {
+                                //self.location_info_visible = false;
+                                show_message(ajax_result.Message);
+                                //self.refresh_network(ajax_result.Data.locations);
+                                self.refresh(false);
+                            },
+                            onfailure: function (ajax_result) {
+                                show_message(ajax_result.Message);
+                            }
+                        });
+                    }
+                },
+
+                on_rename_location: function (location) {
+                    let self = this;
+                    api.axios_post({
+                        url: '/api/updatelocation',
+                        caller: 'on_rename_location',
+                        verbose: true,
+                        id: '',
+                        data: location,
+                        onsuccess: function (ajax_result) {
+                            show_message(ajax_result.Message);
+                            location.network_node.name = location.Name;
+                        }
+                    });
+                },
+
+
+
+                on_confirm_response: function (is_confirmed) {
+                    $('#confirm-dialog').modal('hide');
+                    if (is_confirmed && this.confirm_options.on_yes) this.confirm_options.on_yes();
+                    if (!is_confirmed && this.confirm_options.on_no) this.confirm_options.on_no();
+                },
+
+                child_level_name: function () {
+                    if (this.selected_location.LocationType) {
+                        let location_type_id = this.selected_location.LocationTypeID;
+                        //return this.location_types[location_type_id];
+                        return ("NOT IMPLEMENTED");
+                    }
+                },
+
+                get_location_type: function (location) {
+                    if (location.LocationType) return location.LocationType.Name;
+                    else return '';
+                },
+
+                get_location_child_types: function (location) {
+                    if (location.LocationType) return location.LocationType.ValidChildList;
+                    else return '';
+                },
+
+                confirm: function (options) {
+                    let std_options = {
+                        prompt: "Do you want to continue?",
+                        yes: "Yes",
+                        no: "No",
+                        on_yes: function () { console.log("Confirmed"); },
+                        on_no: function () { console.log("Not confirmed"); },
+                    };
+                    this.confirm_options = std_options;
+                    if (options.prompt) this.confirm_options.prompt = options.prompt;
+                    if (options.yes) this.confirm_options.yes = options.yes;
+                    if (options.no) this.confirm_options.no = options.no;
+                    this.confirm_options.on_yes = options.on_yes;
+                    this.confirm_options.on_no = options.on_no;
+
+                    $('#confirm-dialog').modal('show');
+                },
+
+                refresh: function (show_response_time) {
+                    let self = this;
+
+                    // The username that we are working on will be in the URL.
+                    // We will use the currently selected user if not specified
+                    let username = "@username";
+                    let selected_location_id = undefined;
+                    if (this.selected_location) selected_location_id = this.selected_location.LocationID;
+                    console.log("In refresh: " + username);
+                    api.axios_get({
+                        url: '/api/getuserlocationsubtree/' + username + '/0/99',
+                        caller: 'refresh',
+                        verbose: true,
+                        id: username,
+                        onsuccess: function (ajax_result) {
+                            //show_message(ajax_result.Message);
+                            if (show_response_time) show_message("Locations retrieved in " + ajax_result.TaskTime);
+                            if (ajax_result.Success) {
+                                console.log("Data", ajax_result.Data);
+                                if (true) {
+                                    self.location_types = {};
+                                    ajax_result.Data.locationtypes.forEach(function (lt) {
+                                        self.location_types[lt.Name] = lt;
+                                    });
+                                    self.refresh_network(ajax_result.Data.subtree);
+                                    self.status = 'ready';
+                                    if (selected_location_id && self.selected_location) {
+                                        let loc = self.locations.find(function (x) { return x.LocationID == selected_location_id });
+                                        if (loc) self.selected_location = loc;
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                },
+
+                refresh_network: function (locations) {
+                    let self = this;
+                    console.log("refresh_network", locations);
+                    this.locations = locations;
+                    this.location_map = {};
+                    this.locations.forEach(function (x) {
+                        self.location_map[x.LocationID] = x;
+                    });
+                    this.root_location = self.locations[0];
+                    this.location_tree.length = 0;
+                    this.location_tree.push(self.build_location_tree(self.root_location));
+                    this.selected_location.LocationID = -1;
+                },
+
+                get_descendents: function (loc, depth) {
+                    if (typeof loc === 'number') loc = location_map[loc];
+                    console.log("Processing ", loc.LocationID, loc.Name);
+                    if (depth > 0) {
+                        var result = loc.children.slice(0);
+                        var self = this;
+                        loc.children.forEach(function (l) {
+                            result.push.apply(result, self.get_descendents(l, depth - 1));
+                        })
+                        return result;
+                    }
+                    else return ([loc]);
+                    return result;
+                },
+
+                show_subtree: function (root_node_id, depth) {
+
+                },
+
+
+
+
+            },
+            created: function () {
+                this.locations = null;
+
+                this.refresh(true);
+            }
+        });
+
+
+
+    </script>
+
+
+
+}
+
+@section Styles
+    {
+    <link href="~/visjs/vis.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        .action-link {
+            color: black !important;
+        }
+
+        .inherited_visible {
+            color: black;
+            background-color: palegreen;
+        }
+
+        .inherited_hidden {
+            color: black;
+            background-color: pink;
+        }
+
+        .usertable {
+            max-width: 600px;
+        }
+
+        .header {
+            font-size: 1.5em;
+        }
+
+        .em4 {
+            width: 4em;
+        }
+
+        .tinybutton {
+            width: 16px;
+            height: 20px;
+            max-height: 16px;
+            max-width: 20px;
+            font-size: xx-small;
+        }
+
+        .error-message {
+            font-weight: bold;
+            color: red;
+        }
+
+        #location-network {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid blue;
+        }
+    </style>
+
+}

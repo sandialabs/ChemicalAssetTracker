@@ -1,0 +1,657 @@
+﻿
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_Experimental.cshtml";
+    string userroles = ViewData["Roles"].ToString();
+}
+
+<v-content>
+    <v-container fluid grid-list-md>
+        <div id="main-div" style="display:none;">
+            <div v-if="ready">
+                <v-layout row align-center>
+                    <span class="headline mr-1">Selected Location: {{current_site.FullLocation}}</span>
+
+                    <v-btn icon v-on:click="select_top_level_location()"><v-icon color="blue" medium>import_export</v-icon></v-btn>
+                </v-layout>
+                <v-layout>
+                    <v-flex>
+                        <div style="margin-bottom: 0.1em; min-height: 2em;">
+                            <span style="margin-left: 0;">{{message_to_user}}</span>
+                        </div>
+                        <img id="barcode-img" src="~/assets/Barcodes-icon.png" style="height: 3em; display: none;" title="Click to scan a barcode" />
+                    </v-flex>
+                </v-layout>
+                <v-layout>
+                    <v-flex xs7>
+                        <grid ref='grid' :config="grid_config" :rowdata="inventory" v-on:rowclick="on_row_clicked" style="height: 100%;"></grid>
+                    </v-flex>
+                    <v-flex xs5>
+                        <v-card flat v-if="editor_visible">
+                            <v-card-title class="headline">
+                                <v-layout row align-content-start justify-start>
+                                    <span>Selected Inventory Item</span>
+                                    <v-img v-for="img in item_hazards(selected_item)" height="40" contain :src="img.image" :title="img.text"></v-img>
+                                </v-layout>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-layout row wrap>
+                                    <v-btn v-if="can_edit" small class="blue white--text" @@click="save_selected_item()">Save</v-btn>
+                                    <v-btn v-if="can_edit" small class="green white--text" @@click="new_inventory_item()">Create New</v-btn>
+                                    <v-btn v-if="can_edit" small class="red white-text" @@click="delete_selected_item()">Delete</v-btn>
+                                </v-layout>
+                                <table>
+                                    <tr><td>Barcode</td><td><input :readonly="readonly" type="text" class="browser-default attribute" v-model="selected_item.Barcode" /></td></tr>
+                                    <tr><td>CAS #</td><td><input :readonly="readonly" type="text" class="browser-default attribute" v-model="selected_item.CASNumber" /></td></tr>
+                                    <tr><td>Chemical</td><td><input :readonly="readonly" type="text" class="browser-default attribute" v-model="selected_item.ChemicalName" /></td></tr>
+                                    <tr>
+                                        <td>Location</td>
+                                        <td>
+                                            <v-layout>
+                                                <textarea readonly="readonly" type="text" style="height: 48px;  width: 90%;" class="browser-default attribute" v-model="selected_item.FullLocation"></textarea>
+                                                <v-btn flat icon style="margin-top: 0px;" v-on:click="select_location()"><v-icon color="blue">edit</v-icon></v-btn>
+                                            </v-layout>
+                                        </td>
+                                    </tr>
+                                    <tr><td>Date In</td><td><input :readonly="readonly" type="text" class="browser-default attribute" v-model="selected_item.date_in" /></td></tr>
+                                    <tr><td>Expiration</td><td><input :readonly="readonly" type="text" class="browser-default attribute" v-model="selected_item.expiration_date" /></td></tr>
+                                    <tr>
+                                        <td>Owner</td>
+                                        <td>
+                                            <select :disabled="readonly" class="browser-default" v-model="selected_item.OwnerID">
+                                                <option v-for="owner in settings.Owners" v-bind:value="owner.OwnerID">{{owner.Name}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Group</td>
+                                        <td>
+                                            <select :disabled="readonly" class="browser-default" v-model="selected_item.GroupID">
+                                                <option v-for="group in settings.Groups" v-bind:value="group.GroupID">{{group.Name}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>State</td>
+                                        <td>
+                                            <select :disabled="readonly" class="browser-default" v-model="selected_item.State">
+                                                <option v-for="state in states" v-bind:value="state.value">{{state.text}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr><td>Container Size</td><td><input :readonly="readonly" type="text" class="browser-default" v-model="selected_item.ContainerSize" style="width:4em;" /></td></tr>
+                                    <tr>
+                                        <td>Units</td>
+                                        <td>
+                                            <select :disabled="readonly" class="browser-default" v-model="selected_item.Units">
+                                                <option v-for="option in units" v-bind:value="option.value">{{option.text}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr><td>Remaining</td><td><input :readonly="readonly" type="text" class="browser-default" v-model="selected_item.RemainingQuantity" /></td></tr>
+                                    <tr><td>Notes</td><td><textarea v-model="selected_item.Notes"></textarea></td></tr>
+                                </table>
+                                <table style="width:100%;">
+                                    <thead>
+                                        <tr class="attributes">
+                                            <td class="attribute" style="background: red;">Security</td>
+                                            <td class="attribute" style="background: blue;">Health Hazard</td>
+                                            <td class="attribute" style="background: yellow;">Physical Hazard</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="attributes">
+                                            <td class="cwc">
+                                                <span class="attr">CWC: {{flags.CWC}}</span>
+                                            </td>
+                                            <td class="attribute">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" class="browser-default" disabled="disabled" v-model="flags.CARCINOGEN" />
+                                                        <span class="attr">Carcinogen</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="attribute">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.CORROSIVE" v-bind:disabled="readonly" />
+                                                        <span class="attr">Corrosive</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="attributes">
+                                            <td class="attribute">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" disabled="disabled" v-model="flags.THEFT" />
+                                                        <span class="attr">Theft</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="attribute">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.HEALTHHAZARD" v-bind:disabled="readonly" />
+                                                        <span class="attr">Health Hazard</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="attribute">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.EXPLOSIVE" v-bind:disabled="readonly" />
+                                                        <span class="attr">Explosive</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="attributes">
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.OTHERSECURITY" v-bind:disabled="readonly" />
+                                                        <span class="attr">Other</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.IRRITANT" v-bind:disabled="readonly" />
+                                                        <span class="attr">Irritant</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.FLAMABLE" v-bind:disabled="readonly" />
+                                                        <span class="attr">Flamable</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="attributes">
+                                            <td>
+                                                &nbsp;
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.ACUTETOXICITY" v-bind:disabled="readonly" />
+                                                        <span class="attr">Skull and Crossbones</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.OXIDIZER" v-bind:disabled="readonly" />
+                                                        <span class="attr">Oxidizer</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="attributes">
+                                            <td class="attribute">&nbsp;</td>
+                                            <td class="attribute">&nbsp;</td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.COMPRESSEDGAS" v-bind:disabled="readonly" />
+                                                        <span class="attr">Gas Cylinder</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="attributes">
+                                            <td class="attribute">&nbsp;</td>
+                                            <td class="attribute">&nbsp;</td>
+                                            <td>
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" v-model="flags.OTHERHAZARD" v-bind:disabled="readonly" />
+                                                        <span class="attr">Other</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+
+                <confirmdlg ref="confirmdlg" width="400px"></confirmdlg>
+                <infodlg ref="infodlg" width="400px"></infodlg>
+                <locationpicker ref="locationpicker"></locationpicker>
+            </div>
+        </div>
+    </v-container>
+</v-content>
+
+        @section Scripts
+            {
+            <script src="~/dist/grid.js"></script>
+            <script src="~/dist/itemdialog.js"></script>
+            <script src="~/dist/itemeditor.js"></script>
+            <script src="~/dist/confirmdialog.js"></script>
+            <script src="~/dist/locationpicker.js"></script>
+
+
+            <script>
+        $(document).ready(function () { console.log("ready"); if (utils.is_mobile()) $('#barcode-img').show(); });
+        var Inventory;
+
+        Vue.use(Vuetify);
+
+        var searchvue = new Vue({
+            el: '#app',
+            components: {
+                'grid': VueComponents.Grid,
+                'confirmdlg': VueComponents.ConfirmDialog,
+                'locationpicker': VueComponents.LocationPicker,
+            },
+            data: {
+                page_title: "Search",
+                drawer: false,
+                ready: false,
+                userroles: "@userroles",
+                can_edit: false,
+                readonly: true,
+                message_to_user: '',
+                selected_item: {
+                    Barcode: '',
+                    ChemicalName: '',
+                    CASNumber: ' ',
+                    Location: {},
+                    ShortLocation: '',
+                    Group: {},
+                    Owner: {}
+                },
+                grid_config: {
+                    height: "60vh",
+                    filter: true,
+                    rowkey: 'InventoryID',
+                    columns: [
+                        {
+                            header: "Barcode",
+                            width: 100,
+                            align: "center",
+                            sortable: false,
+                            field: "Barcode",
+                            filtered: true
+                        },
+                        { header: "CAS#", field: "CASNumber", align: 'center', width: 100, filtered: true },
+                        { header: "Chemical", field: "ChemicalName", align: 'center', width: 180, filtered: true },
+                        { header: "Location", field: "Location.FullLocation", width: 400, align: 'center', filtered: true },
+                        { header: "Owner", field: "Owner.Name", width: 150, align: 'center', filtered: true }
+                    ],
+                },
+                selected_owner: undefined,
+                flags: {},
+                flagnames: ['ACUTETOXICITY', 'CARCINOGEN', 'COMPRESSEDGAS', 'CORROSIVE', 'EXPLOSIVE', 'FLAMABLE', 'HEALTHHAZARD',
+                    'IRRITANT', 'OTHERHAZARD', 'OTHERSECURITY', 'OXIDIZER', 'THEFT'],
+                inventory: [],
+                settings: {},
+                sites: [],
+                current_site: { LocationID: 0, FullLocation: '' },
+                location_list: [],
+                saved_current_site: {},
+                editor_visible: false,
+                units: [
+                    { value: 'cm3', text: 'Cubic centimeters (cm^3)' },
+                    { value: 'm3', text: 'Cubic meters (m^3)' },
+                    { value: 'g', text: 'Gram (g)' },
+                    { value: 'kg', text: 'Kilogram (kg)' },
+                    { value: 'L', text: 'Liter (L)' },
+                    { value: 'mg', text: 'Milligram (mg)' },
+                    { value: 'mL', text: 'Milliliter (mL)' },
+                    { value: 'ft3', text: 'Cubic feet (ft^3)' },
+                    { value: ' ', text: '(blank)' },
+                ],
+                states: [
+                    { value: 'solid', text: 'solid' },
+                    { value: 'liquid', text: 'liquid' },
+                    { value: 'gas', text: 'gas' },
+                    { value: 'other', text: 'other' },
+                ],
+                hazard_images: [
+                    { name: "ACUTETOXICITY", image: "/assets/acute_toxicity.png", text: "Skull and Crossbones" },
+                    { name: "COMPRESSEDGAS", image: "/assets/compressed_gas.png", text: "Gas Cylinder" },
+                    { name: "CORROSIVE", image: "/assets/corrosive.png", text: "Corrosive" },
+                    { name: "EXPLOSIVE", image: "/assets/explosive.png", text: "Exploding Bomb" },
+                    { name: "FLAMABLE", image: "/assets/flamable.png", text: "Flame" },
+                    { name: "HEALTHHAZARD", image: "/assets/health_hazard.png", text: "Health Hazard" },
+                    { name: "IRRITANT", image: "/assets/irritant.png", text: "Exclamation Mark" },
+                    { name: "OXIDIZER", image: "/assets/oxidizer.png", text: "Oxidizer" },
+                ],
+            },
+            methods: {
+                //-----------------------------------------------------
+                // refresh - reload inventory
+                //-----------------------------------------------------
+                refresh: function (loc_id) {
+                    console.log("In refresh(" + loc_id + ")");
+                    this.inventory = [];
+                    var self = this;
+
+                    this.editor_visible = false;
+                    $('#main-div').hide(0);
+
+                    api.fetch_settings(function (result) {
+                        console.log("Have response from fetch_settings:", result);
+                        let data = result.Data;
+                        self.saved_current_site = self.current_site;
+                        self.settings = data.Settings;
+                        self.sites = data.Settings.Sites;
+                        self.HomeLocation = data.HomeLocation;
+                        self.ready = true;
+                        api.fetch_inventory(loc_id, function (result) {
+                            $('#main-div').show(0);
+                            console.log("Have response from fetch_inventory: " + result.Message);
+                            console.log("Result: ", result);
+                            if (result.Success) {
+                                self.inventory = result.Data.Inventory;
+                                self.current_site = result.Data.HomeLocation;
+                                self.location_list.length = 0;
+                                self.location_list.push(self.current_site);
+                                if (self.current_site.ParentID > 0) {
+                                    self.location_list.push({ LocationID: self.current_site.ParentID, Name: 'Parent Location' });
+                                }
+                                result.Data.ChildLocations.forEach(function (x) {
+                                    self.location_list.push(x);
+                                });
+                                if (result.Message != 'Success') self.show_user_message(result.Message, 5000);
+                                else self.show_user_message("Inventory items returned: " + result.Data.Inventory.length);
+                            }
+                            else self.show_user_message(result.Message, 5000);
+                        });
+                    });
+                },
+
+                //-----------------------------------------------------
+                // prepare_item_for_edit
+                //
+                // Format inventory item fields prior to editing/viewing
+                //-----------------------------------------------------
+                prepare_item_for_edit: function (item) {
+                    if (item.DateIn) item.date_in = utils.format_date(item.DateIn);
+                    if (item.ExpirationDate) item.expiration_date = utils.format_date(item.ExpirationDate);
+                    this.set_binary_flags();
+                    this.flags.CWC = item.ItemFlags.CWC;
+                },
+
+                //-----------------------------------------------------
+                // prepare_item_for_edit
+                //
+                // Parse inventory item fields prior to saving
+                //-----------------------------------------------------
+                prepare_item_for_save: function (item) {
+                    if (item.date_in) item.DateIn = moment(item.date_in).toDate();
+                    else item.DateIn = null;
+                    if (item.expiration_date) item.ExpirationDate = moment(item.expiration_date).toDate();
+                    else item.ExpirationDate = null;
+                    this.set_item_flags();
+                },
+
+                //-----------------------------------------------------
+                // set_selected_item
+                //
+                // Make a deep copy of an item and save in selected_item
+                //-----------------------------------------------------
+                set_selected_item: function (item) {
+                    this.selected_item = utils.deep_copy(item);
+                    this.prepare_item_for_edit(this.selected_item);
+                },
+
+
+                //-----------------------------------------------------
+                // check_unsaved_changes
+                //
+                // Prompt the user if there are unsaved changes to an item
+                //-----------------------------------------------------
+                check_unsaved_changes: function () {
+                    return true;
+                },
+
+                //-----------------------------------------------------
+                // edit_item
+                //
+                // Show item editor/viewer
+                //
+                // TODO: use set_selected_item to make a deep copy
+                //-----------------------------------------------------
+                edit_item: function (item) {
+                    this.selected_item = item;
+                    this.prepare_item_for_edit(this.selected_item);
+                    this.editor_visible = true;
+                },
+
+                //-----------------------------------------------------
+                // on_row_clicked
+                //
+                // Handle grid row click event
+                //-----------------------------------------------------
+                on_row_clicked: function (row) {
+                    console.log("on_row_clicked", row);
+                    let ix = this.find_inventory_item(row.InventoryID);
+                    this.edit_item(this.inventory[ix]);
+                },
+
+                //-----------------------------------------------------
+                // on_selected_site_change
+                //
+                // Handle user selecting a different location to view
+                //-----------------------------------------------------
+                on_selected_site_change: function () {
+                    console.log("on_selected_site_change", this.current_site);
+                    this.refresh(this.current_site.LocationID);
+                },
+
+                //-----------------------------------------------------
+                // container_size
+                //
+                // Format item container size with units
+                //-----------------------------------------------------
+                container_size: function (item) {
+                    if (item.ContainerSize > 0) return (item.ContainerSize + item.Units);
+                    else return '';
+                },
+
+                //-----------------------------------------------------
+                // remaining_quantity
+                //
+                // Format item remaining quantity with units
+                //-----------------------------------------------------
+                remaining_quantity: function (item) {
+                    if (item.RemainingQuantity > 0) return (item.RemainingQuantity + item.Units);
+                    else return '';
+                },
+
+                //-----------------------------------------------------
+                // set_binary_flags
+                //
+                // Initialize hazard flags in an inventory item prior
+                // to editing/viewing
+                //-----------------------------------------------------
+                set_binary_flags: function () {
+                    api.set_item_boolean_flags(this.selected_item.ItemFlags, this.flags);
+                },
+
+                //-----------------------------------------------------
+                // set_item_flags
+                //
+                // Initialize hazard flags in an inventory item prior
+                // to saving
+                //-----------------------------------------------------
+                set_item_flags: function () {
+                    api.set_item_char_flags(this.flags, this.selected_item.ItemFlags);
+                },
+
+                //-----------------------------------------------------
+                // find_inventory_item
+                //
+                // Search for an item by its InventoryID, returning the
+                // index of the item in this.inventory.
+                //-----------------------------------------------------
+                find_inventory_item: function (id) {
+                    let result = -1;
+                    for (let i = 0; i < this.inventory.length; i++) {
+                        if (this.inventory[i].InventoryID == id) {
+                            result = i;
+                            break;
+                        }
+                    }
+                    return result;
+                },
+
+                //-----------------------------------------------------
+                // save_selected_item
+                //
+                // Save the selected item
+                //-----------------------------------------------------
+                save_selected_item: function () {
+                    let self = this;
+                    let item_id = this.selected_item.InventoryID;
+                    this.prepare_item_for_save(this.selected_item);
+                    api.save_inventory_item(this.selected_item, function (result) {
+                        console.log(result);
+                        self.editor_visible = false;
+                        if (result.Success) {
+                            // if the item was successfully updated, the new version
+                            // is returned in result.Data
+                            current_item_index = self.find_inventory_item(item_id);
+                            if (current_item_index >= 0) self.inventory[current_item_index] = result.Data;
+                            self.$refs['grid'].refresh(self.inventory);
+                        }
+                        self.show_user_message(result.Message, 5000);
+                    });
+                },
+
+                new_inventory_item: function () {
+                    if (this.check_unsaved_changes()) {
+                        this.set_selected_item(api.new_inventory_item_template());
+                        this.$refs['infodlg'].open("Edit the inventory item fields and then click the Save button", "New Inventory Item", function () { return; });
+                        this.editor_visible = true;
+                    }
+                },
+
+                delete_selected_item: function () {
+                    let text = "Delete item " + this.selected_item.Barcode + "?";
+                    this.$refs['confirmdlg'].open(text, "Delete Item", function (response) {
+                        console.log("Confirm Dialog response", response);
+                    });
+                },
+
+                user_in_role: function (rolename) {
+                    return (this.userroles.indexOf(rolename) >= 0);
+                },
+
+                show_user_message: function (text, duration_ms) {
+                    let self = this;
+                    this.message_to_user = text;
+                    if (this.interval_timer) {
+                        clearInterval(this.interval_timer);
+                    }
+                    if (typeof duration_ms != 'number') duration_ms = 5000;
+                    this.interval_timer = setInterval(function () { self.message_to_user = ''; }, duration_ms);
+                },
+
+                item_hazards: function (item) {
+                    let result = [];
+                    let self = this;
+                    this.hazard_images.forEach(function (x) {
+                        if (item.ItemFlags[x.name] != ' ') {
+                            console.log("Have hazard " + x.name);
+                            result.push(x);
+                        }
+                    });
+                    return result;
+                },
+
+                select_location: function () {
+                    let args = { root_location_id: this.HomeLocation.LocationID, depth: 6 };
+                    let self = this;
+                    this.$refs['locationpicker'].open(args, function (result) {
+                        self.selected_item.LocationID = result.LocationID;
+                        self.selected_item.Location = result;
+                        self.selected_item.FullLocation = result.FullLocation;
+                        self.selected_item.ShortLocation = result.ShortLocation;
+                    });
+                },
+
+                select_top_level_location: function () {
+                    let args = { root_location_id: this.HomeLocation.LocationID, depth: 6 };
+                    let self = this;
+                    let current_site = this.current_site;
+                    this.$refs['locationpicker'].open(args, function (result) {
+                        if (result.LocationID != current_site.LocationID) {
+                            self.current_site = result;
+                            self.refresh(result.LocationID);
+                        }
+                    });
+                }
+
+            },
+            created: function () {
+                console.log("In created()");
+                this.can_edit = this.user_in_role('admin') || this.user_in_role('editor') || this.user_in_role('manager');
+                this.readonly = !this.can_edit;
+                this.refresh(0);
+            }
+        });</script>
+        }
+
+        @section Styles
+            {
+
+            <style>
+
+                .attribute {
+                    height: 32px;
+                }
+
+                .search {
+                    margin-left: 0.5em;
+                }
+
+                .itemprop {
+                    width: 100%;
+                }
+
+                /* Grid CSS */
+                .my-div {
+                    height: 400px;
+                }
+
+                .my-grid {
+                    height: 300px;
+                    font-size: smaller;
+                }
+
+                .attribute {
+                    width: 500px;
+                }
+
+
+                .invisible {
+                    display: none
+                }
+
+                .filter {
+                    font-size: smaller;
+                }
+
+                .inventory-detail {
+                    margin-left: 1em;
+                    margin-top: 4em;
+                }
+            </style>
+
+        }

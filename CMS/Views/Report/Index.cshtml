@@ -1,0 +1,398 @@
+﻿
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="banner">Reports</div>
+
+
+<div id='app' style="display:none;">
+    <v-app data-app>
+        <v-content class="mt-0">
+            <v-container fluid grid-list-md>
+                <v-layout row>
+                    <div class="display-1">{{page_title}}</div>
+                </v-layout>
+                <v-layout row>
+                    <div class="headline" v-if="reports.length == 0">There are no reports to show.</div>
+                </v-layout>
+                <v-layout>
+                    <v-flex sm12 md2>
+                        <v-card dark class="mx-3 mt-3" v-for="report in reports" :key="report.ReportID" style="height: 100px;" @@click="select_report(report)">
+                            <v-card-title class='headline'>{{report.ReportName}}</v-card-title>
+                            <v-card-text>{{report.Description}}</v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <v-flex sm12 md10 class="pa-2 mt-3" v-show="active_report.ReportID">
+                        <v-card dark flat class="noborder">
+                            <v-card-title class="headline">
+                                {{active_report.ReportName}} <v-btn icon v-on:click="run_report(active_report)"><v-icon title="Run Report">cached</v-icon></v-btn>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-layout>
+                                    <location :debug='false' v-show="show_widget('locationpicker')" ref="location" v-on:select="on_location_selected" v-on:ready="on_locations_ready"></location>
+                                    <v-text-field v-show="show_widget('fromdate')" class="date-field" type="date" label="From Date" v-model="fromdate"></v-text-field>
+                                    <v-text-field v-show="show_widget('todate')" class="date-field" type="date" label="To Date" v-model="todate"></v-text-field>
+                                    <v-text-field class="number-field" type="number" label="Max Rows" v-model="maxrows"></v-text-field>
+                                </v-layout>
+                            </v-card-text>
+                        </v-card>
+                        <v-layout v-if="rows.length > 0" class="mt-4">
+                            <v-btn icon @@click="save_csv()"><v-icon large class="white blue--text" title="Download as CSV">cloud_download</v-icon></v-btn>
+                        </v-layout>
+                        <v-layout>
+                            <v-flex grow d-flex body-2 v-if="is_ready">
+                                <table class="cat-standard" id="report">
+                                    <thead>
+                                        <tr><th v-for="col in columns" @@click="on_sort(col)">{{col}}</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="row in rows">
+                                            <td v-for="col in columns">{{row[col]}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout class="mt-4" v-if="status_message">
+                            <div class="headline">{{status_message}}</div>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+        <infodialog width="300px" ref="infodialog"></infodialog>
+        <textinputdialog ref="textinputdialog" width="400px"></textinputdialog>
+    </v-app>
+</div>
+
+
+@section Scripts {
+
+    @*
+    <script src="https://unpkg.com/jspdf"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
+    *@
+    <script src="~/js/jspdf.min.js" asp-append-version="true"></script>
+    <script src="~/js/jspdf-autotable.js" asp-append-version="true"></script>
+    <script src="~/dist/location.js" asp-append-version="true"></script>
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/textinputdialog.js" asp-append-version="true"></script>
+
+    <script>
+
+        function escape_csv(str) {
+            if (str.indexOf(',') >= 0) {
+                return ('"' + str + '"');
+            }
+            else return str;
+        }
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'location': VueComponents.Location,
+                'infodialog': VueComponents.InfoDialog,
+                'textinputdialog': VueComponents.TextInputDialog,
+            },
+            data: {
+                drawer: false,
+                page_title: "Reports",
+                home_location: undefined,
+                is_ready: false,
+                is_loading: false,
+                reports: [],
+                active_report: { ReportName: '' },
+                selected_location: { LocationID: 0, Path: '' },
+                fromdate: moment().subtract(1, 'month').format('YYYY-MM-DD'),
+                todate: moment().format('YYYY-MM-DD'),
+                maxrows: 1000,
+                columns: [],
+                rows: [],
+                status_message: undefined,
+                debug:false,
+            },
+            methods: {
+                fetch_reports: function () {
+                    let self = this;
+                    let url = utils.root_url() + "Report/getreports";
+                    api.axios_get({
+                        url: url,
+                        verbose: this.debug,
+                        caller: 'fetch_reports',
+                        onsuccess: function (response) {
+                            if (self.debug) console.log("Have reports:", response);
+                            self.reports.length = 0;
+                            self.reports = response.Data.reports;
+                            self.$forceUpdate();
+                            $('#app').show(0);
+                        },
+                        onfailure: function (response) {
+                            console.error("fetch_reports failed", response);
+                            $('#app').show(0);
+                            self.notify("Reports", response.Message);
+                        }
+                    });
+                },
+
+                select_report: function (report) {
+                    this.active_report = report;
+                    this.is_ready = false;
+                },
+
+                show_widget: function (widget_name) {
+                    return (this.active_report && this.active_report.Widgets && this.active_report.Widgets.indexOf(widget_name) >= 0);
+                },
+
+                nice_date: function (date, end_of_day) {
+                    let dval = moment(date);
+                    if (end_of_day) dval.hour(23).minute(59).second(59)
+                    return dval.format('YYYY-MM-DD HH:mm:ss');
+                },
+
+                run_report: function (report) {
+                    let self = this;
+                    this.active_report = report;
+                    this.rows.length = 0;
+                    this.columns.length = 0;
+                    this.is_loading = true;
+                    this.is_ready = false;
+                    this.status_message = undefined;
+                    this.$forceUpdate();
+                    let url = utils.root_url() + "Report/runreport";
+
+                    this.$refs.location.collapse();
+
+                    let postdata = {
+                        ReportID: report.ReportID,
+                        Parameters: [],
+                        MaxRows: this.maxrows
+                    };
+                    if (this.show_widget('locationpicker')) postdata.Parameters.push({ Name: 'Path', Datatype: 'location', Value: this.selected_location.LocationID });
+                    if (this.show_widget('fromdate')) postdata.Parameters.push({ Name: 'FromDate', Datatype: 'datetime', Value: this.nice_date(this.fromdate) });
+                    if (this.show_widget('todate')) {
+                        postdata.Parameters.push({ Name: 'ToDate', Datatype: 'datetime', Value: this.nice_date(this.todate, true) });
+                    }
+                    if (this.debug) console.log("Calling " + url, postdata);
+                    api.axios_post({
+                        url: url,
+                        data: postdata,
+                        caller: 'run_report',
+                        verbose: this.debug,
+                        onsuccess: function (response) {
+                            if (self.debug) console.log("run_report response:", response);
+                            let rows = response.Data.Rows;
+                            let success = response.Data.Result;
+                            let rowcount = response.Data.RowsRead;
+                            if (success) {
+                                if (rowcount > 0) {
+                                    let row = rows[0];
+                                    if (self.debug) console.log("row[0]:", row);
+                                    let columns = Object.keys(row);;
+                                    //for (let key in self.column_names) {
+                                    //    if (row.hasOwnProperty(key)) {
+                                    //        columns.push(key);
+                                    //    }
+                                    //}
+                                    //self.rows.length = 0;
+                                    //rows.forEach(function (x) {
+                                    //    self.rows.push(x);
+                                    //});
+                                    self.rows = Array.from(rows);
+                                    if (self.debug) console.log('Columns:', columns);
+                                    self.columns = columns;
+                                    self.is_loading = false;
+                                    self.is_ready = true;
+                                }
+                                else {
+                                    self.status_message = "Your query did not return any data."
+                                }
+                            }
+                        }
+                    })
+                },
+
+                // https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+                download_data: function (filename, data) {
+                    var blob = new Blob([data], { type: 'text/csv' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else {
+                        var elem = window.document.createElement('a');
+                        elem.href = window.URL.createObjectURL(blob);
+                        elem.download = filename;
+                        document.body.appendChild(elem);
+                        elem.click();
+                        document.body.removeChild(elem);
+                    }
+                },
+
+                generate_csv: function () {
+                    let column_names = this.columns;
+                    let rows = this.rows;
+                    let lines = [];
+                    let values = [];
+                    column_names.forEach(function (col) {
+                        values.push(escape_csv(col));
+                    });
+                    lines.push(values.join(","));
+                    rows.forEach(function (row) {
+                        values = [];
+                        column_names.forEach(function (col) {
+                            let colval = row[col].toString();
+                            let escaped = self.escape_csv(colval);
+                            values.push(escaped);
+                        });
+                        let line = values.join(",");
+                        //if (this.debug) console.log(line);
+                        lines.push(line);
+                    });
+                    return lines.join("\n");
+                },
+
+                save_csv: function () {
+                    let data = this.generate_csv();
+                    let self = this;
+                    this.$refs['textinputdialog'].open("Enter the filename for the downloaded CSV file", "Save As CSV", function (op, filename) {
+                        if (op == 'save') {
+                            if (!filename.toLowerCase().endsWith(".csv")) filename += ".csv";
+                            if (self.debug) console.log("Save as " + filename);
+                            self.download_data(filename, data);
+                        }
+                    })
+                },
+
+
+                save_pdf: function () {
+                    var doc = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'in',
+                        format: 'letter',
+                        top: 40,
+                        bottom: 60,
+                        left: 40,
+                        width: 522
+                    });
+                    doc.autoTable({
+                        html: '#report',
+                        styles: {
+                            fontSize: 8
+                        },
+                        margin: {
+                            top: 1,
+                            bottom: 1,
+                        },
+                        didDrawPage: function (data) {
+                            if (this.debug) console.log("In didDrawPage", data);
+                            // Header
+                            doc.setFontSize(20);
+                            doc.setTextColor('#000');
+                            doc.setFontStyle('normal');
+                            //doc.text("Report", data.settings.margin.left + 15, 22);
+                            doc.text("Report", data.settings.margin.left, 0.7);
+
+                            // Footer
+                            var str = "Page " + doc.internal.getNumberOfPages()
+                            doc.setFontSize(10);
+
+                            // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+                            var pageSize = doc.internal.pageSize;
+                            var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                            let x = data.settings.margin.left;
+                            let y = pageHeight - 0.5;
+                            if (this.debug) console.log("Writing " + str + " at " + x + "," + y);
+                            doc.text(str, x, y);
+                        },
+                    });
+                    doc.save(this.active_report.ReportName + ".pdf");
+                },
+
+                sort_by: function (column) {
+                    if (this.rows && this.rows.length > 0) {
+                        let datatype = typeof this.rows[0][column];
+                        this.rows.sort(function (r1, r2) {
+                            let a = r1[column];
+                            let b = r2[column];
+                            if (datatype == 'string') {
+                                a = a.toLowerCase();
+                                b = b.toLowerCase();
+                            }
+                            if (a < b) return -1;
+                            if (b < a) return 1;
+                            return 0;
+                        });
+                    }
+                },
+
+                on_locations_ready: function () {
+                    if (this.debug) console.log("Location component is ready");
+                },
+
+                on_location_selected: function (loc) {
+                    if (this.debug) console.log("on_location_selected", loc.Path);
+                    if (loc) {
+                        this.selected_location = loc;
+                        if (this.active_report.Description) this.run_report(this.active_report);
+                    }
+                },
+
+                notify: function (title, msg) {
+                    if (this.debug) console.log("In notify:", title, msg);
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+                on_sort: function (col) {
+                    this.sort_by(col);
+                },
+
+            },
+            created: function () {
+                let self = this;
+                api.fetch_user_settings(function (result) {
+                    if (self.debug) console.log("User settings", result);
+                    self.home_location = result.Data.HomeLocation;
+                    self.selected_location = self.home_location;
+                    self.fetch_reports();
+                });
+            }
+        });
+
+    </script>
+}
+
+@section styles {
+
+    <style>
+
+        .box {
+            height: 500px;
+            margin: 12px;
+        }
+
+        table {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            padding: 8px;
+            border: 1px solid gray;
+        }
+
+        .date-field {
+            margin-right: 1em;
+            width: 10em;
+            max-width: 10em;
+        }
+
+        .number-field {
+            margin-right: 1em;
+            width: 5em;
+            max-width: 5em;
+        }
+    </style>
+
+
+}

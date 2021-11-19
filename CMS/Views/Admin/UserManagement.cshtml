@@ -1,0 +1,798 @@
+﻿
+@{
+    ViewData["Title"] = "UserManagement2";
+    List<string> user_roles = ViewData["UserRoles"] as List<string>;
+    bool is_admin = (user_roles != null && user_roles.Contains("admin"));
+}
+
+
+@{
+}
+
+<div class="banner">User Management</div>
+
+<div id="uservue" style="margin-top: 1em; display: none;">
+    <v-app>
+        <v-content>
+            <v-container fluid>
+                <v-layout row wrap>
+                    <v-flex xs12 md4>
+                        <v-layout column mr-4>
+                            <v-container>
+                                <div class="headline mb-4">
+                                    <span>Users</span>
+                                    <v-icon color="primary" @@click="on_new_user" style="margin-left: 1em;">person_add</v-icon>
+                                </div>
+                                <div>
+                                    <input type="text" style="border: 1px solid lightgray" placeholder="Filter" v-model="filter_text" @@input="on_filter_change" />
+                                </div>
+                                <div style="max-height: 60vh; overflow-y: auto;">
+                                    <v-card dark ripple style="width: 100%; margin-bottom: 8px; font-size: smaller" v-for="user in selected_users" @@click="on_user_click(user)">
+                                        <v-card-title class="title">{{ format_user_name(user) }}</v-card-title>
+                                        <v-card-text>
+                                            <table class="attr">
+                                                <tr><td>Login</td><td>{{ user.UserName }}</td></tr>
+                                                <tr><td>Email</td><td>{{ user.Email }}</td></tr>
+                                                <tr><td>Roles</td><td>{{ user.Roles.join(',') }}</td></tr>
+                                                <tr><td>Home</td><td>{{ user.HomeLocation }}</td></tr>
+                                            </table>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn flat icon @@click.stop="on_change_password(user)"><v-icon color="azure">lock_open</v-icon></v-btn>
+                                            &nbsp;
+                                            <v-btn flat icon @@click.stop="on_delete_user(user)"><v-icon color="red lighten-1">delete</v-icon></v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </div>
+                            </v-container>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs12 md7 mt-4 ml-4 v-if="show_user">
+                        <div class="headline mb-4" v-if="!selected_user.IsNew">
+                            <span>User: {{format_user_name(selected_user)}} ({{selected_user.UserName}})</span>
+
+                            <v-btn flat icon @@click="show_user = false" style="float: right;"><v-icon large color="primary">cancel</v-icon></v-btn>
+                        </div>
+                        <div class="headline mb-4" v-if="selected_user.IsNew">New User</div>
+                        <v-card flat dark class="noborder" style="font-size: x-small;">
+                            <v-card-text>
+                                <v-layout>
+                                    <v-text-field readonly append-icon="create" v-model="selected_user.HomeLocation" label="Home Location" @@click:append="on_select_user_location(selected_user)"></v-text-field>
+                                </v-layout>
+                                <v-layout row wrap>
+                                    <v-flex xs6>
+                                        <v-text-field v-if="selected_user.IsNew" v-on:input="on_user_modified(selected_user)" v-model="selected_user.UserName" label="Login" style="width: 20rem;"></v-text-field>
+                                        <v-text-field v-if="selected_user.IsNew" v-on:input="on_user_modified(selected_user)" v-model="selected_user.Password" label="Password" style="max-width: 20rem;"></v-text-field>
+                                        <v-text-field v-on:input="on_user_modified(selected_user)" v-model="selected_user.Email" label="Email" style="max-width: 20rem;"></v-text-field>
+                                        <v-text-field v-on:input="on_user_modified(selected_user)" v-model="selected_user.LastName" label="Last Name" style="max-width: 20rem;"></v-text-field>
+                                        <v-text-field v-on:input="on_user_modified(selected_user)" v-model="selected_user.FirstName" label="First Name" style="max-width: 20rem;"></v-text-field>
+                                        <v-text-field v-on:input="on_user_modified(selected_user)" v-model="selected_user.MiddleName" label="Middle Name" style="max-width: 20rem;"></v-text-field>
+                                        <v-select outlined label="Position" :items="position_list" v-model="selected_user.Position" v-on:input="on_user_modified(selected_user)" style="max-width: 20rem;"></v-select>
+                                        <v-text-field v-on:input="on_user_modified(selected_user)" v-model="selected_user.Workplace" label="Workplace" style="max-width: 20rem;"></v-text-field>
+                                        <v-layout row justify-start>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsRoot" label="Root" style="max-width: 10rem; margin-right:1.5rem;"></v-checkbox>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsAdmin" label="Admin" style="max-width: 10rem; margin-right:1.5rem;"></v-checkbox>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsManager" label="Manager" style="max-width: 10rem; margin-right:1.5rem;"></v-checkbox>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsAuditor" label="Auditor" style="max-width: 10rem; margin-right:1.5rem;"></v-checkbox>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsEditor" label="Editor" style="max-width: 10rem; margin-right:1.5rem;"></v-checkbox>
+                                            <v-checkbox v-on:change="on_user_modified(selected_user)" v-model="selected_user.IsViewer" label="Viewer" style="max-width: 10rem;"></v-checkbox>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex>
+                                        <v-layout column>
+                                            <v-img v-if="photo_url.length > 0" :src="photo_url" height="256px" contain class="mt-4"></v-img>
+                                            <v-btn small color="green" @@click="show_upload_dialog = true">Upload Photo</v-btn>
+                                        </v-layout>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout>
+
+                                </v-layout>
+                                <div>
+                                    <p id="status-message" style="min-height: 4em;"></p>
+                                </div>
+                                <v-layout>
+                                    <v-btn color='success' v-if="changed" v-on:click="on_save_user(selected_user)">Save</v-btn>
+                                    <!--
+                                <v-btn color="primary" v-on:click="on_change_password(selected_user)">Change Password</v-btn>
+                                <v-btn color='error' v-on:click="on_delete_user(selected_user)">Delete</v-btn>
+                                -->
+                                </v-layout>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+
+        <!-- -------------------------------------------------- -->
+        <!-- File Upload Dialog                                 -->
+        <!-- -------------------------------------------------- -->
+        <v-dialog v-model="show_upload_dialog" width="600px">
+            <v-card>
+                <v-card-text>
+                    <upload style="width: 100%;
+                                    font-size: large;"
+                            :url="upload_url"
+                            title="Upload Attachment"
+                            extensions=".jpg,.pdf"
+                            :owner="selected_user.UserName"
+                            :tag="upload_type"
+                            description="User Photo"
+                            v-on:complete="on_upload_complete"
+                            v-on:error="on_upload_error"></upload>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary"
+                           flat
+                           @@click="show_upload_dialog = false">
+                        Dismiss
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <confirm ref='confirm' width="400px"></confirm>
+        <textinput ref='textinput' width="600px"></textinput>
+        <locationpicker ref="locationpicker"></locationpicker>
+        <infodialog ref="infodialog" width="400px"></infodialog>
+    </v-app>
+</div>
+
+
+
+@section Scripts
+    {
+
+    <script src="~/visjs/vis.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+    <script src="~/dist/location.js"></script>
+    <script src="~/dist/locationpicker.js"></script>
+    <script src="~/dist/upload.js"></script>
+
+    <script>
+
+        $(document).ready(function () { console.log("READY"); });
+        var status_timer;
+        var saved_user = {};
+        var is_admin = "@is_admin";
+        var user_template = {
+            UserName: "",
+            Email: "",
+            Password: '',
+            Position: '',
+            Workplace: '',
+            HomeLocationID: 0,
+            HomeLocation: '',
+            IsRoot: false,
+            IsAdmin: false,
+            IsManager: false,
+            IsAuditor: false,
+            IsEditor: false,
+            IsViewer: true,
+            IsNew: true,
+            IsChanged: true,
+            PictureAttachmentID: 0,
+        };
+
+
+        function contains(str, substr) {
+            return (str && str.toLowerCase().indexOf(substr.toLowerCase()) >= 0)
+        }
+
+        function filter_user(user, filtertext) {
+            let usertext = user.LastName + ' ' + user.FirstName + ' ' + user.MiddleName + ' ' + user.UserName + ' ' + user.Email + ' ' + user.Roles.join(',');
+            return contains(usertext, filtertext);
+        }
+
+
+        function has_value(x) {
+            if (typeof x == 'string') return x.length > 0;
+            if (x == null) return false;
+            return x;
+        }
+
+        function show_message(text, duration_ms) {
+            console.log("show_message", text, duration_ms);
+            if (status_timer) {
+                clearTimeout(status_timer);
+            }
+            if (!duration_ms) duration_ms = 3000;
+            $('#status-message').text(text);
+            status_timer = setTimeout(function () { $('#status-message').text(''); }, duration_ms);
+        }
+
+        function copy_user(from, to) {
+            to.Email = from.Email;
+            to.FirstName = from.FirstName;
+            to.LastName = from.LastName;
+            to.MiddleName = from.MiddleName;
+            to.Position = from.Position;
+            to.Workplace = from.Workplace;
+            to.Password = from.Password;
+            to.PhoneNumber = from.PhoneNumber;
+            to.Position = from.Position;
+            to.Roles = from.Roles;
+            to.UserName = from.UserName;
+            to.IsNew = from.IsNew;
+            to.IsChanged = from.IsChanged;
+            to.IsRoot = from.IsRoot;
+            to.IsAdmin = from.IsAdmin;
+            to.IsManager = from.IsManager;
+            to.IsAuditor = from.IsAuditor;
+            to.IsEditor = from.IsEditor;
+            to.IsViewer = from.IsViewer;
+            to.HomeLocationID = from.HomeLocationID;
+            to.HomeLocation = from.HomeLocation;
+        }
+
+        function user_has_role(user, role) {
+            return (user.Roles.indexOf(role) >= 0);
+        }
+
+
+        // set user's role list based on checkbox values
+        function update_user_roles(user) {
+            user.Roles = [];
+            if (user.IsRoot) user.Roles.push("root");
+            if (user.IsAdmin) user.Roles.push("admin");
+            if (user.IsManager) user.Roles.push("manage");
+            if (user.IsAuditor) user.Roles.push("audit");
+            if (user.IsEditor) user.Roles.push("edit");
+            if (user.IsViewer) user.Roles.push("view");
+        }
+
+        function get_changed_users(users) {
+            result = { changed: [], new: [] };
+            users.forEach(function (user) {
+                if (user.IsChanged || user.IsNew) {
+                    if (user.UserName && user.UserName.length > 3) {
+                        let copy = $.extend({}, user);
+                        copy.Roles = [];
+                        if (copy.IsRoot) copy.Roles.push("root");
+                        if (copy.IsAdmin) copy.Roles.push("admin");
+                        if (copy.IsManager) copy.Roles.push("manager");
+                        if (copy.IsEditor) copy.Roles.push("edit");
+                        if (copy.IsViewer) copy.Roles.push("view");
+                        if (user.IsNew) result.new.push(copy);
+                        else result.changed.push(copy);
+                    }
+                    else {
+                        alert("Login names must be at least 4 characters");
+                        return ([]);
+                    }
+                }
+            });
+            return result;
+        }
+
+        function compare_locations(x, y) {
+            let result = 0;
+            if (x.level == 0) result = -1;
+            else {
+                if (x.name < y.name) result = -1;
+                else result = 1;
+            }
+            return result;
+        }
+
+        function clone_user(user) {
+            let result = {};
+            utils.copy_object(user_template, result);
+            return result;
+        }
+
+
+        var uservue = new Vue({
+            el: '#uservue',
+            components: {
+                'confirm': VueComponents.ConfirmDialog,
+                'infodialog': VueComponents.InfoDialog,
+                'textinput': VueComponents.TextInputDialog,
+                'locationpicker': VueComponents.LocationPicker,
+                'upload': VueComponents.Upload,
+            },
+            data: {
+                drawer: false,
+                this_user: undefined,
+                this_home_location_id: 0,
+                users: [],
+                selected_users: [],
+                is_caller_admin: (is_admin == 'True'),
+                selected_user: clone_user(user_template),
+                show_user: false,
+                error_message: undefined,
+                changed: false,
+                user_access_visible: false,
+                location_user: {},
+                home_locations: [],
+                location_tree: undefined,
+                selected_location: undefined,
+                permissions: null,
+                filter_text: "",
+                photo_url: '',
+                upload_url: utils.mvc_page_url("admin", "uploadattachment"),
+                show_upload_dialog: false,
+                upload_type: 'photo',
+                position_list: ["Head of Department", "Head of College", "Head of University", "Other", "Post Doc", "Professor", "Senior Lab Technician", "Storage Manager", "Student"],
+            },
+            methods: {
+
+                on_filter_change: function() {
+                    console.log("filter_text: " + this.filter_text);
+                    let ftext = this.filter_text;
+                    this.selected_users = this.users.filter(function (x) { return filter_user(x, ftext); })
+                },
+
+
+                on_user_modified: function (user) {
+                    if (!user.IsChanged) {
+                        console.log(user.UserName + " modified ");
+                        user.IsChanged = true;
+                    }
+                    this.changed = true;
+                },
+
+                on_new_user: function () {
+                    let user = clone_user(user_template);
+                    user.HomeLocationID = this.this_user.HomeLocationID;
+                    copy_user(user, this.selected_user);
+                    this.error_message = undefined;
+                    this.show_user = true;
+                    this.photo_url = '';
+                },
+
+                get_user_photo: function () {
+                    let self = this;
+                    let url = utils.api_url("attachment") + "/photo/" + this.selected_user.UserName;
+
+                    api.axios_get({
+                        caller: "on_user_click",
+                        verbose: true,
+                        url: url,
+                        onsuccess: function (result) {
+                            console.log("Have attachment: ", result);
+                            self.selected_user.photo = result.Data.filename;
+                            self.photo_url = utils.root_url() + "attachments/" + result.Data.filename + '?ts=' + new Date().getTime();
+                        },
+                        onfailure: function (result) {
+                            console.log("No attachment: ", result);
+                        },
+                    });
+                },
+
+                on_user_click: function (user) {
+                    copy_user(user, this.selected_user);
+                    this.selected_user.IsNew = false;
+                    this.selected_user.IsChanged = false;
+                    this.show_user = true;
+                    this.changed = false;
+                    this.photo_url = '';
+                    let self = this;
+                    let url = utils.api_url("attachment") + "/photo/" + this.selected_user.UserName;
+
+                    api.axios_get({
+                        caller: "on_user_click",
+                        verbose: true,
+                        url: url,
+                        onsuccess: function (result) {
+                            console.log("Have attachment: ", result);
+                            self.selected_user.photo = result.Data.filename;
+                            self.photo_url = utils.root_url() + "attachments/" + result.Data.filename + '?ts=' + new Date().getTime();
+                        },
+                        onfailure: function (result) {
+                            console.log("No attachment: ", result);
+                        },
+                    });
+                },
+
+                on_select_user_location: function (user) {
+                    console.log("Select user location", user);
+                    let self = this;
+                    let settings = { root_location_id: this.this_user.HomeLocationID, depth: 3 };
+                    self.$refs['locationpicker'].open(settings, function (sel) {
+                        console.log("In locationpicker callback:", sel);
+                        if (user_has_role(self.this_user, "root")  ||  sel.LocationID != self.this_home_location_id) {
+                            user.HomeLocationID = sel.LocationID;
+                            user.HomeLocation = self.get_location_name(sel);
+                            self.changed = true;
+                            user.changed = true;
+                            self.$forceUpdate();
+                        }
+                        else self.notify("Create User", "You must select a location below your home location.");
+                    });
+                },
+
+
+                on_save_user: function (user) {
+                    console.log("on_save_user", user);
+                    let errors = [];
+                    if (user.UserName.length == 0) errors.push("UserName cannot be empty.");
+                    if (user.Email.length == 0) errors.push("Email cannot be empty.");
+                    if (user.IsNew && user.Password.length == 0) errors.push("Password cannot be blank.");
+                    if (!has_value(user.FirstName) && !has_value(user.LastName) && !has_value(user.MiddleName)) errors.push("User name cannot be blank.")
+                    if (user.HomeLocationID == undefined || user.HomeLocationID == 0) errors.push("User must have a home location");
+                    if (errors.length == 0) {
+                        update_user_roles(user);
+                        if (user.IsNew) {
+                            let url = utils.mvc_page_url("Admin", "AddUsers");
+                            let self = this;
+                            api.axios_post({
+                                url: url,
+                                data: [user],
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    self.refresh();
+                                    self.show_info(ajax_result.Message, "Add User");
+                                    self.show_user = false;
+                                },
+                                onfailure: function (ajax_result) {
+                                    self.show_info(ajax_result.Message, "Add User");
+                                }
+                            });
+                        }
+                        else {
+                            let url = utils.mvc_page_url("Admin", "SaveUsers");
+                            let self = this;
+                            api.axios_post({
+                                url: url,
+                                data: [user],
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    self.refresh();
+                                    self.show_info(ajax_result.Message, "Save User");
+                                    self.show_user = false;
+                                },
+                                onfailure: function (ajax_result) {
+                                    self.show_info(ajax_result.Message, "Update User");
+                                }
+                            });
+                        }
+                        user.IsChanged = false;
+                        this.changed = false;
+                    }
+                    else {
+                        show_message(errors.join('  \n'), 7000);
+                    }
+                },
+
+                on_delete_user: function (user) {
+                    let self = this;
+                    let dlg = this.$refs['confirm'];
+                    dlg.open("Delete user " + this.format_user_name(user)  + "?", "Delete User " + user.UserName, function (result) {
+                        if (result == 'confirmed') {
+                            console.log("Deleting " + user.UserName);
+                            api.axios_delete({
+                                url: '/Admin/DeleteUser',
+                                caller: 'on_delete_user',
+                                verbose: true,
+                                id: user.UserName,
+                                onsuccess: function (ajax_result) {
+                                    console.log("Result: ", ajax_result);
+                                    if (ajax_result.Success) {
+                                        self.show_user = false;
+                                        self.$refs['infodialog'].open("User " + user.UserName + " has been successfully deleted.", "Delete User");
+                                        self.refresh();
+                                    }
+                                    else {
+                                        self.$refs['infodialog'].open("Unable to delete user " + user.UserName + ": " + ajax_result.Message, "Delete User");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            console.log("Delete was aborted");
+                        }
+                    });
+                },
+
+                on_change_password: function (user) {
+                    let tuser = {};
+                    copy_user(user, tuser);
+                    tuser.Password = '';
+                    this.error_message = undefined;
+                    let self = this;
+                    this.$refs['textinput'].open("New password for " + this.format_user_name(user), "Change Password for " + user.UserName, function (op, response) {
+                        if (op == 'save') {
+                            tuser.Password = response;
+                            self.save_password(tuser);
+                        }
+                    });
+                },
+
+                save_password: function (user) {
+                    console.log("In save_password", user);
+                    if (user.Password.length > 3) {
+                        let self = this;
+                        api.axios_post({
+                            url: '/Admin/ChangePassword',
+                            data: user,
+                            verbose: true,
+                            caller: "save_password",
+                            onsuccess: function (ajax_result) {
+                                user.Password = '';
+                                console.log("success", ajax_result);
+                                self.show_info(ajax_result.Message);
+                            },
+                            onfailure: function (ajax_result) {
+                                user.Password = '';
+                                console.log("failure", ajax_result);
+                                self.show_info(ajax_result.Message);
+                            }
+                        });
+                    }
+                    else {
+                        console.log("SHORT");
+                        this.error_message = "Passwords must be at least 4 characters long.";
+                    }
+                },
+
+                on_edit_user_access: function (user) {
+                    go_to_page("Admin/EditUserLocations?user=" + user.UserName);
+                },
+
+                on_save_user_access: function () {
+                    if (this.location_user.UserName) {
+                        let permissions = get_user_permissions(this.location_user.UserName, this.locations);
+                        console.log("New user permissions", permissions)
+                        api.axios_post({
+                            url: '/api/updateuserlocations',
+                            caller: 'on_save_user_access',
+                            verbose: true,
+                            id: this.location_user.UserName,
+                            data: permissions
+                        });
+                    }
+                },
+
+                show_info: function (text, header) {
+                    this.$refs['infodialog'].open(text, header);
+                },
+
+                get_location_name: function (loc) {
+                    if (typeof loc === 'number') loc = this.location_map[loc];
+                    let name;
+                    if (loc.LocationLevel > 1) {
+                        name = this.get_location_name(loc.ParentID) + "/" + loc.Name;
+                    }
+                    else {
+                        name = "/" + loc.Name;
+                    }
+                    //console.log("get_location_name(" + loc.Name + ":" + loc.LocationLevel + ") => " + name);
+                    return name;
+                },
+
+                set_user_location_names: function () {
+                    if (this.location_map) {
+                        let self = this;
+                        console.log("set_user_location_names", this.users);
+                        this.users.forEach(function (user) {
+                            user.HomeLocation = self.get_location_name(user.HomeLocationID);
+                            console.log("Set home location", user);
+                        });
+                    }
+                },
+
+                attachment_information: function (user) {
+                    return user.UserName + "|photo|User Photo";
+                },
+
+                format_user_name: function (user) {
+                    if (user.LastName) {
+                        if (user.FirstName) {
+                            if (user.MiddleName) return (user.LastName + ", " + user.FirstName + " " + user.MiddleName);
+                            else return (user.LastName + ", " + user.FirstName);
+                        }
+                        else {
+                            if (user.MiddleName) return (user.LastName + ", " + user.MiddleName);
+                            else return (user.LastName);
+                        }
+                    }
+                    else {
+                        if (user.FirstName) {
+                            if (user.MiddleName) return (user.FirstName + " " + user.MiddleName);
+                            else return user.FirstName;
+                        }
+                        if (user.MiddleName) return user.MiddleName;
+                    }
+                    // this guy has no name information
+                    return user.UserName;
+                },
+
+                process_users: function (users) {
+                    let self = this;
+                    users.forEach(function (user) {
+                        //console.log("Process user: ", user);
+                        user.IsRoot = user_has_role(user, "root");
+                        user.IsAdmin = user_has_role(user, "admin");
+                        user.IsManager = user_has_role(user, "manage");
+                        user.IsAuditor = user_has_role(user, "audit")
+                        user.IsEditor = user_has_role(user, "edit");
+                        user.IsViewer = user_has_role(user, "view");
+                        user.IsNew = false;
+                        user.IsSelected = true;
+                    });
+                    return users;
+                },
+
+                refresh_users: function () {
+                    let self = this;
+                    let url = utils.mvc_page_url("Admin", "MyUsers");
+                    console.log("In refresh_users");
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        onsuccess: function (ajax_result) {
+                            if (ajax_result.Success) {
+                                self.users = self.process_users(ajax_result.Data.Users);
+                                self.this_user = ajax_result.Data.ThisUser;
+                                self.this_home_location_id = self.this_user.HomeLocationID;
+                                self.selected_users = self.users.slice(0);
+                                console.log("refresh_users succeeded:", self.users);
+                            }
+                            else {
+                                console.log("refresh_users failed: " + ajax_result.Message);
+                            }
+                            $('#uservue').show(0);
+                        }
+                    });
+                },
+
+                refresh_locations: function () {
+                    let self = this;
+                    console.log("Requesting location information");
+                    api.fetch_locations(function (result) {
+                        console.log("api.fetch_locations returned ", result);
+                        self.location_map = {}
+                        self.locations = result.Data.locations;
+                        result.Data.locations.forEach(function (x) {
+                            self.location_map[x.LocationID] = x;
+                        });
+                    });
+                },
+
+                refresh: function () {
+                    this.refresh_users();
+                    this.refresh_locations();
+                },
+
+                on_save: function () {
+                    if (this.changed) {
+                        let updates = get_changed_users(this.users);
+                        console.log("New users: " + updates.new);
+                        console.log("Changed users: " + updates.changed);
+                        if (updates.changed.length > 0) {
+                            let url = utils.mvc_page_url("Admin", "SaveUsers");
+                            let self = this;
+                            api.axios_post({
+                                url: url,
+                                data: updates.changed,
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    self.refresh();
+                                    self.show_info(ajax_result.Message, "Update User");
+                                    self.show_user = false;
+                                },
+                                onfailure: function (ajax_result) {
+                                    self.show_info(ajax_result.Message, "Update User");
+                                }
+                            });
+                        }
+                        if (updates.new.length > 0) {
+                            let url = utils.mvc_page_url("Admin", "AddUsers");
+                            let self = this;
+                            api.axios_post({
+                                url: url,
+                                data: updates.new,
+                                verbose: true,
+                                onsuccess: function (ajax_result) {
+                                    self.refresh();
+                                    self.show_user = false;
+                                }
+                            });
+                        }
+                    }
+                },
+                on_upload_complete: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    console.log("on_upload_complete", ajax_result);
+                    this.notify("Upload", ajax_result.Message);
+                    this.get_user_photo();
+                },
+
+                on_upload_error: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    console.log("on_upload_error", ajax_result);
+                    this.notify("Upload", ajax_result.Message);
+                },
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+
+
+            },
+            created: function () {
+                this.refresh();
+                let self = this;
+            }
+        });
+
+        window.onresize = function () {
+
+
+        }
+
+
+    </script>
+
+
+
+}
+
+@section Styles
+    {
+    <link href="~/visjs/vis.css" rel="stylesheet" type="text/css" />
+    <style scoped>
+
+        .usertable {
+            max-width: 600px;
+        }
+
+        .header {
+            font-size: 1.5em;
+        }
+
+        .em4 {
+            width: 4em;
+        }
+
+        .action-icon {
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-left: 1em;
+        }
+
+        .btn-tiny {
+            height: 24px;
+            width: 24px;
+            line-height: 24px;
+            padding: 0 0;
+        }
+
+        .error-message {
+            height: 2em;
+            font-weight: bold;
+            color: red;
+        }
+
+        #location-network {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid blue;
+        }
+
+        .checkbox-label {
+            text-align: center;
+        }
+
+        /* attribute table */
+
+        .table.attr {
+            border: none;
+        }
+
+        table.attr td {
+            padding: 0px;
+            border: none;
+        }
+    </style>
+
+}
+

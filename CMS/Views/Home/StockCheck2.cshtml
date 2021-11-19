@@ -1,0 +1,680 @@
+﻿
+@{
+    ViewData["Title"] = "Audit";
+    List<string> userroles = ViewData["UserRoles"] as List<string>;
+    if (userroles == null)
+    {
+        userroles = new List<string>();
+    }
+    string roles = String.Join(", ", userroles);
+    bool can_audit = userroles.Contains("admin") || userroles.Contains("edit");
+}
+
+<div class="banner">Audit</div>
+
+<div id="settings" class="container-fluid" style="margin-top: 1em;" >
+    <v-content>
+        <v-container fluid data-app grid-list-lg >
+            <v-layout justify-center align-center>
+                <span style="font-weight: bold;  font-size:x-large;">Selected Location: {{audit_location.Path}}</span>
+                <v-btn @@click="on_select_location()" icon small><v-icon>import_export</v-icon></v-btn>
+            </v-layout>
+            <v-layout>
+                <v-flex sm3 class="noborder">
+                    <v-text-field label="Item Barcode" placeholder="Item Barcode" v-model="barcode" v-on:keyup.enter="on_entered_barcode" :disabled="!isLocationSelected"></v-text-field>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex xs12 sm12 md7 lg7>
+                    <v-card dark flat style="height: 60vh; overflow-y: auto;">
+                        <v-card-title class="headline">Preliminary Audit</v-card-title>
+                        <v-card-text>
+                            <span class="card-title"></span>
+                            <v-btn @@click="on_submit_all_audits()" :disabled="!hasPreliminaryAuditItems">Submit All</v-btn>
+                            <v-btn @@click="on_remove_all_audits()" :disabled="!hasPreliminaryAuditItems">Remove All</v-btn>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Barcode</th>
+                                        <th>Current Location</th>
+                                        <th>Audit Location</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in prelim_audit_items">
+                                        <td>{{item.Barcode}}</td>
+                                        @* <td v-bind:class="{auditFound: item_status(item) === 'FOUND', auditMoved: item_status(item) === 'MOVED', auditRemoved: item_status(item) === 'REMOVED'}">{{nice_location(item.CurrentLocation)}}</td> *@
+                                        <td>{{nice_location(item.CurrentLocation)}}</td>
+                                        <td>{{nice_location(item.AuditLocation, true)}}</td>
+                                        <td><v-btn @@click="on_submit_one_audit(item)" small color="green">Submit</v-btn><v-btn @@click="on_remove_one_audit(item)" small color="yellow">Remove</v-btn></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+                <v-flex xs12 sm12 md5 lg5>
+                    <v-card dark flat style="height: 60vh; overflow-y: auto;">
+                        <v-card-title class="headline">Current Inventory</v-card-title>
+                        <v-card-title class="title">{{nice_location(audit_location)}}</v-card-title>
+                        <v-card-text>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Barcode</th>
+                                        <th>Chemical</th>
+                                        <th>Current Location</th>
+                                        <th>Last Audited</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in inventory">
+                                        <td>{{item.Item.Barcode}}</td>
+                                        <td>{{item.Item.ChemicalName}}</td>
+                                        <td>{{nice_location(item.Item.Location)}}</td>
+                                        <td>{{nice_date(item.Item.LastInventoryDate)}}</td>
+                                        <td><v-btn @@click="on_remove_one_item(item)" x-small color="red">Remove</v-btn></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+        </v-container>
+    </v-content>
+    <locationpicker ref="locationpicker"></locationpicker>
+    <infodialog ref="infodialog" width="250px"></infodialog>
+</div>
+
+<!-- ------------------------------------------------------- -->
+<!--                      BARCODE  DIALOG                       -->
+<!-- ------------------------------------------------------- -->
+<div id="barcode-dialog" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:300px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Barcode Scan</h4>
+            </div> <!-- modal-header -->
+            <div class="modal-body">
+                <p>
+                    Scan Barcode.
+                </p>
+                <p class="error-message">
+                    {{error_message}}
+                </p>
+                <!-- DIV below is for live image dispay - don't change id or class -->
+                <div id="interactive" class="viewport"></div>
+            </div> <!-- modal body -->
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-success" v-on:click="save_edits()">Save</button>  -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Stop</button>
+            </div> <!-- modal-footer -->
+        </div> <!-- modal-content -->
+
+    </div> <!-- modal-dialog -->
+</div> <!-- edit-dialog -->
+
+
+
+@section Scripts {
+
+    <script src="~/assets/cms_data.js"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/cms_barcode_scanner.js"></script>
+    <script src="~/js/quagga.js"></script>
+    <script src="~/dist/locationpicker.js"></script>
+    <script src="~/dist/infodialog.js"></script>
+
+    <script>
+
+        var AjaxResult;
+
+        var VueData = {
+
+            Message: "This is a test",
+            IsMobile: utils.is_mobile(),
+
+            // The current location that is being audited
+            audit_location: { LocationID: 0 },
+            audit_path: undefined,
+            parent_path: undefined,
+
+            // The base location that comes up when the location
+            // selection is being made
+            base_audit_location: { LocationID: 1, FullLocation: '' },
+
+            // The items that have been audited, but not yet sent to the server
+            // Is an array of structures that have this format:
+            // {
+            //    Barcode: "xyz123",
+            //    CurrentLocation: {},
+            //    AuditLocation: {}
+            // }
+            // CurrentLocation may be null, because it's possible they entered
+            // a barcode for an item that isn't currently at one of the locations
+            // we got the inventory for. If AuditLocation is null, that means
+            // the item has been removed from the inventory.
+            prelim_audit_items: [],
+
+            // The items that are at the chosen location. Is an array of structures
+            // that have this format:
+            // {
+            //   Item: {},
+            //   Audit: {}
+            // }
+            inventory: [],
+
+            // The same as inventory, but all of these have not been audited
+            unaudited_inventory: [],
+
+            // Where the user types the barcode in, or where he barcode reading code
+            // puts the barcode text
+            barcode: ""
+        };
+
+        function fetch_data() {
+            let url = utils.api_url("settings");
+            @* let self = this; *@
+
+            console.log("******** In fetch_data");
+
+            api.axios_get({
+                caller: "fetch_data",
+                verbose: true,
+                url: url,
+                onsuccess: function (ajax_result) {
+                    VueData.base_audit_location = ajax_result.Data.HomeLocation;
+                    VueData.Locations = ajax_result.Data.Locations;
+                    VueData.StockCheckDate = ajax_result.Data.StockCheckDate;
+                }
+            });
+        }
+
+        // callback for barcode scanning
+        function read_camera_barcode(vue, isContinuous) {
+            activate_barcode_scanner({
+                //Determines single barcode or multiple barcodes being scanned
+                continuous: isContinuous,
+                //Allowed time in milliseconds between succesful scans
+                timeout: 60000,
+                //Determines if a successful scan has occured, also stores and displays barcodes
+                onsuccess: function (result) {
+                    var isScanned = false;
+                    if (result) {
+                        isScanned = true;
+                    }
+                    //Display result to user (NOT included in cms_barcode_scanner.js file)
+                    console.log("Have barcode result", result);
+                    vue.on_barcode_results({ success: true, message: '', result: result });
+                    //display_barcode(result);
+                    //Array used to store scanned barcodes (included in cms_barcode_scanner.js file)
+                    //bcResults[resultAccumulator] = result;
+                    //Increment result array element accumulator (included in cms_barcode_scanner.js file)
+                    //resultAccumulator++;
+
+                    // Note: set continuous to false to stop continuous scanning
+
+                    return isScanned;
+                },
+                //Determine if live scanning has ended due to inactivity
+                ontimeout: function (timeFlag) {
+                    var isTimeout = false;
+                    if (timeFlag) {
+                        isTimeout = true;
+                    }
+                    //Display timeout error to user (NOT included in cms_barcode_scanner.js file)
+                    //display_barcode("TIMEOUT");
+                    //Halt barcode scanning library
+                    console.log("Barecode TIMEOUT");
+                    Quagga.stop(); // PH: double check why this is necessary
+                    vue.on_barcode_results({ success: false, message: 'TIMEOUT', result: null } );
+                    return isTimeout;
+                },
+                //Determine if an error occored with accessing the camera
+                onerror: function (errormessage) {
+                    var errorFlag = false;
+                    if (errormessage) {
+                        var errorFlag = true;
+                    }
+                    //relay error message to console
+                    console.log(errormessage);
+                    //Display error to user (NOT included in cms_barcode_scanner.js file)
+                    //display_barcode("FAILED");
+                    //Halt barcode scanning library
+                    Quagga.stop();   // PH: double check why this is necessary
+                    vue.on_barcode_results({ success: false, message: errormessage, result: null });
+                    return errorFlag;
+                }
+            });
+        }
+
+        function chop_path(path) {
+            let pos = path.lastIndexOf('/')
+            if (pos == path.length - 1) {
+                path = path.substr(0, pos);
+                pos = path.lastIndexOf('/');
+            }
+            if (pos > 0) return path.substr(0, pos);
+            else return path;
+        }
+
+        function tail_path(path) {
+            let pos = path.lastIndexOf('/')
+            if (pos == path.length - 1) {
+                path = path.substr(0, pos);
+                pos = path.lastIndexOf('/');
+            }
+            if (pos > 0) return path.substr(pos + 1);
+            else return path;
+        }
+
+        var app = new Vue({
+            el: '#settings',
+            data: VueData,
+            components: {
+                'locationpicker': VueComponents.LocationPicker,
+                'infodialog': VueComponents.InfoDialog,
+            },
+            created: function () {
+                console.log("******* In created");
+                this.refresh();
+                fetch_data();
+            },
+            methods: {
+                enter_barcode: function (barcode) {
+                    this.Barcode = barcode;
+                    this.on_barcode_enter(null);
+                },
+                on_new_stock_check: function () {
+                    this.StockCheckData.OpCode = 'new';
+                    console.log("In on_new_stock_check");
+                    let self = this;
+                    api.axios_post({
+                        data: this.StockCheckData,
+                        caller: "on_new_stock_check",
+                        verbose: true,
+                        url: utils.api_url('stockcheck'),
+                        onsuccess: function (ajax_result) {
+                            console.log("AjaxResult", ajax_result);
+                            console.log("StockCheckDate", ajax_result.Data.StockCheckDate);
+                            self.StockCheckData.UnconfirmedInventory = ajax_result.Data.StockCheckData.UnconfirmedInventory;
+                            self.StockCheckData.ConfirmedInventory = ajax_result.Data.StockCheckData.ConfirmedInventory;
+                            self.StockCheckDate = ajax_result.Data.StockCheckDate;
+                            self.SelectedLocation = undefined;
+                        }
+                    });
+                },
+                on_barcode_enter: function (evt) {
+                    let barcode = this.Barcode;
+                    if (barcode.length > 0) {
+                        this.Barcode = '';
+                        this.StockCheckData.Barcode = barcode;
+                        this.StockCheckData.OpCode = 'find';
+                        console.log('Search for "' + barcode + '"');
+                        let self = this;
+                        api.axios_post({
+                            data: this.StockCheckData,
+                            caller: "on_barcode_enter",
+                            verbose: true,
+                            url: utils.api_url('stockcheck'),
+                            onsuccess: function (ajax_result) {
+                                console.log("AjaxResult", ajax_result);
+                                self.StockCheckData.Barcode = '';
+                                self.StockCheckData.UnconfirmedInventory = ajax_result.Data.StockCheckData.UnconfirmedInventory;
+                                self.StockCheckData.ConfirmedInventory = ajax_result.Data.StockCheckData.ConfirmedInventory;
+                            }
+                        });
+                    }
+                },
+                on_location_change: function () {
+                    console.log('on_location_change', this.SelectedLocation);
+                    let self = this;
+                    this.inventory = [];
+                    api.fetch_local_inventory(this.audit_location.LocationID, function(result) {
+                        console.log("StockCheck.on_location_change", result);
+
+                        for(let i = 0; i < result.Data.Inventory.length; ++i) {
+                            let inventory = {
+                                Item: result.Data.Inventory[i],
+                                Audit: {}
+                            };
+                            self.inventory.push(inventory);
+                        }
+
+                        if (result.Data.Inventory.length == 0) self.notify("Location Select", "There are no inventory items at the selected location.")
+
+                        // Now load the auditing information
+                        let settings = {
+                            LocationID: self.audit_location.LocationID
+                        };
+                        api.axios_post({
+                            data: settings,
+                            caller: "StockCheck.on_location_change",
+                            verbose: true,
+                            url: utils.mvc_page_url('audit', 'getrecords'),
+                            onsuccess: function (ajax_result) {
+                                console.log("StockCheck.on_location_change.getrecords", ajax_result);
+
+                                for(let i = 0; i < ajax_result.Data.Rows.length; ++i)
+                                {
+                                    let audit_item = ajax_result.Data.Rows[i];
+                                    let barcode = audit_item.Barcode;
+                                    let item = self.inventory.find(j => j.Item.InventoryID == audit_item.InventoryID);
+                                    if(item)
+                                        item.Audit = audit_item;
+                                }
+                            }
+                        });
+                    });
+                },
+                get_camera_barcode: function () {
+                    barcode_vue.start_scanner();
+                },
+                item_status: function (item) {
+                    if (item) {
+                        if(item.CurrentLocation && item.AuditLocation)
+                            return (item.CurrentLocation.LocationID == item.AuditLocation.LocationID) ? "FOUND" : "MOVED";
+                        else if (item.CurrentLocation && !item.AuditLocation)
+                            return "REMOVED";
+                        else
+                            return "FOUND";
+                    }
+                    return "ERROR";
+                },
+                nice_location: function (location, debug) {
+                    let nice = '';
+                    if (location) {
+                        nice = location.Path;
+                        if (this.audit_path) {
+                            if (nice.length > this.audit_path.length) {
+                                let full_path = location.Path;
+                                nice = location.Path.substr(this.audit_path.length + 1);
+                                if (debug) {
+                                    console.log('nice_location: "' + nice + "'");
+                                    console.log('    full_path: "' + full_path + '"');
+                                    console.log('    audit_path: "' + this.audit_path, nice + '"');
+                                }
+                            }
+                            else {
+                                nice = tail_path(nice);
+                            }
+                        }
+                    }
+                    return nice
+                },
+
+                nice_date: function(date) {
+                    if(!date)
+                        return null;
+                    return utils.format_date(date);
+                },
+                string_compare: function(a, b) {
+                    if(!a || !b)
+                        return undefined;
+                    return a.localeCompare(b, undefined, {sensitivity:'accent'});
+                },
+                on_select_location: function () {
+                    console.log('on_select_location');
+                    let self = this;
+                    let lp = this.$refs['locationpicker'];
+                    let settings = {
+                        root_location_id: this.base_audit_location.LocationID
+                    };
+                    lp.open(settings, function(result) {
+                        console.log("***** locationpicker returned ", result);
+                        self.audit_location = result;
+                        self.audit_path = result.Path;
+                        self.parent_path = chop_path(result.Path);
+                        self.on_location_change();
+                    });
+                },
+                on_submit_all_audits: function () {
+                    if(this.prelim_audit_items.length == 0)
+                        return;
+
+                    let self = this;
+                    let data = {
+                        Requests: []
+                    };
+                    for(let i = 0; i < self.prelim_audit_items.length; ++i) {
+                        let item = self.prelim_audit_items[i];
+                        let location_id = 0;
+                        if(item.AuditLocation)
+                            location_id = item.AuditLocation.LocationID;
+                        let request = {
+                            Barcode: item.Barcode,
+                            LocationID: location_id
+                        }
+                        data.Requests.push(request);
+                    }
+                    api.axios_post({
+                        data: data,
+                        caller: "StockCheck.on_submit_all_audits",
+                        verbose: true,
+                        url: utils.mvc_page_url('audit', 'recordlocations'),
+                        onsuccess: function (ajax_result) {
+                            console.log("StockCheck.on_submit_audit", ajax_result);
+
+                            self.prelim_audit_items = [];
+
+                            // Reload the items in the selected location since they probably changed
+                            self.on_location_change();
+                        }
+                    });
+                },
+                on_submit_one_audit: function(item) {
+                    if(!item) {
+                        console.error("StockCheck.on_submit_one_audit: null item");
+                        return;
+                    }
+
+                    let self = this;
+                    let location_id = 0;
+                    if(item.AuditLocation)
+                        location_id = item.AuditLocation.LocationID;
+                    let data = {
+                        Barcode: item.Barcode,
+                        LocationID: location_id
+                    };
+                    api.axios_post({
+                        data: data,
+                        caller: "StockCheck.on_submit_one_audit",
+                        verbose: true,
+                        url: utils.mvc_page_url('audit', 'recordlocation'),
+                        onsuccess: function (ajax_result) {
+                            console.log("StockCheck.on_submit_one_audit", ajax_result);
+
+                            let index = -1;
+                            for(let i = 0; index < 0 && i < self.prelim_audit_items.length; ++i) {
+                                if(self.string_compare(self.prelim_audit_items[i].Barcode, item.Barcode) == 0)
+                                    index = i;
+                            }
+                            if(index >= 0)
+                                self.prelim_audit_items.splice(index, 1);
+
+                            // Reload the items in the selected location since they may have changed
+                            self.on_location_change();
+                        }
+                    });
+                },
+                on_remove_all_audits: function() {
+                    this.prelim_audit_items = [];
+                },
+                on_remove_one_audit: function(item) {
+                    if(!item) {
+                        console.error("StockCheck.on_remove_one_audit: null item");
+                        return;
+                    }
+
+                    for(let i = 0; i < this.prelim_audit_items.length; ++i) {
+                        if(this.prelim_audit_items[i] == item) {
+                            this.prelim_audit_items.splice(i, 1);
+                            break;
+                        }
+                    }
+                },
+                on_remove_one_item: function(item) {
+                    if(!item)
+                        return;
+
+                    let self = this;
+                    let barcode = item.Item.Barcode;
+
+                    // If it's already in the prelim_audit_items list, let's remove it and
+                    // re-add it, just in case the location is different
+                    for(let i = 0; i < self.prelim_audit_items.length; ++i) {
+                        if(self.string_compare(self.prelim_audit_items[i].Barcode, barcode) == 0) {
+                            self.prelim_audit_items.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    let audit = {
+                        Barcode: barcode,
+                        AuditLocation: null,
+                        CurrentLocation: item.Item.Location
+                    };
+                    self.prelim_audit_items.push(audit);
+                },
+                hasNotBeenAudited: function(inventory) {
+                    return inventory.filter(i => !i.Audit || !i.Audit.InventoryAuditID);
+                },
+
+                refresh: function () {
+                    console.log("In refresh()");
+                    var self = this;
+
+                    api.fetch_user_settings(function (result) {
+                        console.log("Have response from fetch_user_settings:", result);
+                        let data = result.Data;
+                        self.home_location = data.HomeLocation;
+                    });
+                },
+
+
+                on_entered_barcode: function() {
+                    let self = this;
+                    let barcode = self.barcode;
+
+                    //console.error("on_entered_barcode");
+
+                    // If it's already in the prelim_audit_items list, let's remove it and
+                    // re-add it, just in case the location is different
+                    for(let i = 0; i < self.prelim_audit_items.length; ++i) {
+                        if(self.string_compare(self.prelim_audit_items[i].Barcode, barcode) == 0) {
+                            self.prelim_audit_items.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    let audit = {
+                        Barcode: barcode,
+                        AuditLocation: self.audit_location,
+                        CurrentLocation: null
+                    };
+
+                    // Let's look to see if we can find the current location in the
+                    // list of the inventory
+                    let index = -1;
+                    for(let i = 0; index < 0 && i < self.inventory.length; ++i) {
+                        if(self.string_compare(self.inventory[i].Item.Barcode, barcode) == 0) {
+                            index = i;
+                            audit.CurrentLocation = self.inventory[i].Item.Location;
+                            break;
+                        }
+                    }
+                    if(index < 0) {
+                        // TODO: load the unknown location via ajax
+                    }
+                    self.prelim_audit_items.push(audit);
+                    self.barcode = "";
+                },
+
+                notify: function (title, text) {
+                    this.$refs['infodialog'].open(text, title);
+                },
+
+            },
+            computed: {
+                isLocationSelected: function() {
+                    if(!this.audit_location)
+                        return;
+
+                    return this.audit_location.LocationID > 0;
+                },
+                hasPreliminaryAuditItems: function() {
+                    return this.prelim_audit_items.length > 0;
+                }
+            }
+        });
+
+        function is_loading(is_true) {
+            if (is_true) {
+                $('#content').hide(0);
+                $('#loading').show(0);
+            }
+            else {
+                $('#loading').hide(0);
+                $('#content').show(0);
+            }
+        }
+
+        var barcode_vue = new Vue({
+            el: '#barcode-dialog',
+            data: {
+                error_message: 'Nothing to see here - move along'
+            },
+            methods: {
+                start_scanner: function () {
+                    this.error_message = "Scanning ...";
+                    $('#barcode-dialog').modal('show');
+                    read_camera_barcode(this, false);
+                },
+                on_barcode_results: function (result) {
+                    if (result.success) {
+                        // enter result barcode and close dialog
+                        $('#barcode-dialog').modal('hide');
+                        app.enter_barcode(result.result);
+                    }
+                    else {
+                        this.error_message = result.message;
+                    }
+                },
+            }
+        })
+
+    </script>
+
+
+}
+
+
+@section Styles {
+
+    <style>
+
+        .field-label {
+            color: black;
+            font-weight: bold;
+        }
+
+        .with-horizontal-space {
+            margin-left: 1em;
+        }
+
+        .item-list {
+            border: 1px solid gray;
+            border-radius: 8px;
+            background-color: #DDD;
+            width: 100%;
+            min-height: 400px;
+            padding: 1em;
+        }
+    </style>
+
+}

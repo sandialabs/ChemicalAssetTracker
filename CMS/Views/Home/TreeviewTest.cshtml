@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewData["Title"] = "TreeviewTest";
+}
+
+<h2>TreeviewTest</h2>
+
+
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+
+<div id='vuemain' style='display: none;'>
+    <v-app>
+        <v-content>
+            <v-layout>
+                <v-flex sm12 class="ma-4">
+                    <v-card flat>
+                        <v-card-title class="headline">
+                            Tree View <v-btn icon small @@click="on_zoom_out"><v-icon>zoom_out_map</v-icon></v-btn>
+                        </v-card-title>
+                        <v-card-text class="fullheight">
+                            <div id="treeview"  style="width: 100%; height: 90vh; background: gray;">
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+        </v-content>
+    </v-app>
+</div>
+
+
+@section scripts
+    {
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="~/visjs/vis.js"></script>
+    <script src="~/dist/tsbundle.js"></script>
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        var treeviewer = undefined;
+        var location_array = [];  // possibly sparse, indexed by LocationID
+        var location_list = [];
+        var location_children = [];
+        var all_nodes = [];
+
+        function save_locations(locations) {
+            location_map = {};
+            location_list = locations.slice(0);
+            location_list.forEach(function (loc) {
+                let location_id = loc.LocationID;
+                let parent_id = loc.ParentID;
+                location_array[location_id] = loc;
+                location_children[location_id] = [];
+                let siblings = location_children[parent_id];
+                if (siblings) siblings.push(location_id);
+                else location_children[parent_id] = [location_id];
+            });
+        }
+
+        function create_tree_nodes(root_id, parent_id, nodes) {
+            let loc = location_array[root_id];
+            //console.log("Location " + root_id + ":", loc);
+            nodes.push({ name: loc.Name, id: loc.LocationID, parent: parent_id });
+            let children = location_children[root_id];
+            children.forEach(function (child_id) {
+                create_tree_nodes(child_id, root_id, nodes);
+            })
+        }
+
+        function create_location_tree(locations, settings) {
+            save_locations(locations);
+            let nodes = [];
+            create_tree_nodes(1, 0, nodes);
+            return (new TreeViewer(nodes, settings));
+        }
+
+        function render_location_tree(treeviewer) {
+            treeviewer.render('treeview');
+        }
+
+        var app = new Vue({
+            el: '#vuemain',
+            components: {
+                'confirm': VueComponents.ConfirmDialog,
+                'textinput': VueComponents.TextInputDialog,
+                'infodialog': VueComponents.InfoDialog,
+            },
+
+            //vuetify: new Vuetify(),
+            data: {
+                ready: false,
+                title: "Test Page",
+                who: "Test.cshtml",
+                locations: [],
+                location_types: [],
+                tree_properties: {
+                    parent_prop: "parent",
+                    name_prop: "name",
+                    id_prop: "id",
+                    direction: "UD",
+                    maxnodewidth: 120,
+                    maxdepth: 3,
+                    nodedistance: 100,
+                    //font_size: 8,
+                }
+            },
+            created: function () {
+                console.log("Created");
+                let self = this;
+                setTimeout(function () { $('#vuemain').show() }, 100);
+
+                this.tree_properties.nodeclick = this.on_node_click;
+                this.tree_properties.nodedoubleclick = this.on_node_doubleclick;
+
+                api.fetch_locations(function (result) {
+                    console.log("Have location data:", result);
+                    self.locations = result.Data.locations.slice();
+                    self.location_types = result.Data.locationtypes.slice();
+                    self.render_tree();
+                });
+
+                api.fetch_settings(function (result) {
+                    console.log("Have result from fetch_settings: ", result);
+                    //self.$refs['inventory'].set_root_location(result.Data.HomeLocation);
+                });
+            },
+
+            methods: {
+                format: function (value, len) {
+                    return value.toString().padStart(len, ' ');
+                },
+                confirm: function () {
+                    let dlg = this.$refs['confirm'];
+                    dlg.open("This is a test. Now is the time for all good men to come to the aid of their country.", "TEST", function (result) { console.log(result); });
+                },
+                gettext: function () {
+                    let dlg = this.$refs['textinput'];
+                    dlg.open("This is a text input dialog.  Enter some text.", "Text Input", function (result, text) { console.log(result, text); });
+                },
+
+                render_tree: function (force) {
+                    if (location_list.length == 0) {
+                        console.log("Creating location tree");
+                    }
+                    if (force || typeof treeviewer == 'undefined') {
+                        treeviewer = create_location_tree(this.locations, this.tree_properties);
+                    }
+                    console.log("Rendering ", treeviewer);
+                    treeviewer.render('treeview');
+                },
+
+                redraw_tree: function (direction, maxdepth) {
+                    this.tree_properties.direction = direction;
+                    this.tree_properties.maxdepth = maxdepth;
+                    this.render_tree(true);
+                },
+
+                on_node_click: function (id) {
+                    console.log("In app.on_node_click", id);
+                },
+
+                on_node_doubleclick: function (id) {
+                    console.log("In app.on_node_doubleclick", id);
+                    treeviewer.zoom_to_node(id);
+                },
+
+                on_zoom_out: function () {
+                    treeviewer.unzoom();
+                },
+
+            }
+        });
+
+    </script>
+}
+
+@section styles
+    {
+
+    <style>
+
+        .invisible {
+            display: none;
+        }
+
+        .fullheight {
+            height: 80vh;
+        }
+    </style>
+}

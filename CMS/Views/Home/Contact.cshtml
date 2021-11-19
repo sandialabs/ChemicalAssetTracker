@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+<address>
+    One Microsoft Way<br />
+    Redmond, WA 98052-6399<br />
+    <abbr title="Phone">P:</abbr>
+    425.555.0100
+</address>
+<address>
+    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
+    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+</address>
+
+<div class="row" id="app">
+    <button class="btn" v-on:click="open_dialog()">Select Location</button>
+    <locationselect ref="locationselect" :locations="locations"></locationselect>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/js/axios.min.js"></script>
+    <script src="~/js/vuegrid.js"></script>
+    <script src="~/js/utils.js?@ViewData["BuildTime"]"></script>
+    <script src="~/js/api.js?@ViewData["BuildTime"]"></script>
+    <script src="~/js//httpVueLoader.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            console.log("ready");
+        });
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'locationselect': httpVueLoader('/vue-components/locationselect.vue'),
+            },
+            data: {
+                locations: []
+            },
+            methods: {
+                open_dialog: function () {
+                    let url = mvc_page_url("Admin", "AddUsers");
+                    let self = this;
+                    fetch_settings(function (result) {
+                        console.log("Have response from fetch_settings:",  result);
+                        let data = result.Data;
+                        //self.owners = data.Owners;
+                        //self.groups = data.Groups;
+                        self.locations = data.Locations;
+                        console.log("Locations: " + data.Locations.length);
+                        //self.sites = data.Sites;
+                        //self.country = data.Country;
+                        //self.current_site = data.CurrentSite;
+                        self.$refs.locationselect.open(data.Locations, function (sel) {
+                            console.log("Selected location: ", sel.FullLocation);
+                        });
+                    });                    
+                }
+            }
+        });
+
+    </script>
+}
+

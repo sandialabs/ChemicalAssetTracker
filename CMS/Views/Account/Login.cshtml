@@ -1,0 +1,264 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "_LoginLayout";
+}
+
+<div class="hidden-sm hidden-xs" style="height: 100%; max-height:780px;">
+    <!-- ------------------------------------------------------------ -->
+    <!-- Medium Display Size and Up                                   -->
+    <!-- ------------------------------------------------------------ -->
+    <div style="display:flex; flex-direction: row; align-items:center; height:100%;">
+        <!-- LOGO -->
+        <div style="flex-grow: 1;">
+            <div style="text-align: center;  margin-left: 20px; ">
+                <img src="~/assets/CAT_break1_color_.png" />
+                <p style="margin-top: 2rem;">
+                    Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+                    Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+                    certain rights in this software.
+                </p>
+                <p>
+                    <h3>MIT License</h3>
+                    Permission is hereby granted, free of charge, to any person obtaining a copy
+                    of this software and associated documentation files (the "Software"), to deal
+                    in the Software without restriction, including without limitation the rights
+                    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                    copies of the Software, and to permit persons to whom the Software is
+                    furnished to do so, subject to the following conditions:
+                </p>
+                <p>
+                    The above copyright notice and this permission notice shall be included in all
+                    copies or substantial portions of the Software.
+                </p>
+                <p>
+                    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                    SOFTWARE.
+                </p>
+
+            </div>
+        </div>
+        <!-- LOGIN -->
+        <div style="align-self: center; background-color:#E6E7E8; flex-grow:1; height: 100%;">
+            <div style="display:flex;  flex-direction: column; height: 100%;">
+                <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" style="padding: 0 16px;">
+                    <div>
+                        <h4 style="margin: 16px 0px;">Please log in</h4>
+                        <div id='summary' asp-validation-summary="All" class="text-info"></div>
+                        <div class="form-group">
+                            <label for="UserNameMD">User Name</label>
+                            <input class="form-control custom-input" placeholder="Username" type="text" data-val="true" data-val-length="The UserName must be at least 4 and at max 32 characters long." data-val-length-max="32" data-val-length-min="4" data-val-required="The UserName field is required." id="UserNameMD" name="UserName" value="" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="PasswordMD">Password</label>
+                            <input class="form-control custom-input" placeholder="Password" type="password" data-val="true" data-val-required="The Password field is required." id="PasswordMD" name="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label for="RememberMeMD">
+                                    <input type="checkbox" data-val="true" data-val-required="The Remember me? field is required." id="RememberMeMD" name="RememberMe" value="true" />
+                                    @Html.DisplayNameFor(m => m.RememberMe)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn" style="width: 100%; background-color:#1C8181; color:white;">Log in</button>
+                        </div>
+                    </div>
+                </form>
+                <p style="flex-grow: 1;">&nbsp;</p>
+                <div style="display: flex; flex-direction: row; width: 100%;  padding:0 12px 16px 12px;">
+                    <img src="~/assets/CSP_Logo2.png" style="height: 30px;" />
+                    <p style="flex-grow: 1;">&nbsp;</p>
+                    <img src="~/assets/GCBS_wordmark_col_large.png" style="height: 30px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="visible-sm" style="width: 100%; height: 100%; min-height: 600px;">
+    <!-- ------------------------------------------------------------ -->
+    <!-- Small Display Size                                           -->
+    <!-- ------------------------------------------------------------ -->
+    <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: stretch; width: 100%; height: 100%; margin-top:0;">
+        <!-- LOGO -->
+        <div style="align-self:center; height: 25%; align-content:center;">
+            <img src="~/assets/CAT_break1_color_.png" style="height: 100%; text-align:center; margin-top: 0;" />
+        </div>
+        <div style="align-self: center; display: flex; flex-direction: column; flex-grow: 1; background-color:#E6E7E8; width: 100%;">
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" style="align-self: center; padding: 40px 16px; height: 100%; width:60%;">
+                <div>
+                    <h4 style="margin: 16px 0px;">Please log in</h4>
+                    <div id='summary' asp-validation-summary="All" class="text-info"></div>
+                    <div class="form-group">
+                        <label for="UserNameSM">User Name</label>
+                        <input class="form-control custom-input" placeholder="Username" type="text" data-val="true" data-val-length="The UserName must be at least 4 and at max 32 characters long." data-val-length-max="32" data-val-length-min="4" data-val-required="The UserName field is required." id="UserNameSM" name="UserName" value="" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="PasswordSM">Password</label>
+                        <input class="form-control custom-input" placeholder="Password" type="password" data-val="true" data-val-required="The Password field is required." id="PasswordSM" name="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="RememberMeSM">
+                                <input type="checkbox" data-val="true" data-val-required="The Remember me? field is required." id="RememberMeSM" name="RememberMe" value="true" />
+                                @Html.DisplayNameFor(m => m.RememberMe)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn" style="width: 100%; background-color:#1C8181; color:white;">Log in</button>
+                    </div>
+                    <div>
+                        <p style="margin-top: 2rem;">
+                            Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+                            Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+                            certain rights in this software.
+                        </p>
+                        <p>
+                            This software is licensed under the MIT License - please see
+                            license terms here: <a href="~/Home/About">About</a>.
+                        </p>
+                    </div>
+
+
+                </div>
+            </form>
+            <p style="flex-grow: 1;  background-color: transparent;">&nbsp;</p>
+            <div style="display: flex; flex-direction: row; width: 100%;  padding:0 80px 32px 80px;  background-color:transparent; ">
+                <img src="~/assets/CSP_Logo2.png" style="height: 40px;" />
+                <p style="flex-grow: 1;">&nbsp;</p>
+                <img src="~/assets/GCBS_wordmark_col_large.png" style="height: 40px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content visible-xs" style="width: 100%; height: 100%;">
+    <!-- ------------------------------------------------------------ -->
+    <!-- Extra Small Display Size                                     -->
+    <!-- ------------------------------------------------------------ -->
+    <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: stretch; width: 100%; height: 100%; margin-top:0;">
+        <!-- LOGO -->
+        <div style="align-self:center; height: 15%;">
+            <img src="~/assets/CAT_break2_color_.png" style="height: 80%; text-align:center; margin-top: 10px;" />
+        </div>
+        <div style="align-self: center; flex: auto; background-color:#E6E7E8; height: 40%;">
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" style=" padding: 0 16px; width:100%;">
+                <div>
+                    <h4 style="margin: 16px 0px;">Please log in</h4>
+                    <div id='summary' asp-validation-summary="All" class="text-info"></div>
+                    <div class="form-group">
+                        <label for="UserNameXS">User Name</label>
+                        <input class="form-control custom-input" placeholder="Username" type="text" data-val="true" data-val-length="The UserName must be at least 4 and at max 32 characters long." data-val-length-max="32" data-val-length-min="4" data-val-required="The UserName field is required." id="UserNameXS" name="UserName" value="" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="PasswordXS">Password</label>
+                        <input class="form-control custom-input" placeholder="Password" type="password" data-val="true" data-val-required="The Password field is required." id="PasswordXS" name="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="RememberMeXS">
+                                <input type="checkbox" data-val="true" data-val-required="The Remember me? field is required." id="RememberMeXS" name="RememberMe" value="true" />
+                                @Html.DisplayNameFor(m => m.RememberMe)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn" style="width: 100%; background-color:#1C8181; color:white;">Log in</button>
+                    </div>
+                </div>
+            </form>
+            <div style="font-size: smaller;">
+                <p style="margin-top: 2rem;">
+                    Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+                    Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+                    certain rights in this software.
+                </p>
+                <p>
+                    This software is licensed under the MIT License - please see
+                    license terms here: <a href="~/Home/About">About</a>.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+    @section Scripts {
+        @await Html.PartialAsync("_ValidationScriptsPartial")
+    }
+
+    @section Styles {
+
+        <style>
+
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .vertical-align {
+                display: flex;
+                align-items: center;
+            }
+
+            .wrapper {
+                min-height: 100%;
+                height: 100%;
+                font-family: 'Exo 2', sans-serif;
+                /* Equal to height of footer */
+                /* But also accounting for potential margin-bottom of last child */
+                /* margin-bottom: -50px; */
+            }
+
+            .footer, .push {
+                height: 50px;
+            }
+
+            .custom-input {
+                width: 100%;
+                min-width: 100%;
+            }
+
+            li {
+                list-style-type: none;
+                margin-left: -40px;
+            }
+
+            .logos {
+                background-color: transparent;
+            }
+
+                .logos img {
+                    width: 60px;
+                    margin-left: 8px;
+                    margin-right: 68px;
+                }
+        </style>
+
+
+    }

@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Functions";
+}
+
+<div class="banner">Administrator Functions</div>
+
+
+<div id='vuemain'>
+    <div class="main-grid">
+        <v-card dark flat class="mycard">
+            <v-card-title class="headline">
+                <span>User Management</span>
+                <v-spacer></v-spacer>
+                <v-btn flat icon href="/Admin/UserManagement"><v-icon>link</v-icon></v-btn>
+            </v-card-title>
+            <hr />
+            <v-card-text>
+                The User Management page is where you can add, remove, and edit system users.  This is
+                also where you can reset a user's password.
+            </v-card-text>
+        </v-card>
+
+        <v-card dark flat class="mycard">
+            <v-card-title class="headline">
+                <span>User Location Permissions</span>
+                <v-spacer></v-spacer>
+                <v-btn flat icon href="/Admin/EditUserLocations"><v-icon>link</v-icon></v-btn>
+            </v-card-title>
+            <hr />
+            <v-card-text>
+                Use the User Location Permission page to specify the locations that each user has access to.
+            </v-card-text>
+        </v-card>
+
+        <v-card dark flat class="mycard">
+            <v-card-title class="headline">
+                <span>API Test</span>
+                <v-spacer></v-spacer>
+                <v-btn flat icon href="/Admin/APITest"><v-icon>link</v-icon></v-btn>
+            </v-card-title>
+            <hr />
+            <v-card-text>
+                This page allows you to test CAT application program interfaces (APIs).
+            </v-card-text>
+        </v-card>
+    </div>
+</div>
+
+
+@section scripts
+    {
+
+    <script src="~/dist/confirmdialog.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        var app = new Vue({
+            el: '#vuemain',
+            data: {
+                title: "Test Page",
+            },
+            methods: {
+            }
+        });
+
+    </script>
+}
+
+
+
+@section styles
+    {
+
+
+    <style>
+
+        .main-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            height: 90vh;
+            width: 100vw
+        }
+
+        .mycard {
+            width: 400px;
+            max-width: 400px;
+            max-height: 200px;
+            margin: 20px;
+        }
+
+        .v-text-field {
+        }
+
+            .v-text-field > .v-input__control > .v-input__slot:before {
+                border-style: none;
+            }
+
+        .v-card__text {
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+        }
+
+        .invisible {
+            display: none;
+        }
+    </style>
+}

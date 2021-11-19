@@ -1,0 +1,290 @@
+﻿
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+
+<div id='vuemain' style='display: none;'>
+    <v-app>
+        <v-content>
+            <v-layout>
+                <v-flex sm12 md4 class="ma-4">
+                    <v-card flat dark class="fullheight">
+                        <v-card-title class="headline">
+                            Location Component
+                        </v-card-title>
+                        <v-card-text>
+                            <div>
+                                <location :debug="true" ref="location" height="50vh" style="width:100%;"></location>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+                <v-flex sm12 md4 class="ma-4 fullheight">
+                    <v-card flat dark class="fullheight">
+                        <v-card-title class="headline">
+                            Location Picker Component
+                        </v-card-title>
+                        <v-card-text>
+                            <v-btn block class='primary' @@click="open_locationpicker">Show</v-btn>
+                            <locationpicker :debug="true" ref="locationpicker" :height="1000"></locationpicker>
+                            <div>
+                                Selected location: {{selected_location}}
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+                <v-flex sm12 md4 class="ma-4 fullheight">
+                    <v-card flat dark class="fullheight">
+                        <v-card-title class="headline">
+                            Location Picker Component
+                        </v-card-title>
+                        <v-card-text>
+                            <v-btn block class='primary' @@click="open_searchsettings">Show</v-btn>
+                            <searchsettings ref="searchsettings"></searchsettings>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+            <v-layout>
+                <v-flex>
+                    <grid :config="grid_config" :rowdata="inventory" style="height: 90%;"></grid>
+                </v-flex>
+            </v-layout>
+
+            <confirm ref='confirm' width="200px"></confirm>
+            <textinput ref='textinput'></textinput>
+            <locationselect ref="locationselect"></locationselect>
+            <locationpicker ref="locationpicker" :debug="true"></locationpicker>
+            <itemdialog ref="itemdialog" :locations="locations" :groups="groups" :owners="owners"></itemdialog>
+        </v-content>
+    </v-app>
+</div>
+
+
+@section scripts
+    {
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/confirmdialog.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+    <script src="~/dist/location.js"></script>
+    <script src="~/dist/locationselect.js"></script>
+    <script src="~/dist/locationpicker.js"></script>
+    <script src="~/dist/searchsettings.js"></script>
+    <script src="~/dist/itemdialog.js"></script>
+    <script src="~/dist/grid.js"></script>
+    <script src="~/dist/query.js"></script>
+    <script src="~/dist/columnselect.js"></script>
+    <script src="~/dist/inventory.js"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        var app = new Vue({
+            el: '#vuemain',
+            components: {
+                'confirm': VueComponents.ConfirmDialog,
+                'textinput': VueComponents.TextInputDialog,
+                'grid': VueComponents.Grid,
+                'locationselect': VueComponents.LocationSelect,
+                'locationpicker': VueComponents.LocationPicker,
+                'location': VueComponents.Location,
+                'infodialog': VueComponents.InfoDialog,
+                'itemdialog': VueComponents.ItemEditorDialog,
+                'query': VueComponents.Query,
+                'columnselect': VueComponents.ColumnSelect,
+                'searchsettings': VueComponents.SearchSettings,
+                'inventory': VueComponents.Inventory,
+            },
+
+            //vuetify: new Vuetify(),
+            data: {
+                ready: false,
+                title: "Test Page",
+                who: "Test.cshtml",
+                checkbox_checked: true,
+                todos: [],
+                root_location: { LocationID: 0, LocationLevel: 0 },
+                select: undefined,
+                items: ['Option 1', 'Option 2', 'Option 3'],
+                months: ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun'],
+                selected_location: undefined,
+                locations: [],
+                inventory: [],
+                groups: [],
+                owners: [],
+                level_names: [],
+                inventory_item: {},
+                column_select_visible: true,
+                inventory_settings: {
+                    root_location: undefined
+                },
+                grid_config: {
+                    height: "60vh",
+                    filter: true,
+                    columns: [
+                        { header: "Barcode", field: "Barcode", align: 'center', width: 100, filtered: true },
+                        { header: "Name", field: "ChemicalName", align: 'center', width: 180, filtered: true },
+                        { header: "Location", field: "Location.Path", width: 600, align: 'left', filtered: true },
+                    ],
+                },
+                locationpicker_settings: { root_location_id: 0 },
+                query_def: {
+                    QueryName: 'test',
+                    Parameters: [{
+                        Name: 'chemical',
+                        DataType: 'string',
+                        Value: 'magnesium%'
+                    }],
+                    Columns: [
+                        { header: 'Barcode', column: 'Barcode' },
+                        { header: 'Chemical', column: 'ChemicalName' },
+                        { header: 'CAS#', column: 'CASNumber' },
+                        { header: 'DateIn', column: 'DateIn' },
+                        { header: 'Expiry', column: 'ExpirationDate' },
+                        { header: 'Size', column: 'ContainerSize' },
+                        { header: 'Remaining', column: 'RemainingQuantity' },
+                        { header: 'Units', column: 'Units' },
+                    ],
+                    MaxRows: 20
+                }
+            },
+            created: function () {
+                console.log("Created");
+                let self = this;
+                setTimeout(function () { $('#vuemain').show() }, 1000);
+
+                axios({
+                    method: "GET",
+                    url: 'https://jsonplaceholder.typicode.com/todos'
+                })
+                    .then(function (response) {
+                        response.data.forEach(function (x) { x.id = self.format(x.id, 4); x.completed = self.format(x.completed, 6); });
+                        self.todos = response.data;
+                    })
+                    .catch(function (response) {
+                        console.log("TODO request failed");
+                    });
+
+                api.fetch_locations(function (result) {
+                    console.log("Have location data:", result);
+                    self.locations = result.Data.locations.slice();
+                    self.level_names = result.Data.levels.slice();
+                });
+
+                //api.fetch_inventory_item('BC00000607', function (result) {
+                //    console.log("Have item data", result);
+                //    self.inventory_item = result.Data.Item;
+                //    self.groups = result.Data.Groups;
+                //    self.owners = result.Data.Owners;
+                //});
+
+                api.fetch_settings(function (result) {
+                    console.log("Have result from fetch_settings: ", result);
+                    self.$refs['inventory'].set_root_location(result.Data.HomeLocation);
+                });
+            },
+
+            methods: {
+                format: function (value, len) {
+                    return value.toString().padStart(len, ' ');
+                },
+                confirm: function () {
+                    let dlg = this.$refs['confirm'];
+                    dlg.open("This is a test. Now is the time for all good men to come to the aid of their country.", "TEST", function (result) { console.log(result); });
+                },
+                gettext: function () {
+                    let dlg = this.$refs['textinput'];
+                    dlg.open("This is a text input dialog.  Enter some text.", "Text Input", function (result, text) { console.log(result, text); });
+                },
+                on: function () {
+                    console.log("on");
+                },
+                open_locationselect: function () {
+                    let self = this;
+                    self.$refs['locationselect'].open(this.locations, this.level_names, function (sel) {
+                        console.log("In locationselect callback: ", sel.Path);
+                    });
+                },
+
+                open_locationpicker: function () {
+                    console.log("Opening LocationPicker");
+                    this.selected_location = undefined;
+                    let self = this;
+                    let settings = { root_location_id: 3, depth: 3 };
+                    self.$refs['locationpicker'].open(settings, function (sel) {
+                        console.log("In locationpicker callback: " + sel.Path);
+                        self.selected_location = sel.Path;
+                    });
+                },
+
+                open_searchsettings: function () {
+                    console.log('open_searchsettings');
+                    this.$refs.searchsettings.open({}, function (response) {
+                        console.log("In searchsettings callback:", response);
+                    });
+                },
+
+                open_itemdialog: function () {
+                    console.log("Opening itemdialog");
+                    let self = this;
+                    let settings = { header: "Item Edit Dialog", item: this.inventory_item, readonly: false };
+                    self.$refs['itemdialog'].open(settings, function (loc) {
+                        console.log("In itemdialog callback: ", loc);
+                    });
+
+                },
+
+
+                update_column: function (op, name, value) {
+                    console.log("Update column: " + name + ' = ' + value);
+                },
+
+                run_query: function () {
+                    console.log("In run_query");
+                    let url = utils.api_url("executequery");
+                    api.axios_post({
+                        url: url,
+                        data: {
+                            "QueryName": "test",
+                            "Parameters": [{ "Name": "chemical", "DataType": "string", "Value": "magnesium%" }]
+                        },
+                        onsuccess: function (ajax_result) {
+                            console.log("run_query result", ajax_result);
+                        },
+                        verbose: true
+                    });
+                },
+
+                on_begin_inventory_load: function () {
+                    console.log("BEGIN INVENTORY LOAD");
+                },
+
+                on_end_inventory_load: function (inventory) {
+                    console.log("END INVENTORY LOAD: " + inventory.length);
+                    console.log("Inventory: ", inventory);
+                    this.inventory = inventory;
+                },
+            }
+        });
+
+    </script>
+}
+
+@section styles
+    {
+
+    <style>
+
+        .invisible {
+            display: none;
+        }
+
+        .fullheight {
+            height: 80vh;
+        }
+    </style>
+}

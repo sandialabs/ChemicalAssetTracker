@@ -1,0 +1,302 @@
+﻿
+@{
+    ViewData["Title"] = "ImportDatabase";
+}
+
+
+<div class="banner">Import Database</div>
+
+<v-app data-app>
+    <div id='app'>
+        <v-content>
+            <v-container fluid>
+                <v-layout row class="mr-1" v-if="!show_validation_messages">
+                    <v-flex xs-12 md-4>
+                        <v-card flat>
+                            <v-card-title class="headline">
+                                Database Import
+                            </v-card-title>
+                            <v-card-text>
+                                <div v-if="selected_location.LocationID == 0">
+                                    <p class="title">
+                                        Step 1:
+                                    </p>
+                                    <p class="title">
+                                        Click the globe icon below to select a location that will hold your imported inventory records.
+                                    </p>
+                                    <p class="headline">
+                                        Location: {{selected_location.Path}}
+                                        <v-btn icon @@click="select_location()"><v-icon>language</v-icon></v-btn>
+                                    </p>
+                                </div>
+                                <div v-if="selected_location.LocationID > 0">
+                                    <p class="title">
+                                        Step 2:
+                                    </p>
+                                    <p class="title">
+                                        Click the Validate button below to select your database file and upload it to the server to check that your data
+                                        can be imported into the selected location.  
+                                    </p>
+                                    <v-btn color="green" @@click="on_validate_import()">Validate</v-btn>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+
+                <v-layout v-if="show_validation_messages">
+                    <v-flex  xs-12 md-4>
+                        <p class="section">
+
+                        </p>
+                        <v-card flat>
+                            <v-card-text>
+                                <p class="title" v-if="validation.Success">
+                                    Step 3:
+                                </p>
+                                <p class="title" v-if="validation.Success">
+                                    Review the validation messages below and click the Import
+                                    button if you are ready to import your data. 
+                                    Click the Retry button if you want
+                                    to validate with another location.
+                                </p>
+                                <p class="title" v-if="!validation.Success">
+                                    Validation failed. Review the validation messages below and click the Retry button below if you want to validate with a different import location.
+                                </p>
+                                <p class="title">
+                                    {{validation_message}}
+                                </p>
+                                <div class="hbox">
+                                    <div class="hbox-item">
+                                        <div style="max-height: 50vh;  overflow-y: auto;">
+                                            <div class="section">Validation Messages</div>
+                                            <ul>
+                                                <li v-for="msg in validation.Messages">{{msg}}</li>
+                                            </ul>
+                                            <div class="section" v-if="import_messages.length > 0">Import Results</div>
+                                            <ul v-if="import_messages.length > 0">
+                                                <li v-for="msg in import_messages">{{msg}}</li>
+                                            </ul>
+                                            <div v-if="validation.MissingLocations.length > 0">
+                                                <div style="color:red; font-weight: bold;">Missing Locations</div>
+                                                <ol style="list-style-type:disc; margin-left: 2em;">
+                                                    <li v-for="loc in validation.MissingLocations" style="color:red; font-weight: bold;">{{loc}}</li>
+                                                </olstyle="list-style-type:disc;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- This is disabled for now because automatic location creation is not currently allowed-->
+                                    <div class="hbox-item" v-if="location_creation_enabled && validation.Success">
+                                        <div style="max-height: 50vh;  overflow-y: auto;">
+                                            <div class="section">Import Location Types</div>
+                                            <table class="cat-standard">
+                                                <thead>
+                                                    <tr><th>Import Location</th><th>Location Type</th><th>Target Location</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(prop, key) in validation.LocationTypeMap">
+                                                        <td>{{key}}</td>
+                                                        <td>{{prop}}</td>
+                                                        <td>{{validation.TargetLocationMap[key]}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn v-if="validation.Success" class="green white--text" @@click="on_import_db">Import</v-btn>
+                                <v-btn class="red white--text" @@click="on_retry">Retry</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+        <!-- -------------------------------------------------- -->
+        <!-- File Upload Dialog                                 -->
+        <!-- -------------------------------------------------- -->
+        <v-dialog v-model="show_upload_dialog" width="600px">
+            <v-card>
+                <v-card-text>
+                    <upload style="width: 100%;
+                                    font-size: large;"
+                            :url="import_url"
+                            title="Import Database"
+                            :button="upload_button_text"
+                            extensions=".db,.sqlite,.xlsx"
+                            owner="none"
+                            :tag="target_location_id()"
+                            description="none"
+                            v-on:complete="on_upload_complete"
+                            v-on:error="on_upload_error"></upload>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary"
+                           flat
+                           @@click="show_upload_dialog = false">
+                        Dismiss
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <locationpicker prefix="locationpicker" ref="locationpicker"></locationpicker>
+        <infodialog ref="infodialog" width="400px"></infodialog>
+    </div>
+</v-app>
+
+@section Scripts
+{
+    <script src="~/dist/bundle.js" asp-append-version="true"></script>
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/upload.js" asp-append-version="true"></script>
+    <script src="~/dist/location.js" as-append-version="true"></script>
+    <script src="~/dist/locationpicker.js" asp-append-version="true"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            console.log("Document Ready");
+        });
+
+        Vue.use(Vuetify);
+
+        let app = new Vue({
+            el: '#app',
+            components: {
+                "upload": VueComponents.Upload,
+                "infodialog": VueComponents.InfoDialog,
+                'locationpicker': VueComponents.LocationPicker,
+            },
+            data: {
+                title: 'Upload Database',
+                upload_button_text: "Validate",
+                operation: "validate",
+                show_validation_messages: false,
+                location_creation_enabled: false,  // auto location creation is not currently enabled
+                validation: {},
+                validation_message: '',
+                import_messages: [],
+                import_url: utils.mvc_page_url("admin", "validateimportdatabase"),  //  importdatabase
+                selected_location: { LocationID: 0, Path: "Select a location" },
+                show_upload_dialog: false,
+            },
+            methods: {
+                select_location: function () {
+                    console.log("Opening locationpicker");
+                    let self = this;
+                    this.$refs['locationpicker'].open({ root_location_id: 1 }, function (loc) {
+                        console.log("locationpicker returned ", loc);
+                        self.selected_location = loc;
+                    });
+                },
+
+                target_location_id: function () {
+                    return (this.selected_location.LocationID.toString());
+                },
+
+                on_validate_import: function () {
+                    this.show_upload_dialog = true;
+                },
+
+                on_upload_complete: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    console.log("on_upload_complete for " + this.operation, ajax_result);
+                    if (this.operation == "validate") {
+                        this.validation_message = ajax_result.Message;
+                        this.validation = ajax_result.Data.validationresult;
+                        this.show_validation_messages = true;
+                    }
+                    else {
+                        this.notify("Database Import", ajax_result.Message);
+                    }
+                },
+
+                on_upload_error: function (err) {
+                    this.show_upload_dialog = false;
+                    console.log("ImportDatabase:on_upload_error", err);
+                    this.notify("Database Import Error", err.message);
+                },
+
+                on_import_db: function ()
+                {
+                    this.import_messages = [];
+                    console.log("In on_import_db");
+                    if (this.validation)
+                    {
+                        //console.log("VALIDATION RESULT");
+                        //utils.pretty_print(this.validation);
+                        let postdata = utils.deep_clone(this.validation);
+                        postdata.LocationTypeMap = {};
+                        postdata.TargetLocationMap = {};
+                        postdata.Messages = [];
+                        //console.log("POSTDATA");
+                        utils.pretty_print(postdata);
+
+                        let url = utils.mvc_page_url("admin", "importdatabase");
+                        let self = this;
+                        api.axios_post({
+                            url: url,
+                            caller: 'on_import_db',
+                            verbose: true,
+                            data: postdata,
+                            onsuccess: function (ajax_result) {
+                                self.import_messages = ajax_result.Data.messages;
+                                self.notify("Import", ajax_result.Message);
+                                console.log(ajax_result.Data);
+                            },
+                            onfailure: function (ajax_result) {
+                                self.notify("Import", ajax_result.Message);
+                            },
+                        });
+                    }
+                },
+
+                on_retry: function () {
+                    this.show_validation_messages = false;
+                    this.selected_location = { LocationID: 0, Path: "Select a location" }
+                },
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+
+            }
+        });
+
+    </script>
+
+
+}
+
+@section Styles
+{
+    <style>
+
+        .redspan {
+            font-style: italic;
+            font-variant: small-caps;
+        }
+
+        .redspan {
+            font-style: italic;
+            font-variant: small-caps;
+        }
+
+        .section {
+            font-size: 20px !important;
+            font-weight: 500;
+            line-height: 1 !important;
+            letter-spacing: .02em !important;
+            font-family: Roboto,sans-serif !important;
+            margin-bottom: 0.4em;
+            border-bottom: 1px solid gray;
+        }
+
+    </style>
+}

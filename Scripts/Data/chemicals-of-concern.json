@@ -1,0 +1,6022 @@
+[
+    {
+        "ChemicalName": "(e.g.) Sarin: O-Isopropyl methylphosphonofluoridate",
+        "CASNumber": "107-44-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Soman: O-Pinacolyl methylphosphonofluoridate",
+        "CASNumber": "96-64-0",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Tabun:O-Ethyl N,N-dimethyl phosphoramidocyanidate",
+        "CASNumber": "77-81-6",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) VX: O-Ethyl S-2-diisopropylaminoethyl methyl phosphonothiolate",
+        "CASNumber": "50782-69-9",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) 2-Chloroethylchloromethylsulfide",
+        "CASNumber": "2625-76-5",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Mustard gas: Bis(2-chloroethyl)sulfide",
+        "CASNumber": "505-60-2",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Bis(2-chloroethylthio)methane",
+        "CASNumber": "63869-13-6",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Sesquimustard: 1,2-Bis(2-chloroethylthio)ethane",
+        "CASNumber": "3563-36-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) 1,3-Bis(2-chloroethylthio)-n-propane",
+        "CASNumber": "63905-10-2",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) 1,4-Bis(2-chloroethylthio)-n-butane",
+        "CASNumber": "142868-93-7",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) 1,5-Bis(2-chloroethylthio)-n-pentane",
+        "CASNumber": "142868-94-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Bis(2-chloroethylthiomethyl)ether",
+        "CASNumber": "63918-90-1",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) O-Mustard: Bis(2-chloroethylthioethyl)ether",
+        "CASNumber": "63918-89-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Lewisite 1: 2-Chlorovinyldichloroarsine",
+        "CASNumber": "541-25-3",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Lewisite 2: Bis(2-chlorovinyl)chloroarsine",
+        "CASNumber": "40334-69-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Lewisite 3: Tris(2-chlorovinyl)arsine",
+        "CASNumber": "40334-70-1",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) HN1: Bis(2-chloroethyl)ethylamine",
+        "CASNumber": "538-07-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) HN2: Bis(2-chloroethyl)methylamine",
+        "CASNumber": "51-75-2",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) HN3: Tris(2-chloroethyl)amine",
+        "CASNumber": "555-77-1",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(7) Saxitoxin",
+        "CASNumber": "35523-89-8",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(8) Ricin",
+        "CASNumber": "9009-86-3",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) DF: Methylphosphonyldifluoride",
+        "CASNumber": "676-99-3",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) QL: O-Ethyl O-2-diisopropylaminoethyl methylphosphonite",
+        "CASNumber": "57856-11-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(11) Chlorosarin: O-Isopropyl methylphosphonochloridate",
+        "CASNumber": "1445-76-7",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(12) Chlorosoman: O-Pinacolyl methylphosphonochloridate",
+        "CASNumber": "7040-57-5",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(1) Amiton: O,O-Diethyl S-[2-(diethylamino)ethyl] phosphorothiolate and corresponding alkylated or protonated salts",
+        "CASNumber": "78-53-5",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(2) PFIB: 1,1,3,3,3-Pentafluoro-2-(trifluoromethyl)-1-propene",
+        "CASNumber": "382-21-8",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(3) BZ: 3-Quinuclidinyl benzilate (*)",
+        "CASNumber": "6581-06-2",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Methylphosphonyl dichloride",
+        "CASNumber": "676-97-1",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(e.g.) Dimethyl methylphosphonate",
+        "CASNumber": "756-79-6",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(7) Arsenic trichloride",
+        "CASNumber": "7784-34-1",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(8) 2,2-Diphenyl-2-hydroxyacetic acid",
+        "CASNumber": "76-93-7",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(9) Quinuclidin-3-ol",
+        "CASNumber": "1619-34-7",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(13) Thiodiglycol: Bis(2-hydroxyethyl)sulfide",
+        "CASNumber": "111-48-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(14) Pinacolyl alcohol: 3,3-Dimethylbutan-2-ol",
+        "CASNumber": "464-07-3",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(1) Phosgene: Carbonyl dichloride",
+        "CASNumber": "75-44-5",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(2) Cyanogen chloride",
+        "CASNumber": "506-77-4",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(3) Hydrogen cyanide",
+        "CASNumber": "74-90-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(4) Chloropicrin: Trichloronitromethane",
+        "CASNumber": "76-06-2",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(5) Phosphorus oxychloride",
+        "CASNumber": "10025-87-3",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(6) Phosphorus trichloride",
+        "CASNumber": "77419-12-2",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(7) Phosphorus pentachloride",
+        "CASNumber": "10026-13-8",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(8) Trimethyl phosphite",
+        "CASNumber": "121-45-9",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(9) Triethyl phosphite",
+        "CASNumber": "122-52-1",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(10) Dimethyl phosphite",
+        "CASNumber": "868-85-9",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(11) Diethyl phosphite",
+        "CASNumber": "762-04-9",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(12) Sulfur monochloride",
+        "CASNumber": "10025-67-9",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(13) Sulfur dichloride",
+        "CASNumber": "10545-99-0",
+        "CWC": 1,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(14) Thionyl chloride",
+        "CASNumber": "7719-09-7",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(15) Ethyldiethanolamine",
+        "CASNumber": "139-87-7",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(16) Methyldiethanolamine",
+        "CASNumber": "105-59-9",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(17) Triethanolamine",
+        "CASNumber": "102-71-6",
+        "CWC": 1,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetaldehyde",
+        "CASNumber": "75-07-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetone cyanohydrin, stabilized",
+        "CASNumber": "75-86-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetyl bromide",
+        "CASNumber": "506-96-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetyl chloride",
+        "CASNumber": "75-36-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetyl iodine",
+        "CASNumber": "507-02-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetylene",
+        "CASNumber": "74-86-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acrolein",
+        "CASNumber": "107-02-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acrylonitrile",
+        "CASNumber": "107-13-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acrylyl chloride",
+        "CASNumber": "814-68-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allyl alcohol",
+        "CASNumber": "107-18-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allylamine",
+        "CASNumber": "107-11-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allyltrichlorosilane, stabilized",
+        "CASNumber": "107-37-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Aluminum (powder)",
+        "CASNumber": "7429-90-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Aluminum bromide, anhydrous",
+        "CASNumber": "7727-15-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Aluminum chloride, anhydrous",
+        "CASNumber": "7446-70-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Aluminum phosphide",
+        "CASNumber": "20859-73-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ammonia (anhydrous)",
+        "CASNumber": "7664-41-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ammonium nitrate, [with more than 0.2 percent combustible substances, including any organic substance calculated as carbon, to the exclusion of any other added substance]",
+        "CASNumber": "6484-52-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ammonium perchlorate",
+        "CASNumber": "7790-98-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ammonium picrate",
+        "CASNumber": "131-74-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Amyltrichlorosilane",
+        "CASNumber": "107-72-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Antimony pentafluoride",
+        "CASNumber": "7783-70-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Arsine",
+        "CASNumber": "7784-42-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Barium azide",
+        "CASNumber": "18810-58-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron tribromide",
+        "CASNumber": "10294-33-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron trichloride",
+        "CASNumber": "10294-34-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron trifluoride",
+        "CASNumber": "7637-07-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron trifluoride compound with methyl ether (1:1)",
+        "CASNumber": "353-42-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bromine",
+        "CASNumber": "7726-95-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bromine chloride",
+        "CASNumber": "13863-41-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bromine pentafluoride",
+        "CASNumber": "7789-30-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bromine trifluoride",
+        "CASNumber": "7787-71-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bromotrifluorethylene",
+        "CASNumber": "598-73-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,3-Butadiene",
+        "CASNumber": "106-99-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butane",
+        "CASNumber": "106-97-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butene",
+        "CASNumber": "25167-67-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1-Butene",
+        "CASNumber": "106-98-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Butene",
+        "CASNumber": "107-01-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Butene-cis",
+        "CASNumber": "590-18-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Butene-trans",
+        "CASNumber": "624-64-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butyltrichlorosilane",
+        "CASNumber": "7521-80-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Calcium hydrosulfite",
+        "CASNumber": "15512-36-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Calcium phosphide",
+        "CASNumber": "1305-99-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Carbon disulfide",
+        "CASNumber": "75-15-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Carbon oxysulfide",
+        "CASNumber": "463-58-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Carbonyl fluoride",
+        "CASNumber": "353-50-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorine",
+        "CASNumber": "7782-50-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorine dioxide",
+        "CASNumber": "10049-04-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorine monoxide",
+        "CASNumber": "7791-21-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorine pentafluoride",
+        "CASNumber": "13637-63-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorine trifluoride",
+        "CASNumber": "7790-91-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloroacetyl chloride",
+        "CASNumber": "79-04-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloroform",
+        "CASNumber": "67-66-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloromethyl ether",
+        "CASNumber": "542-88-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloromethyl methyl ether",
+        "CASNumber": "107-30-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1-Chloropropylene",
+        "CASNumber": "590-21-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Chloropropylene",
+        "CASNumber": "557-98-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chlorosulfonic acid",
+        "CASNumber": "7790-94-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chromium oxychloride",
+        "CASNumber": "14977-61-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Crotonaldehyde",
+        "CASNumber": "4170-30-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Crotonaldehyde, (E)-",
+        "CASNumber": "123-73-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Cyanogen",
+        "CASNumber": "460-19-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Cyclohexylamine",
+        "CASNumber": "108-91-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Cyclohexyltrichlorosilane",
+        "CASNumber": "98-12-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Cyclopropane",
+        "CASNumber": "75-19-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diazodinitrophenol",
+        "CASNumber": "87-31-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diborane",
+        "CASNumber": "19287-45-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dichlorosilane",
+        "CASNumber": "4109-96-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-(2-diethylamino)ethanethiol",
+        "CASNumber": "100-38-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyldichlorosilane",
+        "CASNumber": "1719-53-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyleneglycol dinitrate",
+        "CASNumber": "693-21-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl methylphosphonite",
+        "CASNumber": "15715-41-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diethyl phosphoramidic dichloride",
+        "CASNumber": "1498-54-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-(2-diisopropylamino)- ethanethiol",
+        "CASNumber": "5842-07-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Difluoroethane",
+        "CASNumber": "75-37-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropyl phosphoramidic dichloride",
+        "CASNumber": "23306-80-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1-Dimethylhydrazine",
+        "CASNumber": "57-14-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethylamine",
+        "CASNumber": "124-40-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-(2-dimethylamino)ethanethiol",
+        "CASNumber": "108-02-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethyldichlorosilane",
+        "CASNumber": "75-78-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Dimethyl phosphoramidic dichloride",
+        "CASNumber": "677-43-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2,2-Dimethylpropane",
+        "CASNumber": "463-82-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dingu",
+        "CASNumber": "55510-04-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dinitrogen tetroxide",
+        "CASNumber": "10544-72-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dinitrophenol",
+        "CASNumber": "25550-58-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dinitroresorcinol",
+        "CASNumber": "519-44-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diphenyldichlorosilane",
+        "CASNumber": "80-10-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dipicryl sulfide",
+        "CASNumber": "2217-06-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dipicrylamine [or] Hexyl",
+        "CASNumber": "131-73-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-(2-dipropylamino)ethanethiol",
+        "CASNumber": "5842-06-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Dipropyl phosphoramidic dichloride",
+        "CASNumber": "40881-98-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dodecyltrichlorosilane",
+        "CASNumber": "4484-72-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Epichlorohydrin",
+        "CASNumber": "106-89-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethane",
+        "CASNumber": "74-84-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl acetylene",
+        "CASNumber": "107-00-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl chloride",
+        "CASNumber": "75-00-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl ether",
+        "CASNumber": "60-29-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl mercaptan",
+        "CASNumber": "75-08-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl nitrite",
+        "CASNumber": "109-95-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl phosphonyl difluoride",
+        "CASNumber": "753-98-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylamine",
+        "CASNumber": "75-04-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylene",
+        "CASNumber": "74-85-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylene oxide",
+        "CASNumber": "75-21-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylenediamine",
+        "CASNumber": "107-15-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyleneimine",
+        "CASNumber": "151-56-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylphosphonothioic dichloride",
+        "CASNumber": "993-43-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyltrichlorosilane",
+        "CASNumber": "115-21-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Fluorine",
+        "CASNumber": "7782-41-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Fluorosulfonic acid",
+        "CASNumber": "7789-21-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Formaldehyde (solution)",
+        "CASNumber": "50-00-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Furan",
+        "CASNumber": "110-00-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Germane",
+        "CASNumber": "7782-65-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Germanium tetrafluoride",
+        "CASNumber": "7783-58-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Guanyl nitrosaminoguanylidene hydrazine",
+        "CASNumber": "",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexaethyl tetraphosphate and compressed gas mixtures",
+        "CASNumber": "757-58-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexafluoroacetone",
+        "CASNumber": "684-16-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexanitrostilbene",
+        "CASNumber": "20062-22-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexolite",
+        "CASNumber": "121-82-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexyltrichlorosilane",
+        "CASNumber": "928-65-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HMX",
+        "CASNumber": "2691-41-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazine",
+        "CASNumber": "302-01-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrochloric acid (conc. 37% or greater)",
+        "CASNumber": "7647-01-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrofluoric acid (conc. 50% or greater)",
+        "CASNumber": "7664-39-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen",
+        "CASNumber": "1333-74-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen bromide (anhydrous)",
+        "CASNumber": "10035-10-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen iodide, anhydrous",
+        "CASNumber": "10034-85-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen peroxide (concentration of at least 35%)",
+        "CASNumber": "7722-84-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen selenide",
+        "CASNumber": "7783-07-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen sulfide",
+        "CASNumber": "7783-06-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Iodine pentafluoride",
+        "CASNumber": "7783-66-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Iron, pentacarbonyl-",
+        "CASNumber": "13463-40-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isobutane",
+        "CASNumber": "75-28-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isobutyronitrile",
+        "CASNumber": "78-82-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopentane",
+        "CASNumber": "78-78-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isoprene",
+        "CASNumber": "78-79-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropyl chloride",
+        "CASNumber": "75-29-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropyl chloroformate",
+        "CASNumber": "108-23-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropylamine",
+        "CASNumber": "75-31-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropylphosphonothioic dichloride",
+        "CASNumber": "1498-60-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropylphosphonyl difluoride",
+        "CASNumber": "677-42-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead azide",
+        "CASNumber": "13424-46-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead styphnate",
+        "CASNumber": "15245-44-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lithium amide",
+        "CASNumber": "7782-89-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lithium nitride",
+        "CASNumber": "26134-62-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Magnesium (powder)",
+        "CASNumber": "7439-95-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Magnesium diamide",
+        "CASNumber": "7803-54-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Magnesium phosphide",
+        "CASNumber": "12057-74-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Mercury fulminate",
+        "CASNumber": "628-86-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methacrylonitrile",
+        "CASNumber": "126-98-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methane",
+        "CASNumber": "74-82-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Methyl-1-butene",
+        "CASNumber": "563-46-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3-Methyl-1-butene",
+        "CASNumber": "563-45-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl chloride",
+        "CASNumber": "74-87-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl chloroformate",
+        "CASNumber": "79-22-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl ether",
+        "CASNumber": "115-10-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl formate",
+        "CASNumber": "107-31-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl hydrazine",
+        "CASNumber": "60-34-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl isocyanate",
+        "CASNumber": "624-83-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl mercaptan",
+        "CASNumber": "74-93-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl thiocyanate",
+        "CASNumber": "556-64-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylamine",
+        "CASNumber": "74-89-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylchlorosilane",
+        "CASNumber": "993-00-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyldichlorosilane",
+        "CASNumber": "75-54-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylphenyldichlorosilane",
+        "CASNumber": "149-74-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylphosphonothioic dichloride",
+        "CASNumber": "676-98-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Methylpropene",
+        "CASNumber": "115-11-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyltrichlorosilane",
+        "CASNumber": "75-79-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nickel Carbonyl",
+        "CASNumber": "13463-39-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitric acid",
+        "CASNumber": "7697-37-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitric oxide",
+        "CASNumber": "10102-43-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrobenzene",
+        "CASNumber": "98-95-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "5-Nitrobenzotriazol",
+        "CASNumber": "2338-12-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrocellulose",
+        "CASNumber": "9004-70-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrogen mustard hydrochloride",
+        "CASNumber": "55-86-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrogen trioxide",
+        "CASNumber": "10544-73-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitroglycerine",
+        "CASNumber": "55-63-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitromannite",
+        "CASNumber": "15825-70-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitromethane",
+        "CASNumber": "75-52-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrostarch",
+        "CASNumber": "9056-38-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrosyl chloride",
+        "CASNumber": "2696-92-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrotriazolone",
+        "CASNumber": "932-64-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nonyltrichlorosilane",
+        "CASNumber": "5283-67-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Octadecyltrichlorosilane",
+        "CASNumber": "112-04-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Octolite",
+        "CASNumber": "57607-37-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Octonal",
+        "CASNumber": "78413-87-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Octyltrichlorosilane",
+        "CASNumber": "5283-66-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Oleum (Fuming Sulfuric acid)",
+        "CASNumber": "8014-95-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Oxygen difluoride",
+        "CASNumber": "7783-41-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,3-Pentadiene",
+        "CASNumber": "504-60-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentane",
+        "CASNumber": "109-66-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1- Pentene",
+        "CASNumber": "109-67-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Pentene, (E)-",
+        "CASNumber": "646-04-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Pentene, (Z)-",
+        "CASNumber": "627-20-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentolite",
+        "CASNumber": "8066-33-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Peracetic acid",
+        "CASNumber": "79-21-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Perchloromethylmercaptan",
+        "CASNumber": "594-42-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Perchloryl fluoride",
+        "CASNumber": "7616-94-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "PETN",
+        "CASNumber": "78-11-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phenyltrichlorosilane",
+        "CASNumber": "98-13-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphine",
+        "CASNumber": "7803-51-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus",
+        "CASNumber": "7723-14-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus pentabromide",
+        "CASNumber": "7789-69-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus pentasulfide",
+        "CASNumber": "1314-80-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus trichloride",
+        "CASNumber": "7719-12-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Picrite",
+        "CASNumber": "556-88-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Piperidine",
+        "CASNumber": "110-89-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium chlorate",
+        "CASNumber": "3811-04-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium cyanide",
+        "CASNumber": "151-50-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium nitrate",
+        "CASNumber": "7757-79-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium perchlorate",
+        "CASNumber": "7778-74-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium permanganate",
+        "CASNumber": "7722-64-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium phosphide",
+        "CASNumber": "20770-41-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propadiene",
+        "CASNumber": "463-49-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propane",
+        "CASNumber": "74-98-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propionitrile",
+        "CASNumber": "107-12-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propyl chloroformate",
+        "CASNumber": "109-61-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propylene",
+        "CASNumber": "115-07-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propylene oxide",
+        "CASNumber": "75-56-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propyleneimine",
+        "CASNumber": "75-55-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propylphosphonothioic dichloride",
+        "CASNumber": "2524-01-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propylphosphonyl difluoride",
+        "CASNumber": "690-14-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propyltrichlorosilane",
+        "CASNumber": "141-57-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propyne",
+        "CASNumber": "74-99-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Selenium hexafluoride",
+        "CASNumber": "7783-79-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Silane",
+        "CASNumber": "7803-62-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Silicon tetrachloride",
+        "CASNumber": "10026-04-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Silicon tetrafluoride",
+        "CASNumber": "7783-61-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium azide",
+        "CASNumber": "26628-22-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium chlorate",
+        "CASNumber": "7775-09-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium cyanide",
+        "CASNumber": "143-33-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium hydrosulfite",
+        "CASNumber": "7775-14-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium nitrate",
+        "CASNumber": "7631-99-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium phosphide",
+        "CASNumber": "12058-85-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Stibine",
+        "CASNumber": "7803-52-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Strontium phosphide",
+        "CASNumber": "12504-16-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfur dioxide (anhydrous)",
+        "CASNumber": "7446-09-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfur tetrafluoride",
+        "CASNumber": "7783-60-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfur trioxide",
+        "CASNumber": "7446-11-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfuryl chloride",
+        "CASNumber": "7791-25-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tellurium hexafluoride",
+        "CASNumber": "7783-80-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetrafluoroethylene",
+        "CASNumber": "116-14-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetramethyllead",
+        "CASNumber": "75-74-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetramethylsilane",
+        "CASNumber": "75-76-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetranitroaniline",
+        "CASNumber": "53014-37-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetranitromethane",
+        "CASNumber": "509-14-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetrazene",
+        "CASNumber": "109-27-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1H-Tetrazole",
+        "CASNumber": "288-94-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Titanium tetrachloride",
+        "CASNumber": "7550-45-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TNT",
+        "CASNumber": "118-96-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Torpex",
+        "CASNumber": "67713-16-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trichlorosilane",
+        "CASNumber": "10025-78-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Triethanolamine hydrochloride",
+        "CASNumber": "637-39-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trifluoroacetyl chloride",
+        "CASNumber": "354-32-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trifluorochloroethylene",
+        "CASNumber": "79-38-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trimethylamine",
+        "CASNumber": "75-50-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trimethylchlorosilane",
+        "CASNumber": "75-77-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitroaniline",
+        "CASNumber": "26952-42-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitroanisole",
+        "CASNumber": "606-35-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrobenzene",
+        "CASNumber": "99-35-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrobenzenesulfonic acid",
+        "CASNumber": "2508-19-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrobenzoic acid",
+        "CASNumber": "129-66-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrochlorobenzene",
+        "CASNumber": "88-88-0",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrofluorenone",
+        "CASNumber": "129-79-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitro-meta-cresol",
+        "CASNumber": "602-99-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitronaphthalene",
+        "CASNumber": "55810-17-8",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrophenetole",
+        "CASNumber": "4732-14-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitrophenol",
+        "CASNumber": "88-89-1",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trinitroresorcinol",
+        "CASNumber": "82-71-3",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tritonal",
+        "CASNumber": "54413-15-9",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tungsten hexafluoride",
+        "CASNumber": "7783-82-6",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl acetate monomer",
+        "CASNumber": "108-05-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl acetylene",
+        "CASNumber": "689-97-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl chloride",
+        "CASNumber": "75-01-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl ethyl ether",
+        "CASNumber": "109-92-2",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl fluoride",
+        "CASNumber": "75-02-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyl methyl ether",
+        "CASNumber": "107-25-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinylidene chloride",
+        "CASNumber": "75-35-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinylidene fluoride",
+        "CASNumber": "75-38-7",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Vinyltrichlorosilane",
+        "CASNumber": "75-94-5",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Zinc hydrosulfite",
+        "CASNumber": "7779-86-4",
+        "CWC": 0,
+        "CFATS": 1,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3-Hydroxy-1-methylpiperidine",
+        "CASNumber": "3554-74-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropyl-beta)-aminoethyl chloride",
+        "CASNumber": "96-79-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium fluoride",
+        "CASNumber": "7789-23-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Chloroethanol",
+        "CASNumber": "107-07-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl ethylphosphonate",
+        "CASNumber": "78-38-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl-N,N-dimethylphosphoramidate",
+        "CASNumber": "2404-03-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 0,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethylamine hydrochloride",
+        "CASNumber": "506-59-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl phosphinyl dichloride",
+        "CASNumber": "1498-40-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl phosphonyl dichloride",
+        "CASNumber": "1066-50-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl benzilate",
+        "CASNumber": "76-89-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl phosphinyl dichloride",
+        "CASNumber": "676-83-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropyl-beta)-amino ethanol",
+        "CASNumber": "96-80-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethyl ethylphosphonate",
+        "CASNumber": "6163-75-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl phosphinyl difluoride",
+        "CASNumber": "430-78-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl phosphinyl difluoride",
+        "CASNumber": "753-59-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3-Quinuclidone",
+        "CASNumber": "3731-38-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pinacolone",
+        "CASNumber": "75-97-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium bifluoride",
+        "CASNumber": "7789-29-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ammonium hydrogen fluoride or ammonium bifluoride",
+        "CASNumber": "1341-49-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium fluoride",
+        "CASNumber": "7681-49-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium bifluoride",
+        "CASNumber": "1333-83-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Di-isopropylamine",
+        "CASNumber": "108-18-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethylaminoethanol",
+        "CASNumber": "100-37-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium sulphide",
+        "CASNumber": "1313-82-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropyl-Beta)-aminoethyl chloride hydrochloride",
+        "CASNumber": "4261-68-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylphosphonic acid",
+        "CASNumber": "993-13-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl methylphosphonate",
+        "CASNumber": "683-08-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Triisopropyl phosphite",
+        "CASNumber": "116-17-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "O,O-Diethyl phosphorothioate",
+        "CASNumber": "2465-65-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "O,O-Diethyl phosphorodithioate",
+        "CASNumber": "298-06-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium hexafluorosilicate",
+        "CASNumber": "16893-85-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 1,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethylamine",
+        "CASNumber": "109-89-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropylaminoethanethiol hydrochloride",
+        "CASNumber": "41480-75-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 1,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Parathion",
+        "CASNumber": "56-38-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allyl isothiocyanate",
+        "CASNumber": "57-06-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Urea",
+        "CASNumber": "57-13-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "MAPO",
+        "CASNumber": "57-39-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetone",
+        "CASNumber": "67-64-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl Bromide",
+        "CASNumber": "74-83-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trichloroacetyl chloride",
+        "CASNumber": "76-02-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hexachlorocyclopentadiene",
+        "CASNumber": "77-47-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethyl sulfate",
+        "CASNumber": "77-78-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetraethyl lead",
+        "CASNumber": "78-00-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BCMO",
+        "CASNumber": "78-71-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloroacetone",
+        "CASNumber": "78-95-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Toluene 2,6-diisocyanate",
+        "CASNumber": "91-08-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N-Methyl-p-nitroaniline",
+        "CASNumber": "100-15-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diethylaminoethyl-2-chloride",
+        "CASNumber": "100-35-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylene dibromide",
+        "CASNumber": "106-93-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloroacetonitrile",
+        "CASNumber": "107-14-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Chloroacetaldehyde",
+        "CASNumber": "107-20-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetraethyl pyrophosphate",
+        "CASNumber": "107-49-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetic anhydride",
+        "CASNumber": "108-24-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,3,5-Trichlorobenzene",
+        "CASNumber": "108-70-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Triethylene glycol dinitrate",
+        "CASNumber": "111-22-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "n-Butyl isocyanate",
+        "CASNumber": "111-36-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "n-Octyl mercaptan",
+        "CASNumber": "111-88-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DNAN",
+        "CASNumber": "119-27-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Nitrodiphenylamine",
+        "CASNumber": "119-75-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methanesulfonyl chloride",
+        "CASNumber": "124-63-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dibenz-(b,f)-1,4-oxazephine",
+        "CASNumber": "257-07-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "FPF-1",
+        "CASNumber": "376-90-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetryl",
+        "CASNumber": "479-45-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "EDNA",
+        "CASNumber": "505-71-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Guanidine nitrate",
+        "CASNumber": "506-93-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Chloro-1-phenylethanone",
+        "CASNumber": "532-27-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Symmetrical dimethyl hydrazine",
+        "CASNumber": "540-73-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl chloroformate",
+        "CASNumber": "541-41-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isobutyl chloroformate",
+        "CASNumber": "543-27-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "10-Chloro-5,10-dihydrophenarsazine",
+        "CASNumber": "578-94-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Toluene 2,4-diisocyanate",
+        "CASNumber": "584-84-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "n-Butyl chloroformate",
+        "CASNumber": "592-34-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TPB",
+        "CASNumber": "603-33-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Carbon monoxide",
+        "CASNumber": "630-08-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Octal",
+        "CASNumber": "637-12-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diketene",
+        "CASNumber": "674-82-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "O-(3-chloropropyl) O-[4-nitro-3-(trifluoromethyl)phenyl] methylphosphonothionate",
+        "CASNumber": "849-29-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diethylaminoethyl-2-chloride hydrochloride",
+        "CASNumber": "869-24-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ferrocene carboxylic acid",
+        "CASNumber": "1271-42-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Acetyl ferrocene",
+        "CASNumber": "1271-55-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl ferrocene",
+        "CASNumber": "1273-89-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "n-Propyl ferrocene",
+        "CASNumber": "1273-92-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1'-Diacetyl ferrocene",
+        "CASNumber": "1273-94-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl ferrocene",
+        "CASNumber": "1273-97-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentyl ferrocene",
+        "CASNumber": "1274-00-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dibutyl ferrocene",
+        "CASNumber": "1274-08-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ferrocenedicarboxylic acid",
+        "CASNumber": "1293-87-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Beryllium oxide",
+        "CASNumber": "1304-56-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Thorium oxide",
+        "CASNumber": "1314-20-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Zirconium oxide",
+        "CASNumber": "1314-23-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Superfine iron oxide (Fe2O3)",
+        "CASNumber": "1317-60-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Aluminium oxide",
+        "CASNumber": "1344-28-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Uranium dioxide",
+        "CASNumber": "1344-57-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Uranium trioxide",
+        "CASNumber": "1344-58-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Triuranium octoxide",
+        "CASNumber": "1344-59-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "tert-Butyl isocyanate",
+        "CASNumber": "1609-86-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "ADHTDN",
+        "CASNumber": "1614-08-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DATB",
+        "CASNumber": "1630-08-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Trimethylhydrazine",
+        "CASNumber": "1741-01-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Isopropyl isocyanate",
+        "CASNumber": "1795-48-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diethyl N,N-dimethylphosphoramidate",
+        "CASNumber": "2404--03-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "[(2-Chlorophenyl) methylene] propanedinitrile",
+        "CASNumber": "2698-41-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfuryl fluoride",
+        "CASNumber": "2699-79-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allyl chlorocarbonate",
+        "CASNumber": "2937-50-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl chlorothioformate",
+        "CASNumber": "2941-64-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3,9-Dimethyl-2,4,8,10-tetraoxa-3,9-diphosphaspiro[5.5]undecane 3,9-dioxide",
+        "CASNumber": "3001-98-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TMETN",
+        "CASNumber": "3032-55-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TATB",
+        "CASNumber": "3058-38-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,2,4-Trihydroxybutane",
+        "CASNumber": "3068-00-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diimido oxalic acid dihydrazine",
+        "CASNumber": "3457-37-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Potassium chlorate",
+        "CASNumber": "3811--04-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TAGN",
+        "CASNumber": "4000-16-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-(N,N-Dimethylamino)ethylchloride hydrochloride",
+        "CASNumber": "4584-46-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propylphosphonyl dichloride",
+        "CASNumber": "4708--04-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BDNPA",
+        "CASNumber": "5108-69-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diallylhydrazine",
+        "CASNumber": "5164--11-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DNI",
+        "CASNumber": "5213-49-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N-Nonanoylmorpholine",
+        "CASNumber": "5299-64-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,4,5,8-Tetraazadecalin",
+        "CASNumber": "5409-42-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "alpha-Bromobenzeneacetonitrile",
+        "CASNumber": "5798-79-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Diisopropyl-(beta)-aminoethane thiol",
+        "CASNumber": "5842--07-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BDNPF",
+        "CASNumber": "5917-61-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethylene dihydrazine",
+        "CASNumber": "6068-98-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butyl methylphosphinate",
+        "CASNumber": "6172-80-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tetramethylhydrazine",
+        "CASNumber": "6415--12-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3-Quinuclidinyl benzilate",
+        "CASNumber": "6581--06-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BTTN",
+        "CASNumber": "6659-60-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "3-Nitraza-1,5-pentane diisocyanate",
+        "CASNumber": "7046-61-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Allylhydrazine",
+        "CASNumber": "7422-78-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Iron powder",
+        "CASNumber": "7439-89-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Molybdenum powder",
+        "CASNumber": "7439-98-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nickel powder",
+        "CASNumber": "7440-02-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tungsten powder",
+        "CASNumber": "7440-33-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron powder",
+        "CASNumber": "7440-42-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Zirconium powder",
+        "CASNumber": "7440-67-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bismuth",
+        "CASNumber": "7440-69-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Calcium",
+        "CASNumber": "7440-70-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfur dioxide",
+        "CASNumber": "7446--09-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfur trioxide",
+        "CASNumber": "7446--11-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Diphenyl methylphosphonate",
+        "CASNumber": "7526-26-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron trifluoride",
+        "CASNumber": "7637--07-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen chloride",
+        "CASNumber": "7647--01-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus pentafluoride",
+        "CASNumber": "7647-19-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1H-Isophthaloyl-bis(2-methylaziridine)",
+        "CASNumber": "7652-64-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sulfuric acid",
+        "CASNumber": "7664-93-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Thionyl chloride",
+        "CASNumber": "7719--09-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus trichloride",
+        "CASNumber": "7719--12-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1R,1S-Trimesoyl-tris(2-ethylaziridine)",
+        "CASNumber": "7722-73-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium chlorate",
+        "CASNumber": "7775--09-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Deuterium",
+        "CASNumber": "7782-39-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen sulfide",
+        "CASNumber": "7783--06-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrogen selenide",
+        "CASNumber": "7783--07-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Uranium hexafluoride",
+        "CASNumber": "7783-81-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Alane",
+        "CASNumber": "7784-21-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Heavy water",
+        "CASNumber": "7789-20-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Inhibited red fuming nitric acid",
+        "CASNumber": "8007-58-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tritium",
+        "CASNumber": "10028-17-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dinitrogen pentoxide",
+        "CASNumber": "10102-03-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Nitrogen dioxide",
+        "CASNumber": "10102-44-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead stannate",
+        "CASNumber": "12036-31-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hafnium oxide",
+        "CASNumber": "12055-23-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Plutonium dioxide",
+        "CASNumber": "12059-95-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron carbide powder",
+        "CASNumber": "12069-32-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "iso-Propyl ferrocene",
+        "CASNumber": "12126-81-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "N,N-Dimethylaminoethane-2-thiol hydrochloride",
+        "CASNumber": "13242-44-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazine mononitrate",
+        "CASNumber": "13464-97-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazinium dinitrate",
+        "CASNumber": "13464-98-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HAN",
+        "CASNumber": "13465-08-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazinium diperchlorate",
+        "CASNumber": "13812-39-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Radium-226",
+        "CASNumber": "13982-63-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lithium-6",
+        "CASNumber": "14258-72-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead citrate",
+        "CASNumber": "14450-60-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazinium azide",
+        "CASNumber": "14546-44-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Helium-3",
+        "CASNumber": "14762-55-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Boron-10",
+        "CASNumber": "14798-12-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Calcium ammonium nitrate",
+        "CASNumber": "15245-12-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HAP",
+        "CASNumber": "15588-62-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead salicylate",
+        "CASNumber": "15748-73-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "FEFO",
+        "CASNumber": "17003-79-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl-NENA",
+        "CASNumber": "17096-47-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DIPAM",
+        "CASNumber": "17215-44-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BHEGA",
+        "CASNumber": "17409-41-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "sec-Butyl chloroformate",
+        "CASNumber": "17462-58-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BAMO",
+        "CASNumber": "17607-20-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Decaborane",
+        "CASNumber": "17702-41-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentaborane(11)",
+        "CASNumber": "18433-84-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dimethyl propylphosphonate",
+        "CASNumber": "18755-43-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2,4,6-tris(2-Ethyl-1-aziridinyl)-1,3,5-triazine",
+        "CASNumber": "18924-91-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead maleate",
+        "CASNumber": "19136-34-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentaborane(9)",
+        "CASNumber": "19624-22-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BTNEN",
+        "CASNumber": "19836-28-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DNAM",
+        "CASNumber": "19899-80-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HNF",
+        "CASNumber": "20773-28-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead beta-resorcylate",
+        "CASNumber": "20936-32-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TACOT",
+        "CASNumber": "25243-36-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Polybutadiene-acrylic acid-acrylonitrile",
+        "CASNumber": "25265-19-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "R-(-)-3-Quinuclidinol",
+        "CASNumber": "25333-42-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "PGN",
+        "CASNumber": "27814-48-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazinium perchlorate",
+        "CASNumber": "27978-54-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylhydrazine nitrate",
+        "CASNumber": "29674-96-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DBT",
+        "CASNumber": "30003-46-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "n-Butyl ferrocene",
+        "CASNumber": "31904-29-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Catocene",
+        "CASNumber": "37206-42-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Hydrazine nitrate",
+        "CASNumber": "37836-27-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "PYX",
+        "CASNumber": "38082-89-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Agent Orange",
+        "CASNumber": "39277-47-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "(5-Ethyl-2-methyl-2-oxido-1,3,2-dioxaphosphorinan-5-yl) methyl methyl methylphosphonate",
+        "CASNumber": "41203-81-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TAT",
+        "CASNumber": "41378-98-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "bis[(5-Ethyl-2-methyl-2-oxido-1,3,2-dioxaphosphinan-5-yl)methyl] methylposphonate",
+        "CASNumber": "42595-45-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TVOPA",
+        "CASNumber": "53159-39-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TNGU",
+        "CASNumber": "55510-03-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Basic copper salicylate",
+        "CASNumber": "62320-94-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Poly(1,3-phenylene methyl phosphonate)",
+        "CASNumber": "63747-58-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Lead-copper chelates of betaresorcylate or salicylates",
+        "CASNumber": "68411-07-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tepan",
+        "CASNumber": "68412-45-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Tepanol",
+        "CASNumber": "68412-46-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Polybutadiene-acrylic acid-acrylonitrile",
+        "CASNumber": "68891-50-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2,4,6-Tripropyl-1,3,5,2,4,6-trioxatriphosphinane 2,4,6-trioxide",
+        "CASNumber": "68957-94-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HTPB",
+        "CASNumber": "69102-90-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "CP",
+        "CASNumber": "70247-32-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphorus oxide, polymer with dimethyl methylphosphonate and oxirane",
+        "CASNumber": "70715-06-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DNBT",
+        "CASNumber": "70890-46-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Copper beta-resorcylate",
+        "CASNumber": "70983-44-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1'-Trimethyladipoylbis(2-ethylaziridine)",
+        "CASNumber": "71463-62-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DNAD",
+        "CASNumber": "78246-06-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DAAOF",
+        "CASNumber": "78644-89-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DAAzF",
+        "CASNumber": "78644-90-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butyl-NENA",
+        "CASNumber": "82486-82-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Propyl-NENA",
+        "CASNumber": "82486-83-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Poly-NIMMO",
+        "CASNumber": "84051-81-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methylphosphonic acid compound with (aminoiminomethyl)urea (1:1)",
+        "CASNumber": "84402-58-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Sodium 3-(trihydroxysilyl)propyl methylphosphonate",
+        "CASNumber": "84962-98-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Methyl BAPO",
+        "CASNumber": "85068-72-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Ethyl-NENA",
+        "CASNumber": "85068-73-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Pentyl-NENA",
+        "CASNumber": "85954-06-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "2-Dimethylaminoethylazide",
+        "CASNumber": "86147-04-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TEPB",
+        "CASNumber": "90591-48-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "AMMO",
+        "CASNumber": "90683-29-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dihexyl ferrocene",
+        "CASNumber": "93894-59-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "ADNBF",
+        "CASNumber": "97096-78-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TNAZ",
+        "CASNumber": "97645-24-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Product from the reaction of Methylphosphonic acid and 1,2-Ethanediamine",
+        "CASNumber": "99580-93-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "LICA 12",
+        "CASNumber": "103850-22-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Titanium IV, 2,2[bis 2-propenolatomethyl, butanolato, tris (dioctyl) phosphato]",
+        "CASNumber": "110438-25-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Keto-RDX",
+        "CASNumber": "115029-35-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "BNCP",
+        "CASNumber": "117412-28-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "CL-14",
+        "CASNumber": "117907-74-1",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HBIW",
+        "CASNumber": "124782-15-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Dinitroazetidine-t-butyl salt",
+        "CASNumber": "125735-38-8",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Butacene",
+        "CASNumber": "125856-62-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Product from the reaction  of Methylphosphonic acid and 1,3,5-Triazine-2,4,6-triamine",
+        "CASNumber": "129788-86-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "K-55",
+        "CASNumber": "130256-72-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "NNHT",
+        "CASNumber": "130400-13-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "CL-20",
+        "CASNumber": "135285-90-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TNAD",
+        "CASNumber": "135877-16-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "ADN",
+        "CASNumber": "140456-78-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "GAP",
+        "CASNumber": "143178-24-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "HNAD",
+        "CASNumber": "143850-71-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DADE",
+        "CASNumber": "145250-81-3",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Mixture of CAS RN 41203-81-0 and CAS RN 42595-45-9",
+        "CASNumber": "170836-68-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TAIW",
+        "CASNumber": "182763-60-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "DDPO",
+        "CASNumber": "194486-77-6",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "GUDN",
+        "CASNumber": "217464-38-5",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,1-Dimethylhydrazinium azide",
+        "CASNumber": "227955-52-4",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "TNP",
+        "CASNumber": "229176-04-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphonic acid, methyl-, polyglycolester (Exolit OP 560 TP)",
+        "CASNumber": "294675-51-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,2-Dimethylhydrazinium azide",
+        "CASNumber": "299177-50-7",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "1,2-Diethylhydrazine nitrate (DEHN)",
+        "CASNumber": "363453-17-2",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Bis(polyoxyethylene)methylphosphonate",
+        "CASNumber": "363626-50-0",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    },
+    {
+        "ChemicalName": "Phosphonic acid, methyl-, polyglycolester (Exolit OP 560)",
+        "CASNumber": "663176-00-9",
+        "CWC": 0,
+        "CFATS": 0,
+        "EU": 0,
+        "AG": 0,
+        "WMD": 1,
+        "OTHER": false
+    }
+]

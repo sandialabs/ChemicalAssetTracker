@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "SeedUsers";
+    List<string> temp = (List<string>)ViewData["Logins"];
+    List<string> logins = temp.OrderBy(x => x).ToList();
+}
+
+
+<div class="banner">Seed Students</div>
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout>
+                    <p>@ViewData["Message"]</p>
+                </v-layout>
+                <v-layout row wrap class='background:yellow'>
+                    @foreach (string login in logins)
+                    {
+                        <v-flex xs-3 style='width:400px;'><span>@login</span></v-flex>
+                    }
+                </v-layout>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+
+@section Scripts
+{
+
+
+    <script>
+
+        app = new Vue({
+            el: '#app',
+            components: {
+            },
+            data: {
+            },
+        });
+
+
+    </script>
+}
+

@@ -1,0 +1,112 @@
+﻿body {
+    xpadding-top: 50px;
+    padding-bottom: 20px;
+}
+
+
+.main {
+    margin-top: 5em;
+}
+
+.banner {
+    background-color: #26a69a;
+    color: white;
+    width: 100%;
+    font-size: 20px;
+    font-variant: small-caps;
+    text-align: center;
+}
+
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 3em;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+
+/* This must be used with Materialize show-on-xxx-only classes */
+.hidden {
+    display: none;
+}
+
+
+/* this is to turn off the double bottom borders on v-text-field */
+/* use it on an ancestor, v-card for example */
+div.noborder input {
+    border-bottom: none !important;
+}
+
+table.cat-standard {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    background-color: #959698;
+}
+
+table.cat-standard thead tr {
+    color: white;
+    background-color: #525355;
+}
+
+table.cat-standard td,
+th {
+    border: 1px solid gray;
+    padding: 0.25rem;
+    margin: 0;
+}
+
+table.cat-standard tbody tr:nth-child(even) {
+    color: black;
+    background-color: #DDD;
+}
+
+table.cat-standard tbody tr:nth-child(odd) {
+    color: black;
+    background-color: #EEE;
+}
+
+
+/* flexbox layouts */
+
+.hbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.hbox-aligned {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items:center;
+}
+

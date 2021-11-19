@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Admin Aools";
+    List<CMS.Controllers.AdminTool> tools = ViewData["Tools"] as List<CMS.Controllers.AdminTool>;
+}
+
+<v-app data-app>
+    <div id='app'>
+        <v-content>
+            <v-container fluid>
+                <div style="display: flex;  flex-direction: row;  flex-wrap: wrap; justify-content: center;">
+                    @foreach (var tool in tools)
+                    {
+                        <v-card dark flat class="ma-4" style="width: 20em; cursor:pointer;" @@click="open_tool('@tool.URL')">
+                            <v-card-title class="headline">
+                                @tool.Name
+                            </v-card-title>
+                            <hr />
+                            <v-card-text>
+                                @tool.Description
+                            </v-card-text>
+                        </v-card>
+                    }
+                </div>
+            </v-container>
+        </v-content>
+    </div>
+</v-app>
+
+@section Scripts
+    {
+    <script src="~/dist/bundle.js" asp-append-version="true"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        let vueapp = new Vue({
+            el: '#app',
+            components: {
+            },
+            data: {
+                title: 'System Administration',
+            },
+            methods: {
+                open_tool: function (url) {
+                    document.location = url;
+                }
+            }
+        });
+
+    </script>
+
+
+}
+

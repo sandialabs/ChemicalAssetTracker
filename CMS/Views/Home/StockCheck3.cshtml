@@ -1,0 +1,660 @@
+﻿
+@{
+    ViewData["Title"] = "Audit";
+    List<string> userroles = ViewData["UserRoles"] as List<string>;
+    if (userroles == null)
+    {
+        userroles = new List<string>();
+    }
+    string roles = String.Join(", ", userroles);
+    bool can_audit = userroles.Contains("admin") || userroles.Contains("edit");
+}
+
+<div class="banner">Audit</div>
+
+<v-card-actions id="settings" class="container-fluid" style="margin-top: 1em;">
+    <v-content>
+        <v-container fluid data-app grid-list-lg>
+            <v-layout justify-center align-center>
+                <span style="font-weight: bold;  font-size:large;">Selected Location: {{audit_location.Path}}</span>
+                <v-btn @@click="on_select_location()" icon small><v-icon>import_export</v-icon></v-btn>
+            </v-layout>
+            <v-layout>
+                <v-flex sm3 class="noborder">
+                    <div style="display:flex; flex-direction:row; flex-wrap: wrap; align-items:center;">
+                        <v-text-field id='barcode-input' label="Item Barcode" placeholder="Item Barcode" v-model="barcode" v-on:keyup.enter="on_barcode_acquired"></v-text-field>
+                        <img class="col" src="~/assets/Barcodes-icon.png" style="height: 4em; padding-left: 8px;" v-if="IsMobile" v-on:click="get_camera_barcode()" />
+                    </div>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex xs12>
+                    <v-card flat style="height: 60vh; overflow-y: auto;">
+                        <v-card-title class="title">
+                            Current Inventory Location: {{nice_location(audit_location)}}
+                            <span class="red--text ml-4" v-show="pending_changes.length > 0 || missing_items.length > 0">
+                                You have unsaved changes.
+                            </span>
+                            <v-btn small class="green white--text ml-4" v-show="pending_changes.length > 0 || missing_items.length > 0" @@click="record_locations(true)">Save</v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                            <table class="table table-striped" v-if="inventory.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Barcode</th>
+                                        <th>Chemical</th>
+                                        <th>Last Recorded Location</th>
+                                        <th>Last Audited</th>
+                                        <!--
+                                        <th>Confirm</th>
+                                        -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in inventory">
+                                        <td>
+                                            <v-icon color="green lignten-2" v-if="is_confirmed(item)" title="Confirmed at this location">check_circle</v-icon>
+                                            <v-icon color="red lighten-1" v-if="is_missing(item)" title="Location unknown">help</v-icon>
+                                            <v-icon color="blue" v-if="is_moved(item)" title="Moved to this location">check_circle</v-icon>
+                                            <v-icon color="red lighten-1" v-if="is_unmarked(item)" @@click="record_missing(item)" title="Not at this location">delete_forever</v-icon>
+                                        </td>
+                                        <td>{{item.Barcode}}</td>
+                                        <td>{{item.ChemicalName}}</td>
+                                        <td>{{nice_location(item.Location)}}</td>
+                                        <td>{{nice_date(item.LastInventoryDate)}}</td>
+                                        <!--
+                                        <td><v-btn icon @@click="open_item_dialog(item)"><v-icon large>open_in_browser</v-icon></v-btn></td>
+                                        -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p v-if="inventory.length == 0">
+                                There are no items recorded at this location yet.
+                            </p>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+        </v-container>
+    </v-content>
+    <locationpicker ref="locationpicker"></locationpicker>
+    <infodialog ref="infodialog" width="250px"></infodialog>
+    <confirmdialog ref="confirmdialog" width="450px"></confirmdialog>
+    <barcode ref="barcode" debug :timeout="60000" v-on:barcode="on_barcode_results"></barcode>
+
+    <!-- ------------------------------------------------------- -->
+    <!--                     ITEM DIALOG                         -->
+    <!-- ------------------------------------------------------- -->
+    <v-dialog width="54em" v-model="item_dialog_active">
+        <v-card dark style="width: 100%;">
+            <v-card-title class="headline">{{dialog_item.Barcode}}</v-card-title>
+            <v-card-title class="title">Expected location: {{nice_location(dialog_item.Location)}}</v-card-title>
+            <v-card-text>
+                <div style="display: flex; flex-direction: row;  flex-wrap: wrap; justify-content: space-between;">
+                    <v-btn small class="red white--text" style="flex: 1 15em;" @@click="set_item_status(dialog_item, 'missing')"><v-icon>clear</v-icon>&nbsp; Not At This Location</v-btn>
+                    <v-btn small class="green white--text" style="flex: 1 15em;" @@click="set_item_status(dialog_item, 'confirmed')"><v-icon>check_circle</v-icon>&nbsp; Confirmed</v-btn>
+                    <!--
+                    <v-btn small class="blue white--text" style="flex: 1 15em;" @@click="set_item_status(dialog_item, 'unconfirmed')"><v-icon>autorenew</v-icon>&nbsp; Reset</v-btn>
+                    -->
+                </div>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
+
+    <!-- ------------------------------------------------------- -->
+    <!--                RESOLVE LOCATION  DIALOG                 -->
+    <!-- ------------------------------------------------------- -->
+    <v-dialog width="54em" persistent v-model="show_resolve_location_dialog">
+        <v-card dark style="width: 100%;">
+            <v-card-title class="headline">Scanned Barcode: {{scanned_item_barcode}}</v-card-title>
+            <v-card-title>
+                Current location: {{audit_location.Path}}<br />
+                Expected location of {{scanned_item_barcode}}: {{scanned_item_path}}
+            </v-card-title>
+            <v-card-text>
+                <div v-if="audit_location.LocationID <= 0">
+                    You have not yet selected a location to audit. Please select one of the options below
+                    for recording this item's location.
+                </div>
+                <div v-if="audit_location.LocationID > 0">
+                    The item you scanned is not at your currently selected location. Please select one of the options below
+                    for recording this item's location.
+                </div>
+                <div class="mt-2">
+                    <div v-if="audit_location.LocationID > 0">
+                        <v-btn small block class="red white--text ml-2 mt-2" @@click="record_item_location('move')">Record {{scanned_item_barcode}} at the current location</v-btn>
+                        <v-btn small block class="green white--text mt-2" @@click="record_item_location('relocate')">Change current location and record  {{scanned_item_barcode}}</v-btn>
+                        <v-btn small block class="yellow black--text mt-2 ml-w" @@click="record_item_location('ignore')">Ignore</v-btn>
+                    </div>
+                    <div v-if="audit_location.LocationID <= 0">
+                        <v-btn small block class="green white--text mt-2" @@click="record_item_location('relocate')">Set location and record  {{scanned_item_barcode}}</v-btn>
+                        <v-btn small block class="yellow black--text mt-2 ml-w" @@click="record_item_location('ignore')">Ignore</v-btn>
+                    </div>
+                </div>
+            </v-card-text>
+            <v-card-actions>
+                <!-- <button type="button" class="btn btn-success" v-on:click="save_edits()">Save</button>  -->
+                <v-spacer></v-spacer>
+                <v-btn small flat @@click="record_item_location('ignore')">Cancel</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+
+</v-card-actions>
+
+
+
+
+@section Scripts {
+
+    <script src="~/assets/cms_data.js" asp-append-version="true"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/cms_barcode_scanner.js" asp-append-version="true"></script>
+    <script src="~/js/quagga.js"></script>
+    <script src="~/dist/location.js" asp-append-version="true"></script>
+    <script src="~/dist/locationpicker.js" asp-append-version="true"></script>
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/confirmdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/barcode.js"  asp-append-version="true"></script>
+
+    <script>
+
+        var AjaxResult;
+
+        function chop_path(path) {
+            let pos = path.lastIndexOf('/')
+            if (pos == path.length - 1) {
+                path = path.substr(0, pos);
+                pos = path.lastIndexOf('/');
+            }
+            if (pos > 0) return path.substr(0, pos);
+            else return path;
+        }
+
+        function tail_path(path) {
+            let pos = path.lastIndexOf('/')
+            if (pos == path.length - 1) {
+                path = path.substr(0, pos);
+                pos = path.lastIndexOf('/');
+            }
+            if (pos > 0) return path.substr(pos + 1);
+            else return path;
+        }
+
+        var app = new Vue({
+            el: '#settings',
+            data: {
+
+                Message: "This is a test",
+                IsMobile: utils.is_mobile(),
+
+                item_dialog_active: false,
+                dialog_item: {},
+
+                // The current location that is being audited
+                audit_location: { LocationID: 0, Path: "None selected" },
+
+                // The base location that comes up when the location
+                // selection is being made
+                base_audit_location: { LocationID: 1, FullLocation: '' },
+
+                // The items that are at the chosen location.
+                inventory: [],
+
+                //---------------------------------------------------
+                // barcode scanning data
+                //---------------------------------------------------
+
+                // the barcode that was just scanned or typed in
+                scanned_item_barcode: '',
+                // the inventory item with scanned_barcode
+                scanned_barcode_item: {},
+                // where the scanned item is supposed to be
+                scanned_item_path: undefined,
+
+                // control visiblility of resolve location dialog
+                show_resolve_location_dialog: false,
+
+                // inventory items that have been barcoded but not saved
+                pending_changes: [],
+                // inventory items that are not where they should be
+                missing_items: [],
+
+                // Where the user types the barcode in, or where he barcode reading code
+                // puts the barcode text
+                barcode: ""
+            },
+            components: {
+                'locationpicker': VueComponents.LocationPicker,
+                'infodialog': VueComponents.InfoDialog,
+                'confirmdialog': VueComponents.ConfirmDialog,
+                'barcode': VueComponents.Barcode,
+            },
+            created: function () {
+                console.log("******* In created");
+                this.refresh();
+                //this.fetch_data();
+            },
+            mounted: function () {
+                this.focus_barcode();
+            },
+
+            methods: {
+                refresh: function () {
+                    console.log("In refresh()");
+                    var self = this;
+
+                    api.fetch_user_settings(function (result) {
+                        let data = result.Data;
+                        self.home_location = data.HomeLocation;
+                    });
+                },
+
+                fetch_data: function () {
+                    let url = utils.api_url("settings");
+                    let self = this;
+
+                    api.axios_get({
+                        caller: "fetch_data",
+                        verbose: true,
+                        url: url,
+                        onsuccess: function (ajax_result) {
+                            self.base_audit_location = ajax_result.Data.HomeLocation;
+                            self.Locations = ajax_result.Data.Locations;
+                            self.StockCheckDate = ajax_result.Data.StockCheckDate;
+                        }
+                    });
+                },
+
+                fetch_location_items: function (callback) {
+                    console.log('fetch_location_items for ' + this.audit_location.Path);
+                    let self = this;
+                    this.inventory = [];
+                    api.fetch_local_inventory(this.audit_location.LocationID, function (result) {
+                        console.log("fetch_location_items", result);
+
+                        for (let i = 0; i < result.Data.Inventory.length; ++i) {
+                            let item = result.Data.Inventory[i];
+                            item.status = "unconfirmed"
+                            self.inventory.push(item);
+                        }
+                        if (callback) {
+                            callback();
+                        }
+                        self.focus_barcode();
+                        self.$forceUpdate();
+                        //if (result.Data.Inventory.length == 0) self.notify("Location Select", "There are no inventory items at the selected location.")
+                    });
+                },
+
+                change_location: function (location, callback) {
+                    console.log("change_location to " + location.Path, location);
+
+                    this.audit_location = location;
+                    this.audit_path = location.Path;
+                    this.parent_path = chop_path(location.Path);
+                    this.$refs.locationpicker.set_location(location);
+                    this.missing_items = [];
+                    this.pending_changes = [];
+                    this.fetch_location_items(callback);
+                },
+
+                save_and_change_location: function (location, callback) {
+                    let self = this;
+                    if (this.pending_changes.length > 0 || this.missing_items.length > 0) {
+                        this.confirm("Unsaved Changes", "You have unsaved changes.  Do you want to save them before changing location?", function (response) {
+                            console.log("response: " + response);
+                            if (response == 'confirmed') {
+                                self.record_locations(false, function () {
+                                    console.log("Locations recorded");
+                                    self.change_location(location, callback);
+                                });
+                            }
+                            else {
+                                self.change_location(location, callback);
+                            }
+                        });
+                    }
+                    else this.change_location(location, callback);
+                },
+
+                contains: function (itemlist, barcode) {
+                    let found = itemlist.filter(function (x) { return (x.Barcode == barcode); })[0];
+                    return found;
+                },
+
+                delete_from: function (itemlist, barcode) {
+                    console.log("Deleting " + barcode, itemlist);
+                    let ix = -1;
+                    for (let i = 0; ix < 0 && i < itemlist.length; i++) {
+                        if (itemlist[i].Barcode == barcode) ix = i;
+                    }
+                    if (ix >= 0) {
+                        console.log("   deleting at position " + ix);
+                        itemlist.splice(ix, 1);
+                    }
+                },
+
+                record_locations: function (refresh_list, callback) {
+                    let change_count = this.pending_changes.length + this.missing_items.length;
+                    console.log("In record_locations: there are " + change_count + " changes to record.");
+                    if (change_count > 0) {
+                        let audit_requests = [];
+                        let current_location = this.audit_location.LocationID;
+                        let self = this;
+                        this.pending_changes.forEach(function (item) {
+                            let audit = {
+                                Barcode: item.Barcode,
+                                LocationID: current_location
+                            };
+                            audit_requests.push(audit);
+                        });
+                        this.missing_items.forEach(function (item) {
+                            let audit = {
+                                Barcode: item.Barcode,
+                                LocationID: 0  // indicated this item is missing
+                            };
+                            audit_requests.push(audit);
+                        });
+                        let url = utils.mvc_page_url("Audit", "recordlocations");
+                        api.axios_post({
+                            url: url,
+                            data: audit_requests,
+                            caller: 'record_location',
+                            verbose: true,
+                            onsuccess: function (result) {
+                                console.log("record_locations success", result);
+                                self.pending_changes = [];
+                                self.missing_items = [];
+                                if (refresh_list) self.fetch_location_items();
+                                if (callback) callback();
+                                self.focus_barcode();
+                            },
+                            onfailure: function (result) {
+                                self.notify("Audit", result.Message);
+                            }
+                        });
+                    }
+                },
+
+                add_to_pending: function (item) {
+                    let barcode = item.Barcode;
+                    if (!this.contains(this.pending_changes, barcode)) this.pending_changes.push(item);
+                    if (this.contains(this.missing_items, barcode)) this.delete_from(this.missing_items, barcode);
+                },
+
+                // find a barcode in the current inventory and mark it with the given status
+                // return the inventory item or undefined
+                confirm_barcode: function (barcode, status) {
+                    console.log("confirm_barcode: " + barcode + ', ' + status);
+                    let target = this.contains(this.inventory, barcode);
+                    if (target) {
+                        console.log("Updating item status");
+                        target.status = status;
+                        this.add_to_pending(target);
+                    }
+                    else {
+                        console.log("Barcode not found: ", this.inventory);
+                    }
+                    return target;
+                },
+
+                record_missing: function (item) {
+                    let barcode = item.Barcode;
+                    item.status = 'missing';
+                    if (!this.contains(this.missing_items, barcode)) this.missing_items.push(item);
+                    if (this.contains(this.pending_changes, barcode)) this.delete_from(this.pending_changes, barcode);
+
+                },
+
+                focus_barcode: function (delay_ms) {
+                    if (delay_ms) {
+                        setTimeout(function () {
+                            console.log("FOCUS");
+                            document.getElementById('barcode-input').focus();
+                        }, delay_ms);
+                    }
+                    else {
+                        console.log("FOCUS");
+                        document.getElementById('barcode-input').focus();
+                    }
+                },
+
+                on_barcode_results: function (barcode) {
+                    console.log('on_barcode_results: "' + barcode + '"');
+                    this.barcode = barcode;
+                    this.on_barcode_acquired();
+                },
+
+
+                on_barcode_acquired: function () {
+                    let self = this;
+                    let barcode = self.barcode;
+
+                    console.log("ON KEYBOARD BARCODE");
+
+                    // Let's look to see if we can find the current location in the
+                    // list of the inventory
+                    let target = this.confirm_barcode(barcode, 'confirmed');
+                    if (target) {
+                        console.log("Confirmed " + barcode + " at current location");
+                    }
+                    else {
+                        api.axios_get({
+                            url: utils.api_url("findbarcode") + "/" + barcode,
+                            caller: "on_enter_barcode",
+                            verbose: true,
+                            onsuccess: function (result) {
+                                self.scanned_barcode_item = result.Data.Item;
+                                self.scanned_item_path = result.Data.Location.Path;
+                                self.scanned_item_barcode = barcode;
+                                console.log("Scanned item: ", self.scanned_barcode_item);
+                                console.log("Scanned item path: ", self.scanned_item_path);
+                                console.log("Scanned item_barcode: ", self.scanned_item_barcode);
+                                self.show_resolve_location_dialog = true;
+                                //let msg = "The item with barcode " + barcode + " is currently assigned a different location: " + path + "  Do you want to confirm it at this location?";
+                                //self.$refs['confirmdialog'].open(msg, "Confirm Location Change", function(response) {
+                                //    if (response == "confirmed") {
+                                //        let item = result.Data.Item;
+                                //        self.inventory.push(item);
+                                //        item.status = "moved";
+                                //        self.add_to_pending(item);
+                                //    }
+                                //});
+                            },
+                            onfailure: function (result) {
+                                self.notify("Audit", result.Message);
+                            }
+                        })
+                    }
+
+                    self.barcode = "";
+                },
+
+                on_select_location: function () {
+                    console.log('on_select_location');
+                    let self = this;
+                    let lp = this.$refs['locationpicker'];
+                    let settings = {
+                        root_location_id: this.base_audit_location.LocationID
+                    };
+                    lp.open(settings, function (result) {
+                        console.log("***** locationpicker returned ", result);
+                        self.save_and_change_location(result, function () {
+                            self.focus_barcode(200);
+                        });
+                    });
+                },
+
+
+
+                get_camera_barcode: function () {
+                    this.$refs.barcode.scan(false);
+                },
+
+                item_status: function (item) {
+                    if (item) {
+                        if (item.CurrentLocation && item.AuditLocation)
+                            return (item.CurrentLocation.LocationID == item.AuditLocation.LocationID) ? "FOUND" : "MOVED";
+                        else if (item.CurrentLocation && !item.AuditLocation)
+                            return "REMOVED";
+                        else
+                            return "FOUND";
+                    }
+                    return "ERROR";
+                },
+
+                nice_location: function (location, debug) {
+                    let nice = '';
+                    if (location && location.Path) {
+                        nice = location.Path;
+                        if (this.audit_path) {
+                            if (nice.length > this.audit_path.length) {
+                                let full_path = location.Path;
+                                nice = location.Path.substr(this.audit_path.length + 1);
+                                if (debug) {
+                                    console.log('nice_location: "' + nice + "'");
+                                    console.log('    full_path: "' + full_path + '"');
+                                    console.log('    audit_path: "' + this.audit_path, nice + '"');
+                                }
+                            }
+                            else {
+                                nice = tail_path(nice);
+                            }
+                        }
+                    }
+                    return nice
+                },
+
+                nice_date: function (date) {
+                    if (!date)
+                        return null;
+                    return utils.format_date(date);
+                },
+
+                string_compare: function (a, b) {
+                    if (!a || !b)
+                        return undefined;
+                    return a.localeCompare(b, undefined, { sensitivity: 'accent' });
+                },
+
+
+
+
+                is_unmarked: function (item) {
+                    return (item.status == 'unconfirmed');
+                },
+
+                is_confirmed: function (item) {
+                    return (item.status == 'confirmed');
+                },
+
+                is_missing: function (item) {
+                    return (item.status == 'missing');
+                },
+
+                is_moved: function (item) {
+                    return (item.status == 'moved');
+                },
+
+                notify: function (title, text) {
+                    this.$refs['infodialog'].open(text, title);
+                },
+
+                confirm: function (title, text, callback) {
+                    this.$refs['confirmdialog'].open(text, title, callback);
+                },
+
+                open_item_dialog: function (item) {
+                    this.dialog_item = item;
+                    this.item_dialog_active = true;
+                },
+
+                set_item_status: function (item, status) {
+                    item.status = status;
+                },
+
+                record_item_location: function (action) {
+                    console.log("record_item_location: " + action);
+
+                    let scanned_barcode_item = this.scanned_barcode_item;
+                    let scanned_item_barcode = this.scanned_item_barcode;
+                    let scanned_item_location = this.scanned_barcode_item.Location;
+
+                    if (action == 'move') {
+                        this.inventory.push(scanned_barcode_item);
+                        scanned_barcode_item.status = "moved";
+                        this.add_to_pending(scanned_barcode_item);
+                        this.focus_barcode(500);
+                    }
+                    if (action == 'relocate') {
+                        // save any pending changes, switch to the scanned item's location, and record it
+                        let self = this;
+                        console.log("Relocate", this.pending_changes.length, this.missing_items.length);
+                        this.save_and_change_location(scanned_item_location, function () {
+                            console.log("In change_location callback");
+                            self.confirm_barcode(scanned_item_barcode, 'confirmed');
+                            self.focus_barcode();
+                        });
+                    }
+                    this.show_resolve_location_dialog = false;
+                    this.scanned_barcode_item = {};
+                    this.scanned_item_barcode = '';
+                    this.scanned_item_path = undefined;
+                    this.focus_barcode(500);
+                },
+
+            },
+            computed: {
+                isLocationSelected: function () {
+                    if (!this.audit_location)
+                        return;
+
+                    return this.audit_location.LocationID > 0;
+                },
+
+            }
+        });
+
+        function is_loading(is_true) {
+            if (is_true) {
+                $('#content').hide(0);
+                $('#loading').show(0);
+            }
+            else {
+                $('#loading').hide(0);
+                $('#content').show(0);
+            }
+        }
+
+    </script>
+
+
+}
+
+
+@section Styles {
+
+    <style>
+
+        .field-label {
+            color: black;
+            font-weight: bold;
+        }
+
+        .with-horizontal-space {
+            margin-left: 1em;
+        }
+
+        .item-list {
+            border: 1px solid gray;
+            border-radius: 8px;
+            background-color: #DDD;
+            width: 100%;
+            min-height: 400px;
+            padding: 1em;
+        }
+    </style>
+
+}

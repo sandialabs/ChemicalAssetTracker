@@ -1,0 +1,358 @@
+﻿
+@{
+    ViewData["Title"] = "CATS Report";
+}
+
+
+<div class="banner">Reports</div>
+<div class="body-content" id="vue-content">
+    <div class="row" style="margin-bottom: 0;">
+        <div class="col">
+            <div style="width: 200px;">
+                <select class="browser-default" v-model="selected_report" v-on:change="on_report_selected()">
+                    <option value="" selected="selected">Select a report ...</option>
+                    <option v-for="report in reports" v-bind:value="report">{{report.name}}</option>
+                </select>
+            </div>
+        </div> <!-- col -->
+        @*  don't need selectors because grid allows filtering
+        <div class="col">
+            <select id="location-selection" class="browser-default" v-model="location_options.selected_value" v-on:change="on_report_option_changed(location_options)">
+                <option value="" selected="selected">Select a Location ...</option>
+                <option v-for="option in location_options.options" v-bind:value="option">{{option}}</option>
+            </select>
+        </div> <!-- col -->
+        <div class="col">
+            <select id="owner-selection" class="browser-default" v-model="owner_options.selected_value" v-on:change="on_report_option_changed(owner_options)">
+                <option value="" selected="selected">Select an owner ...</option>
+                <option v-for="option in owner_options.options" v-bind:value="option">{{option}}</option>
+            </select>
+        </div> <!-- col -->
+        <div class="col">
+            <select id="user-selection" class="browser-default" v-model="user_options.selected_value" v-on:change="on_report_option_changed(user_options)">
+                <option value="" selected="selected">Select a user ...</option>
+                <option v-for="option in user_options.options" v-bind:value="option">{{option}}</option>
+            </select>
+        </div> <!-- col -->
+        *@
+
+        @*
+            <div v-show="selected_report_id == 'activity-log'">
+                <p>This report is under construction.</p>
+            </div>
+            <div v-show="selected_report_id == 'inventory-by-location'">
+                <grid ref="inventory_grid_2" :config="inventory_report2_config" :tabledata="report_data.inventory2_data" title="Inventory By Location" height="300px" :debug="false"></grid>
+            </div>
+            <div v-show="selected_report_id == 'stock-check'">
+                <grid ref="stock_check_grid" :config="stock_check_report_config" :tabledata="report_data.stock_check_data" title="Inventory By Location" height="300px" :debug="false"></grid>
+            </div>
+            <div v-show="selected_report_id == 'users'">
+                <grid ref="user_grid" :config="user_report_config" :tabledata="report_data.user_data" title="Users"></grid>
+            </div>
+        *@
+    </div> <!-- row -->
+    <div class="row" style='margin-top: 0;' v-show="selected_report_id == 'inventory-by-chemical'">
+        <div class="col">
+            <grid ref="inventory_grid_1" :config="inventory_report1_config" :rowdata="report_data.inventory1_data"></grid>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row" style='margin-top: 0;' v-show="selected_report_id == 'stock-check'">
+        <div class="col">
+            <grid ref="stock_check_grid" :config="stock_check_report_config" :rowdata="report_data.stock_check_data"></grid>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row" style='margin-top: 0;' v-show="selected_report_id == 'users'">
+        <div class="col">
+            <grid ref="user_grid" :config="user_report_config" :rowdata="report_data.user_data" title="Users"></grid>
+        </div>
+    </div> <!-- row -->
+
+</div> <!-- vue-content -->
+
+
+
+
+@section Scripts   {
+
+    <script src="~/assets/cms_data.js"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/moment.js"></script>
+    <script src="~/js/sprintf.min.js"></script>
+    <script src="~/js/numeral.js"></script>
+    <script src="~/js//httpVueLoader.js"></script>
+
+    <script>
+
+        var AjaxResult;
+
+        var reportvue = new Vue({
+            el: '#vue-content',
+            components: {
+                'test': httpVueLoader('/vue-components/test.vue'),
+                'grid': httpVueLoader('/vue-components/grid.vue')
+            },
+            data: {
+                selected_report: '',
+                selected_report_id: '',
+                status_message: '',
+                location_options: {
+                    for: 'locations',
+                    show: false,
+                    selected_value: '',
+                    options: ['xxx', 'yyy', 'zzz']
+                },
+                owner_options: {
+                    for: 'owners',
+                    show: false,
+                    selected_value: '',
+                    options: ['john', 'paul', 'ringo', 'george']
+                },
+                user_options: {
+                    for: 'users',
+                    show: false,
+                    selected_value: '',
+                    options: ['happy', 'sneezy', 'dopey']
+                },
+                inventory_report1_config: {
+                    height: "600px",
+                    filter: true,
+                    //title: "<h4>Current Inventory</h4><p>Now is the time for all good men to come to the aid of their country.  These are the times that try men's souls.</p>",
+                    columns: [
+                        { width: 80, header: 'Location ID', field: 'LocationID' },
+                        { width: 120, header: 'Barcode', field: 'Barcode', filtered: true },
+                        { width: 200, header: 'Chemical', field: 'Chemical', filtered: true },
+                        { width: 400, header: 'Location', field: 'Location', filtered: true },
+                        { width: 100, header: 'CAS #', field: 'CASNumber', filtered: true },
+                        { width: 200, header: 'Owner', field: 'Owner', filtered: true },
+                        { width: 90, header: 'Container Size', field: 'ContainerSize' },
+                        { width: 100, header: 'Remaining', field: 'Remaining' },
+                    ]
+                },
+                inventory_report2_config: {
+                    height: "600px",
+                    filter: true,
+                    title: "<h4>Current Inventory</h4>",
+                    columns: [
+                        { width: 80, header: 'Location ID', field: 'LocationID' },
+                        { width: 120, header: 'Barcode', field: 'Barcode', filtered: true },
+                        { width: 200, header: 'Chemical', field: 'Chemical', filtered: true },
+                        { width: 400, header: 'Location', field: 'Location', filtered: true },
+                        { width: 100, header: 'CAS #', field: 'CASNumber', filtered: true },
+                        { width: 200, header: 'Owner', field: 'Owner', filtered: true },
+                        { width: 90, header: 'Container Size', field: 'ContainerSize' },
+                        { width: 100, header: 'Remaining', field: 'Remaining' },
+                    ]
+                },
+                stock_check_report_config: {
+                    height: "600px",
+                    filter: true,
+                    title: "<h4>Stock Check</h4>",
+                    columns: [
+                        { width: 400, header: 'Location', field: 'Location', filtered: true },
+                        { width: 120, header: 'Barcode', field: 'Barcode', filtered: true },
+                        { width: 80, header: 'Status', field: 'Status', filtered: true },
+                        { width: 400, header: 'StockCheckLocation', field: 'StockCheckLocation', filtered: true },
+                        { width: 100, header: 'CASNumber', field: 'CASNumber', filtered: true },
+                        { width: 200, header: 'Chemical', field: 'Chemical' },
+                    ]
+                },
+                user_report_config: {
+                    height: "600px",
+                    filter: true,
+                    title: "<h4>Users</h4>",
+                    columns: [
+                        { width: 100, header: 'User Name', field: 'UserName', filtered: true },
+                        { width: 200, header: 'Email', field: 'Email', filtered: true },
+                        { width: 200, header: 'Roles', field: 'Roles', filtered: true }
+                    ]
+                },
+                reports: [
+                    { id: "activity-log", name: "Activity Log", grid: null, is_active: false, resize_needed: false, data: null, downloaded: false, options: [ ] },
+                    { id: "inventory-by-chemical", name: "Current Inventory", grid: null, is_active: false, resize_needed: false, data: null, downloaded: false, options: []  },
+                    //{ id: "inventory-by-location", name: "Inventory by Location", grid: null, is_active: false, resize_needed: false, data: null, downloaded: false, options: []  },
+                    { id: "stock-check", name: "Stock Check", grid: null, is_active: false, resize_needed: false, data: null, downloaded: false, options: []  },
+                    { id: "users", name: "Users", grid: null, is_active: false, resize_needed: false, data: null, downloaded: false, options: []  }
+                ],
+                report_data: {
+                    inventory1_data: [],
+                    inventory2_data: [],
+                    stock_check_data: [],
+                    user_data: []
+                },
+            },
+            created: function () {
+                this.find_report("activity-log").options = [this.user_options];
+                this.find_report("inventory-by-chemical").data = this.report_data.inventory1_data;
+                this.find_report("inventory-by-chemical").options = [this.location_options, this.owner_options];
+                //this.find_report("inventory-by-location").data = this.report_data.inventory2_data;
+                //this.find_report("inventory-by-location").options = [this.location_options, this.owner_options];
+                this.find_report("stock-check").data = this.report_data.stock_check_data;
+                this.find_report("stock-check").options = [this.location_options];
+                this.find_report("users").data = this.report_data.user_data;
+
+                this.m_message_timer = undefined;
+                this.m_was_resized = false;          // true if the browser window has been resized
+                this.m_active_report = undefined;    // the currently active report
+
+                let self = this;
+                window.addEventListener("resize", function () {
+                    utils.foreach(self.reports, function (rpt) {
+                        if (rpt.downloaded && !rpt.is_active) {
+                            //console.log(rpt.name + " needs to be resized.");
+                            rpt.resize_needed = true;
+                        }
+                    });
+                    self.m_was_resized = true;
+                });
+            },
+            methods: {
+                find_report: function (report_id) {
+                    return this.reports.filter(function (x) { return (x.id === report_id); })[0];
+                },
+                show_reports: function () {
+                    let fmt = "%-30.30s %-30.30s %-17.17s %-17.17s %-17.17s";
+                    console.log(sprintf(fmt, 'id', 'name', 'downloaded', 'resize_needed', 'is_active'))
+                    console.log(sprintf(fmt, '------------------------------', '------------------------------', '----------', '-------------', '---------'));
+                    utils.foreach(this.reports, function (rpt) {
+                        console.log(sprintf(fmt, rpt.id, rpt.name, rpt.downloaded.toString(), rpt.resize_needed.toString(), rpt.is_active.toString()));
+                    });
+                },
+                on_report_selected: function () {
+                    let selected = this.selected_report;
+                    let report_id = selected.id;
+                    console.log("Report selected:", report_id, selected);
+                    this.selected_report_id = report_id;
+
+                    // make the appropriate options visible
+                    //this.location_options.show = false;
+                    //this.owner_options.show = false;
+                    //this.user_options.show = false;
+                    //foreach(selected.options, function (opt) { opt.show = true; });
+
+                    if (selected.downloaded) {
+                        // we have already downloaded this data.
+                        // if the browser window has been resized, resize the grid
+                        console.log(report_id + " has already been downloaded");
+                    }
+                    else {
+                        console.log("Fetching report data for " + report_id);
+                        this.fetch_report_data(selected);
+                    }
+                    // reset active bit for currently selected report
+                    if (this.m_active_report) this.m_active_report.is_active = false;
+                    this.m_active_report = selected;
+                    selected.is_active = true;
+                },
+
+                on_report_option_changed: function (options) {
+                    console.log("on_report_option_changed for " + options.for + " => " + options.selected_value);
+                },
+
+                fetch_report_data: function (report) {
+                    if (report.data == null) return;
+                    if (report.is_active) return false;
+
+                    let report_id = report.id;
+                    let self = this;
+                    let url = utils.root_url() + "Report/GetReportData";
+                    console.log("Calling " + url);
+                    data = {
+                        ReportID: report_id,
+                        UserName: '',
+                        Location: '',
+                        Owner: ''
+                    };
+
+                    api.axios_post({
+                        url: url,
+                        caller: 'fetch_report_data',
+                        verbose: true,
+                        data: data,
+                        onsuccess: function (ajax_result) {
+                            AjaxResult = ajax_result;
+                            //console.log("Have response from getreportdata for " + report_id + ":", ajax_result);
+                            //console.log("    tabledata: ", ajax_result.Data.QueryResult.Rows);
+
+                            // this kludge is required because the gridvues don't exist until their DIV becomes visible
+                            switch (report.id) {
+                                case "inventory-by-chemical":
+                                    report.grid = self.$refs.inventory_grid_1;
+                                    break;
+                                case "inventory-by-location":
+                                    report.grid = self.$refs.inventory_grid_2;
+                                    break;
+                                case "stock-check":
+                                    report.grid = self.$refs.stock_check_grid;
+                                    break;
+                                case "users":
+                                    report.grid = self.$refs.user_grid;
+                                    break;
+                            }
+                            report.downloaded = true;
+                            report.data.length = 0;
+                            utils.foreach(ajax_result.Data.QueryResult.Rows, function (row) { report.data.push(row); });
+                            //self.resize_report_grid(report, 0, true);
+                            //setTimeout(function () { report.grid.initialize_data(); }, 200);
+                        },
+                        onfailure: function (ajax_result) {
+                            console.error("Unable to download report data for " + report.name);
+                            console.error("    " + ajax_result.Message);
+                            self.show_message(ajax_result.Message, 3000);
+                        }
+                    });
+                },
+                refresh_report_grid: function (report_id) {
+
+                },
+                resize_report_grid: function (report, delay, force) {
+                    if (report.resize_needed || force) {
+                        if (delay === 0) {
+                            console.log("Resizing " + report.name);
+                            report.grid.resize();
+                        }
+                        else {
+                            console.log("Sheduling resize for " + report.name);
+                            report.resize_needed = false;
+                            setTimeout(function () {
+                                console.log("Resizing " + report.name);
+                                report.grid.resize();
+                            }, 200);
+                        }
+                    }
+                },
+                show_message: function (text, duration_ms) {
+                    if (this.m_message_timer) clearTimeout(this.m_message_timer);
+                    this.status_message = text;
+                    let self = this;
+                    if (duration_ms > 0) this.message_timer = setTimeout(function () { self.m_message_timer = undefined; self.status_message = " "; }, duration_ms);
+                }
+            }
+        });
+
+
+    </script>
+
+
+}
+
+@section Styles {
+
+    <style>
+        #report-selection {
+            width: 16em;
+        }
+
+        .status-message {
+            color: red;
+            font-weight: bold;
+            padding: 10% 0;
+        }
+
+
+        /* VueGrid */
+
+    </style>
+
+}

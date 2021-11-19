@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Page";
+}
+
+<div id='vuemain'>
+    <h1>API Test Page</h1>
+    <div class="main-grid">
+        <div class="queries">
+            <div class="query">
+                <v-layout v-for="query in queries">
+                    <v-flex mt-2>
+                        <v-card>
+                            <v-card-title primary-title>
+                                <div class="headline center">{{query.name}}</div>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-text-field flat label="api" v-model="query.api"></v-text-field>
+                                <v-textarea box auto-grow v-if="query.method == 'POST'"
+                                            v-model="query.postdata_string"></v-textarea>
+                            </v-card-text>
+                            <v-card-actions style="height: 50px;">
+                                <v-spacer></v-spacer>
+                                <v-btn flat v-on:click="send_query(query)">Send</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </div>
+        </div>
+        <div class="output">
+            <v-container>
+                <div class="json">
+                    <pre>{{query_result}}</pre>
+                </div>
+            </v-container>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+    {
+
+    <script src="~/dist/confirmdialog.js"></script>
+    <script src="~/dist/textinputdialog.js"></script>
+    <script src="~/dist/grid.js"></script>
+
+    <script>
+
+        Vue.use(Vuetify);
+
+        var app = new Vue({
+            el: '#vuemain',
+            data: {
+                title: "Test Page",
+                queries: [
+                    {
+                        name: "Location Access",
+                        method: "GET",
+                        api: "getlocationaccessdata/USER/ROOT/DEPTH"
+                    },
+                    {
+                        name: "Inventory",
+                        method: "GET",
+                        api: "inventory/0"
+                    },
+                    {
+                        name: "User Location Subtree",
+                        method: "GET",
+                        api: "getuserlocationsubtree/USER/ROOT/DEPTH",
+                        postdata: { name: 'Whatever' }
+                    },
+                    {
+                        name: "Search for Barcode",
+                        method: "GET",
+                        api: "fetchitem/pete/BARCODE"
+                    },
+                    {
+                        name: "Get All Settings",
+                        method: "GET",
+                        api: "settings"
+                    },
+                ],
+                query_result: "",
+            },
+            created: function () {
+                console.log("Created");
+                this.queries.forEach(function (q) { if (q.postdata) q.postdata_string = JSON.stringify(q.postdata, null, 4); });
+            },
+            components: {
+                'grid': VueComponents.Grid
+            },
+            filters: {
+            },
+            methods: {
+                send_query: function (query) {
+                    console.log("Sending query", query);
+                    let self = this;
+                    this.query_result = "";
+                    if (query.method == 'GET') {
+                        api.axios_get({
+                            url: utils.api_url(query.api),
+                            caller: "Admin.Index.cshtml",
+                            verbose: true,
+                            onsuccess: function (result) {
+                                console.log("SUCCESS", result);
+                                self.query_result = JSON.stringify(result, null, 4);
+                            }
+                        });
+                    }
+                    if (query.method == 'POST') {
+                        query.postdata = JSON.parse(query.postdata_string);
+                        console.log("Send", query);
+                    }
+                }
+            }
+        });
+
+    </script>
+}
+
+
+
+@section styles
+    {
+
+    
+    <style>
+
+        .main-grid {
+            display: grid;
+            height: 90vh;
+            width: 100vw;
+            grid-template-columns: 600px auto;
+            grid-template-rows: 100%;
+        }
+
+        .queries {
+            grid-row: 1;
+            grid-column: 1;
+        }
+
+        .query {
+            height: 100px;
+            margin: 2em;
+        }
+
+        .output {
+            grid-row: 1;
+            grid-column: 2;
+            height: 100%;
+            border: 1px solid gray;
+        }
+
+        .json {
+            width: 100%;
+            max-height: 80vh;
+            font-family: 'Courier New';
+            overflow-y: auto;
+        }
+
+        .query-name {
+            font-size: 24px;
+        }
+
+        .v-text-field {
+        }
+
+            .v-text-field > .v-input__control > .v-input__slot:before {
+                border-style: none;
+            }
+
+        .v-card__text {
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+        }
+
+        .invisible {
+            display: none;
+        }
+    </style>
+}

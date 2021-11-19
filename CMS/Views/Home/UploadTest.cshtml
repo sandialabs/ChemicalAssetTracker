@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "UploadTest";
+}
+
+<h2>UploadTest</h2>
+
+<div class="banner">System Settings</div>
+
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-flex class="xs12">
+                    <v-card dark flat class="noborder" style="height: 70vh; overflow-y:auto;">
+                        <v-card-title class="headline">File Upload Test</v-card-title>
+                        <v-card-text>
+                            <v-layout row wrap>
+                                <v-flex xs4>
+                                    <v-text-field v-model="owner" label="Owner"></v-text-field>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <v-text-field v-model="tag" label="Attachment Type"></v-text-field>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <v-text-field v-model="description" label="Description"></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row justify-center>
+                                <v-btn small color="green" @@click="show_upload_dialog = true">Upload File</v-btn>
+                            </v-layout>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-container>
+        </v-content>
+
+        <!-- -------------------------------------------------- -->
+        <!-- File Upload Dialog                                 -->
+        <!-- -------------------------------------------------- -->
+        <v-dialog v-model="show_upload_dialog" width="600px">
+            <v-card>
+                <v-card-text>
+                    <upload style="width: 100%;
+                                    font-size: large;"
+                            :url="upload_url"
+                            title="Upload Attachment"
+                            extensions=".jpg,.pdf"
+                            :owner="owner"
+                            :tag="tag"
+                            :description="description"
+                            v-on:complete="on_upload_complete"
+                            v-on:error="on_upload_error"></upload>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary"
+                           flat
+                           @@click="show_upload_dialog = false">
+                        Dismiss
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
+        <infodialog width="300px" ref="infodialog"></infodialog>
+    </div>
+</v-app>
+
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"></script>
+    <script src="~/dist/upload.js"></script>
+
+    <script>
+
+        var App;
+        console.log('utils', utils);
+        var RootURL = utils.root_url();
+        var AjaxResult;
+
+
+        function starts_with(x, ch) {
+            return (x.length > 0 && x[0] === ch);
+        }
+
+        function ends_with(x, ch) {
+            let l = x.length;
+            return (l > 0 && x[l - 1] === ch)
+        }
+
+        function trim_location(loc) {
+            while (starts_with(loc, '/')) loc = loc.substr(1);
+            while (ends_with(loc, '/')) loc = loc.substr(0, loc.length - 1);
+            return loc;
+        }
+
+        $(document).ready(function () {
+        });
+
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+                "upload": VueComponents.Upload,
+            },
+            data: {
+                show_upload_dialog: false,
+                filename: '',
+                owner: 'wrhumph',
+                tag: 'photo',
+                description: 'This is a test',
+                upload_url: utils.mvc_page_url("admin", "uploadattachment")
+            },
+            created: function () {
+                console.log("UploadTest created");
+            },
+            mounted: function () {
+                console.log("UploadTest mounted", this.$refs);
+            },
+            methods: {
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+                attachment_information: function (user) {
+                    return user.UserName + "|photo|User Photo";
+                },
+
+                on_upload_complete: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    console.log("on_upload_complete", ajax_result);
+                    this.notify("Upload", ajax_result.Message);
+                },
+
+                on_upload_error: function (ajax_result) {
+                    this.show_upload_dialog = false;
+                    console.log("on_upload_error", ajax_result);
+                    this.notify("Upload", ajax_result.Message);
+                },
+
+
+            }
+        });
+
+
+
+    </script>
+
+}
+
+@section Styles {
+
+    <style>
+
+        .found {
+            background-color: green;
+            color: white;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+        }
+    </style>
+}

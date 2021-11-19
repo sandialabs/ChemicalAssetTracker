@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewData["Title"] = "EditLocations";
+}
+
+<div class="banner">Edit Locations</div>
+<div id="app">
+    <div class="text-center loading" style="display:none" id="loading">
+        <div style="margin-bottom:2em;">Loading locations ...</div>
+        <div>
+            <v-progress-circular :size="50"
+                                 color="green"
+                                 indeterminate></v-progress-circular>
+        </div>
+    </div>
+    <div id="content" style="display:none;">
+        <v-layout>
+            <v-btn class="blue white--text" v-on:click="zoom_selected()">Zoom</v-btn>
+            <v-btn class="blue white--text" v-on:click="unzoom()">UnZoom</v-btn>
+        </v-layout>
+        <v-layout row align-center>
+            <v-flex xs-12>
+                <div id="mynetwork"></div>
+            </v-flex>
+        </v-layout>
+
+    </div>
+</div>
+
+
+    @section Scripts
+        {
+
+        <script src="~/visjs/vis.js"></script>
+        <script type="module" src="~/dist/tsbundle.js"  asp-append-version="true"></script>
+        
+
+        <script>
+
+            var treenode_id = 0;
+            var treeviewer;
+
+            function create_tree(parent, level, allnodes) {
+                treenode_id += 1;
+                let name = "Node # " + treenode_id + " (" + level + ")";
+                let thisnode = { name: name, parent: parent, id: treenode_id };
+                allnodes.push(thisnode);
+                if (level < 5) {
+                    for (let i = 0; i < 2; i++) {
+                        create_tree(thisnode, level + 1, allnodes);
+                    }
+                }
+                return thisnode;
+            }
+
+            Vue.use(Vuetify);
+
+            var locvue = new Vue({
+                el: '#app',
+                data: {
+                    location_tree: undefined,
+                    selected_location: undefined,
+                    level_names: [],
+                },
+                methods: {
+                    refresh: function () {
+                        let self = this;
+                        $('#content').hide(0);
+                        $('#loading').show(0);
+
+                        api.axios_get({
+                            url: '/api/getuserlocationsubtree/*/0/9',
+                            caller: 'on_edit_user_access',
+                            verbose: true,
+                            onsuccess: function (ajax_result) {
+                                console.log("onsuccess", ajax_result.Message);
+                                if (ajax_result.Success) {
+                                    console.log("Data", ajax_result.Data);
+                                    if (true) {
+                                        self.locations = ajax_result.Data.subtree;
+                                        self.level_names = ajax_result.Data.levelnames;
+                                        console.log("locations", self.locations)
+                                        self.location_map = {};
+                                        self.locations.forEach(function (x) {
+                                            self.location_map[x.LocationID] = x;
+                                        });
+                                        self.render_location_tree();
+                                        $('#content').show(0);
+                                        $('#loading').hide(0);
+                                    }
+                                }
+                            }
+                        });
+
+                        if (false) {
+                            let treenodes = [];
+                            this.location_tree = create_tree(undefined, 0, treenodes);
+                            treeviewer = new TreeViewer(treenodes, "parent", "name", "id");
+                            treeviewer.m_node_doubleclick_handler = function (id, node) {
+                                console.log("Node Click:", id, node);
+                                treeviewer.zoom_to_node(id);
+                            };
+                            treeviewer.m_node_click_handler = function (id, node) {
+                                console.log("Node Click:", id, node);
+                                self.selected_location = node;
+                            };
+                            treeviewer.render("mynetwork");
+                        }
+                    },
+
+                    render_location_tree: function () {
+                        let self = this;
+                        let options = {
+                            parent_prop: 'ParentID',
+                            name_prop: 'Name',
+                            id_prop: 'LocationID',
+                            direction: 'UD',
+                            font_size: 14,
+                            maxdepth: 3
+                        };
+                        treeviewer = new TreeViewer(this.locations, options);
+                        treeviewer.m_node_doubleclick_handler = function (id, node) {
+                            console.log("Node Click:", id, node);
+                            treeviewer.zoom_to_node(id);
+                        };
+                        treeviewer.m_node_click_handler = function (id, node) {
+                            console.log("Node Click:", id, node);
+                            self.selected_location = node;
+                        };
+                        treeviewer.render("mynetwork");
+                    },
+
+                    zoom_selected: function () {
+                        console.log("zoom_selected", this.selected_location);
+                        if (this.selected_location) {
+                            treeviewer.zoom_to_node(this.selected_location.LocationID);
+                        }
+                    },
+                    unzoom: function () {
+                        treeviewer.unzoom();
+                    }
+                }
+            });
+
+
+            $(document).ready(function () {
+                locvue.refresh();                
+            });
+
+
+        </script>
+    }
+
+    @section Styles {
+
+        <style>
+
+            #toolbar {
+                width: 100vw;
+                height: 30px;
+            }
+
+            #mynetwork {
+                width: 100vw;
+                height: 90vh;
+            }
+
+            .loading {
+                width: 100vw;
+                height: 80vh;
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 36px;
+            }
+
+
+        </style>
+
+    }

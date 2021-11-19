@@ -1,0 +1,40 @@
+.mytablecell {
+    word-wrap: break-word;
+}
+
+
+.table-header-div {
+    background-color: #EEE;
+}
+
+.table-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 600px;
+    table-layout: fixed;
+}
+
+
+.table-header {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+    /*
+tr:nth-child(even) {
+    background-color: pink;
+}
+*/
+
+.table-header th {
+    text-align: left;
+    background-color: #EEE;
+    margin-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.table-body td {
+    text-align: left;
+    word-wrap: break-word;
+}

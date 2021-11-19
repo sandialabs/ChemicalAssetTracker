@@ -1,0 +1,354 @@
+﻿
+@{
+    ViewData["Title"] = "SiteSearch";
+    string userroles = ViewData["Roles"].ToString();
+}
+
+
+
+<div class="banner">Site Search</div>
+<div id="app" v-if="ready" data-app>
+    <div id="content">
+        <v-layout>
+            <v-flex xs12 class="noborder" style="display: flex; align-items: center; justify-content: flex-start; flex-wrap:wrap;">
+                <div style="width: 40px;">
+                    <v-btn icon @@click="on_search()"><v-icon title="Search">search</v-icon></v-btn>
+                </div>
+                <div text-xs-center style="width: 40px;">
+                    <v-btn v-if="have_prev_page()" icon @@click="on_prev_page()"><v-icon title="Previous Page">fast_rewind</v-icon></v-btn>
+                </div>
+                <div style="width: 40px; text-align:center; margin-right:1em;">
+                    <v-btn v-if="have_next_page()" icon @@click="on_next_page()" style="width=100px;"><v-icon title="Next Page">fast_forward</v-icon></v-btn>
+                </div>
+            </v-flex>
+        </v-layout>
+        <v-layout wrap>
+            <v-flex xs12 sm12 md4>
+                <v-text-field onkeypress="handle_key(event)" label="CAS#" hide-details single-line v-model="search_settings.CASNumber" style=" margin-right: 1em;"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md4>
+                <v-text-field onkeypress="handle_key(event)" mr-4 label="Chemical Name" hide-details single-line v-model="search_settings.Chemical" style="margin-right: 1em;"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md4>
+                <v-text-field onkeypress="handle_key(event)" mr-4 label="Owner" hide-details single-line v-model="search_settings.Owner" style=" margin-right: 1em;"></v-text-field>
+            </v-flex>
+        </v-layout>
+        <div class="hidden-sm-and-down">
+            <!-- ----------------------------------------------------------- -->
+            <!--                       DESKTOP                               -->
+            <!-- ----------------------------------------------------------- -->
+            <v-layout my-0 v-show="inventory.length > 0">
+                <v-flex ml-0 xs12 style="display: flex; align-items: center; justify-content: flex-start; flex-wrap:wrap;">
+                    <v-checkbox v-for="item in grid_config.columns" :label="item.header" v-model="item.enabled" style="flex: none;  margin-right: 1em;"></v-checkbox>
+                </v-flex>
+            </v-layout>
+            <v-layout my-0 v-show="inventory.length > 0">
+                <v-flex xs12 class="horizontal-wrap">
+                    <v-select class="mr-4 noborder" label="items/page" :items="page_sizes" v-model="search_settings.ItemsPerPage" style="max-width: 200px;"></v-select>
+                    {{search_info()}}
+                    <v-btn icon @@click="save_csv()"><v-icon medium class="white blue--text">cloud_download</v-icon></v-btn>
+                </v-flex>
+            </v-layout>
+            <v-layout v-show="inventory.length > 0">
+                <v-flex xs12>
+                    <grid ref='grid' :config="grid_config" :rowdata="inventory"></grid>
+                </v-flex>
+            </v-layout>
+            <v-layout v-show="inventory.length == 0">
+                <v-flex xs12 class="headline my-4">
+                    No results to show. Enter search criteria above and click <v-icon title="Search">search</v-icon>.
+                </v-flex>
+            </v-layout>
+        </div>
+        <div class="hidden-md-and-up">
+            <div class="display: flex; flex-direction: row;" v-show="inventory.length > 0">
+                <div v-for="item in inventory">
+                    <v-card style="margin-bottom: 10px;">
+                        <v-card-text>
+                            <table class="cat-standard">
+                                <thead>
+                                    <tr><th colspan="2">{{item.Barcode}}</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Chemical Name</td><td>{{item.ChemicalName}}</td></tr>
+                                    <tr><td>CAS #</td><td>{{item.CASNumber}}</td></tr>
+                                    <tr><td>Owner</td><td>{{owner(item)}}</td></tr>
+                                    <tr><td>Group</td><td>{{group(item)}}</td></tr>
+                                    <tr><td>Date In</td><td>{{item.DateIn | date}}</td></tr>
+                                    <tr><td>Expiration Date</td><td>{{item.ExpirationDate | date}}</td></tr>
+                                    <tr><td>Quantity</td><td>{{qty(item)}}</td></tr>
+                                </tbody>
+                            </table>
+                        </v-card-text>
+                    </v-card>
+                </div>
+            </div>
+        </div>
+    </div> <!-- content -->
+    <textinputdialog ref="textinputdialog" width="400px"></textinputdialog>
+
+</div> <!-- app -->
+
+@section Scripts
+    {
+    <script src="~/dist/infodialog.js" asp-append-version="true"></script>
+    <script src="~/dist/textinputdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/confirmdialog.js" asp-append-version="true"></script>
+    <script src="~/dist/grid.js" asp-append-version="true"></script>
+
+    <script>
+        var Inventory;
+        var app;
+
+        function handle_key(e) {
+            //console.log("handle_key", e);
+            if (e.keyCode === 13) {
+                e.preventDefault(); // Ensure it is only this code that rusn
+                app.on_search();
+            }
+        }
+
+        $(document).ready(function () {
+            console.log("ready");
+            if (utils.is_mobile()) $('#barcode-img').show();
+        });
+
+        Vue.use(Vuetify);
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                'grid': VueComponents.Grid,
+                'textinputdialog': VueComponents.TextInputDialog,
+                //'confirmdlg': VueComponents.ConfirmDialog,
+                //'infodlg': VueComponents.InfoDialog,
+            },
+            data: {
+                ready: false,
+                debug: false,
+                userroles: "@userroles",
+                can_edit: false,
+                readonly: true,
+                message_to_user: '',
+                page_sizes: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+                grid_config: {
+                    height: "45vh",
+                    filter: true,
+                    rowkey: 'InventoryID',
+                    columns: [
+                        { header: "Barcode", width: 100, align: "center", sortable: false, field: "Barcode", filtered: true, enabled: true },
+                        { header: "CAS#", field: "CASNumber", align: 'center', width: 100, filtered: true, enabled: true },
+                        { header: "Chemical", field: "ChemicalName", align: 'center', width: 180, filtered: true, enabled: true },
+                        //{ header: "Location", field: "Location.FullLocation", width: 400, align: 'center', filtered: true, enabled: true },
+                        { header: "Date In", field: "DateIn", width: 100, align: 'center', filtered: true, type: 'date', enabled: true },
+                        { header: "Expiration Date", field: "ExpirationDate", width: 100, align: 'center', filtered: true, type: 'date', enabled: true },
+                        { header: "Owner", field: "Owner.Name", width: 150, align: 'center', filtered: true, enabled: true },
+                        { header: "Storage Group", field: "Group.Name", width: 150, align: 'center', filtered: true, enabled: false },
+                        { header: "Size", field: "ContainerSize", width: 70, align: 'center', filtered: true, enabled: false },
+                        { header: "Units", field: "Units", width: 70, align: 'center', filtered: true, enabled: false },
+                        { header: "Rem", field: "RemainingQuantity", width: 70, align: 'center', filtered: true, enabled: false },
+                        { header: "State", field: "State", width: 70, align: 'center', filtered: true, enabled: false },
+                        { header: "Notes", field: "Notes", width: 300, align: 'left', filtered: true, enabled: false },
+                    ],
+                },
+                inventory: [],
+                settings: {},
+                units: [
+                    { value: 'cm3', text: 'Cubic centimeters (cm^3)' },
+                    { value: 'm3', text: 'Cubic meters (m^3)' },
+                    { value: 'g', text: 'Gram (g)' },
+                    { value: 'kg', text: 'Kilogram (kg)' },
+                    { value: 'L', text: 'Liter (L)' },
+                    { value: 'mg', text: 'Milligram (mg)' },
+                    { value: 'mL', text: 'Milliliter (mL)' },
+                    { value: 'ft3', text: 'Cubic feet (ft^3)' },
+                    { value: ' ', text: '(blank)' },
+                ],
+                states: [
+                    { value: 'solid', text: 'solid' },
+                    { value: 'liquid', text: 'liquid' },
+                    { value: 'gas', text: 'gas' },
+                    { value: 'other', text: 'other' },
+                ],
+                hazard_images: [
+                    { name: "ACUTETOXICITY", image: "/assets/acute_toxicity.png", text: "Skull and Crossbones" },
+                    { name: "COMPRESSEDGAS", image: "/assets/compressed_gas.png", text: "Gas Cylinder" },
+                    { name: "CORROSIVE", image: "/assets/corrosive.png", text: "Corrosion" },
+                    { name: "EXPLOSIVE", image: "/assets/explosive.png", text: "Exploding Bomb" },
+                    { name: "FLAMABLE", image: "/assets/flamable.png", text: "Flame" },
+                    { name: "HEALTHHAZARD", image: "/assets/health_hazard.png", text: "Health Hazard" },
+                    { name: "IRRITANT", image: "/assets/irritant.png", text: "Exclamation Mark" },
+                    { name: "OXIDIZER", image: "/assets/oxidizer.png", text: "Flame Over Circle" },
+                ],
+                search_settings: {
+                    RootID: 1,
+                    includeAllLocations: true,
+                    BarCode: '',
+                    CASNumber: '',
+                    Owner: '',
+                    Chemical: '',
+                    ItemsMatched: 0,
+                    ResultOffset: 0,
+                    ItemsPerPage: 100,
+                    CurrentPage: 0,
+                    IsInitialQuery: true
+                },
+            },
+            filters: {
+                date: function (value) {
+                    if (!value) return '';
+                    return moment(value).format('YYYY-MM-DD');
+                }
+            },
+            methods: {
+                //-----------------------------------------------------
+                // refresh - fetch settings
+                //-----------------------------------------------------
+                refresh: function (loc_id, search_settings) {
+                    var self = this;
+
+                    //$('#content').hide(0);
+                    //$('#loading').show(0);
+
+                    url = utils.api_url("inventorysearchnoauth");
+                    api.axios_post({
+                        url: url, 
+                        data: this.search_settings,
+                        onsuccess: function (ajax_result) {
+                            console.log("refresh: onsucess:", ajax_result);
+                            self.search_settings = ajax_result.Data.SearchSettings;
+                            //console.table(ajax_result.Data.SearchSettings);
+                            self.inventory = ajax_result.Data.Inventory;
+                        }
+                    })
+                },
+
+                // https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+                download_data: function (filename, data) {
+                    var blob = new Blob([data], { type: 'text/csv' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else {
+                        var elem = window.document.createElement('a');
+                        elem.href = window.URL.createObjectURL(blob);
+                        elem.download = filename;
+                        document.body.appendChild(elem);
+                        elem.click();
+                        document.body.removeChild(elem);
+                    }
+                },
+
+                save_csv: function () {
+                    let data = "";
+                    let self = this;
+                    this.$refs['grid'].generate_csv(function (line) {
+                        data += line + "\n";
+                    });
+                    this.$refs['textinputdialog'].open("Enter the filename for the downloaded CSV file", "Save As CSV", function (op, filename) {
+                        if (op == 'save') {
+                            if (!filename.toLowerCase().endsWith(".csv")) filename += ".csv";
+                            console.log("Save as " + filename);
+                            self.download_data(filename, data);
+                        }
+                    })
+                },
+
+                search_info: function () {
+                    let settings = this.search_settings;
+                    let start = settings.ResultOffset + 1;
+                    let end = Math.min(start + settings.ItemsPerPage - 1, settings.ItemsMatched);
+                    return("Showing results " + start + " to " + end + " of " + settings.ItemsMatched);
+                },
+
+                have_next_page: function () {
+                    return this.search_settings.ResultOffset + this.inventory.length < this.search_settings.ItemsMatched;
+                },
+
+                have_prev_page: function () {
+                    return this.search_settings.ResultOffset > 0;
+                },
+
+                owner: function (item) {
+                    if (item.Owner) return item.Owner.Name;
+                    else return "";
+                },
+
+                group: function (item) {
+                    if (item.Group) return item.Group.Name;
+                    else return "";
+                },
+
+                qty: function (item) {
+                    if (item.RemainingQuantity && item.Units) return item.RemainingQuantity + ' ' + item.Units;
+                    else return "";
+                },
+
+                on_search: function () {
+                    this.on_search.ResultOffset = 0;
+                    this.search_settings.CurrentPage = 0;
+                    this.search_settings.ResultOffset = 0;
+                    this.search_settings.IsInitialQuery = true;
+                    this.refresh();
+                },
+
+                on_prev_page: function () {
+                    if (this.search_settings.ResultOffset > 0) {
+                        this.search_settings.IsInitialQuery = false;
+                        this.search_settings.ResultOffset -= this.search_settings.ItemsPerPage;
+                        if (this.search_settings.ResultOffset < 0) this.search_settings.ResultOffset = 0;
+                        this.refresh();
+                    }
+                },
+
+                on_next_page: function () {
+                    if (this.search_settings.ResultOffset < this.search_settings.ItemsMatched) {
+                        this.search_settings.IsInitialQuery = false;
+                        this.search_settings.ResultOffset += this.search_settings.ItemsPerPage;
+                        this.refresh();
+                    }
+                },
+            },
+
+            created: function () {
+                console.log("In created()");
+            },
+
+            mounted: function () {
+                this.ready = true;
+            },
+        });
+
+
+    </script>
+}
+
+@section Styles
+    {
+
+    <style>
+
+        div.noborder input {
+            border-bottom: none !important;
+        }
+
+        .horizontal-wrap {
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            flex-wrap:wrap;
+        }
+
+
+        .loading {
+            width: 100vw;
+            height: 80vh;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+    </style>
+
+}

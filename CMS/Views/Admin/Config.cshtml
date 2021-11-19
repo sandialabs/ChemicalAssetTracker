@@ -1,0 +1,555 @@
+﻿
+@{
+    ViewData["Title"] = "Config";
+    int location_type_count = (int)ViewData["location_type_count"];
+    int location_count = (int)ViewData["location_count"];
+    string institution = (string)ViewData["institution"];
+}
+
+<div class="banner">System Configuration</div>
+
+<v-app data-app>
+    <div id='app'>
+        <v-content>
+            <v-container fluid>
+                <div v-if="ready">
+                    <v-layout v-if="!show_instructions" style="margin-bottom:2em;">
+                        <v-flex cols="12">
+                            <div style="display: flex; flex-direction: row; justify-content:left;">
+                                <v-btn small color="blue white--text" v-on:click="show_instructions = true">Help</v-btn>
+                            </div>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout v-if="show_instructions" style="margin-bottom:2em;">
+                        <v-flex style="border: 1px solid black; padding: 2em;">
+                            <p class="instructions">
+                                The first step in configuring CAT is to define the types of locations at your site.  These location
+                                types form a hierarchy that defines what kinds of locations exist at each level in the hierarchy and will
+                                define the addresses where each chemical in your inventory resides.
+                            </p>
+                            <p class="instructions">
+                                For example, if this instance of CAT will record chemicals at a university, the top of the location hierarchy
+                                would have the name of the university, e.g., "University of New Mexico."  Beneath the university level you might
+                                have buildings, and rooms below that, followed by cabinets with shelves, refriderators, and freezers.  On the other
+                                hand, if CAT is tracking inventories for an entire country, the top level in the hierarchy might be "Ministry of Education"
+                                with universities, buildings, etc. beneath Ministry of Education.
+                            </p>
+                            <p class="instructions">
+                                Below on the left is list of location types.  You can revise and/or add new location types to fit your particular
+                                circumstances. On the right is a representation of a location type hierarchy.  Add a new location type
+                                to your hierarchy by dragging a type name on the left onto the parent location in the hierarchy.  If you need to
+                                delete an entry in the hierarchy, just click the red trash can and confirm your action in the dialog box that appears.
+                            </p>
+                            <p class="instructions">
+                                To save your changes, click the Save button.  Note: this
+                                button is only visible if you have made changes to the location hierarchy.
+                            </p>
+                            <div style="display: flex; flex-direction: row; justify-content:center;">
+                                <v-btn small color="blue white--text" v-on:click="show_instructions = false">Hide</v-btn>
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout v-if="ready && (have_unsaved_changes || status_text.length > 1)" style="margin-bottom: 1em;">
+                        <v-flex cols="12" class="title red--text">
+                            <span v-if="status_text.length > 1">{{status_text}}</span>
+                            <v-btn v-if="have_unsaved_changes" small class="blue white--text" v-on:click="update_locations">Save</v-btn>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout>
+                        <v-flex sm4 style="min-width: 30em;">
+                            <div class="hbox-aligned">
+                                <span class="title" style="margin-right: 1em;">
+                                    Location Type Names
+                                    <v-btn icon v-on:click="on_add_type_name"><v-icon>add_circle</v-icon></v-btn>
+                                    <v-btn icon v-on:click="show_quick_dialog=true"><v-icon>input</v-icon></v-btn>
+                                </span>
+                            </div>
+                            <div v-for="item in location_type_names" draggable v-on:dragstart="on_start_drag($event, item)">
+                                <v-text-field flat height="1.2rem" v-model="item.name"></v-text-field>
+                            </div>
+                        </v-flex>
+                        <v-flex sm1>
+
+                        </v-flex>
+                        <v-flex sm6>
+                            <div class="title" style="margin-top:0.7em; margin-bottom:1em;">Location Hierarchy</div>
+                            <v-treeview ref="treeview"
+                                        dense
+                                        :items="location_tree"
+                                        v-model="selected_location_type"
+                                        item-children="child_nodes"
+                                        :open.sync="open_tree_nodes">
+                                <template slot="label" slot-scope="{ item }">
+                                    <div class="hbox-aligned">
+                                        <span flat v-on:drop="on_drop($event, item)" v-on:dragover.prevent v-on:dragenter.prevent>{{item.nameobj.name}}</span>
+                                        <v-btn v-if="item.parent" icon flat small v-on:click="on_delete_location_type(item)"><v-icon small color="red">delete</v-icon></v-btn>
+                                    </div>
+                                </template>
+                            </v-treeview>
+                        </v-flex>
+                    </v-layout>
+                </div>
+            </v-container>
+
+            <confirm ref="confirm" width="400px"></confirm>
+            <infodialog ref="infodialog" width="400px"></infodialog>
+
+            <v-dialog persistent v-model="show_quick_dialog" width="400px;">
+                <v-card>
+                    <v-card-title class="headline">
+                        Create Location Types
+                    </v-card-title>
+                    <v-card-text>
+                        <div style="margin-left: 2em;">
+                            Enter location definitions one per line.  Each should have the form:<br />
+                            NAME: CHILD,CHILD, ...<br />
+                            NAME is the name of a location type and the CHILD names are the names of location types that are
+                            children of this location type.
+                        </div>
+                        <div style="width: 100%; margin: 2em;">
+                            <v-textarea box auto-grow v-model="quick_import_text" rows="10"></v-textarea>
+                        </div>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="green white--text" v-on:click="on_process_quick_definitions">Accept</v-btn>
+                        <v-btn color="red white--text" v-on:click="show_quick_dialog=false">Cancel</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-content>
+    </div>
+
+</v-app>
+
+
+
+@section Scripts  {
+
+    <script src="~/dist/infodialog.js"  asp-append-version="true"></script>
+    <script src="~/dist/confirmdialog.js"  asp-append-version="true"></script>
+
+    <script>
+        var app;
+        console.log('utils', utils);
+        var RootURL = utils.root_url();
+        var AjaxResult;
+
+        function user_has_role(user, role) {
+            return (user.Roles.indexOf(role) >= 0);
+        }
+
+        function pprint(obj) {
+            console.log(JSON.stringify(obj, 0, 4))
+        }
+
+
+
+        startDrag: (evt, item) => {
+              evt.dataTransfer.dropEffect = 'move'
+              evt.dataTransfer.effectAllowed = 'move'
+              evt.dataTransfer.setData('itemID', item.id)
+        }
+
+        app = new Vue({
+            el: '#app',
+            components: {
+                "infodialog": VueComponents.InfoDialog,
+                "confirm": VueComponents.ConfirmDialog,
+            },
+            data: {
+                ready: false,
+                location_types: [],
+                location_type_names: [],
+                root_location: "@institution",
+                root_location_initialized: false,
+                location_tree: [],
+                selected_location_type: [],
+                new_location_count: 0,
+                users: [],
+                status_text: "",
+                open_tree_nodes: [],
+                show_instructions: true,
+                show_quick_dialog: false,
+                quick_import_text: "",
+                have_unsaved_changes: false,
+            },
+            created: function () {
+                console.log("Created");
+                this.refresh();
+            },
+
+            mounted: function () {
+                let self = this;
+                let names = ["University", "College", "Buiilding", "Room", "Cabinet", "Shelf", "Refrigerator", "Freezer"];
+                let name_array = [];
+                names.forEach(function (x) {
+                    self.add_type_name(x);
+                });
+            },
+
+            methods: {
+
+                refresh: function () {
+                    console.log("In refresh()");
+
+                    this.refresh_users();
+                    this.refresh_locations();
+                },
+
+                refresh_users: function () {
+                    let self = this;
+                    let url = utils.mvc_page_url("Admin", "GetUsers");
+                    console.log("In refresh_users");
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        onsuccess: function (ajax_result) {
+                            if (ajax_result.Success) {
+                                self.users = self.process_users(ajax_result.Data.Users);
+                                //self.this_user = ajax_result.Data.ThisUser;
+                                //self.this_home_location_id = self.this_user.HomeLocationID;
+                                console.log("refresh_users succeeded:", self.users);
+                            }
+                            else {
+                                console.log("refresh_users failed: " + ajax_result.Message);
+                            }
+                            $('#uservue').show(0);
+                        }
+                    });
+                },
+
+                refresh_locations: function (msg) {
+                    let self = this;
+                    let url = utils.api_url("getlocationtypes");
+                    console.log("In refresh_locations");
+                    this.status_text = "";
+                    api.axios_get({
+                        url: url,
+                        verbose: true,
+                        onsuccess: function (ajax_result) {
+                            if (ajax_result.Success) {
+                                let location_types = ajax_result.Data.locationtypes;
+                                console.log("Location Types");
+                                pprint(location_types);
+                                self.build_tree(location_types);
+                                self.status_text = "";
+                                self.set_changed(false);
+                                console.log("refresh_locations succeeded:", self.users);
+                                if (msg) self.set_status_message(msg, 4000);
+                            }
+                            else {
+                                self.notify("Refresh Locations", ajax_result.Message);
+                                console.log("refresh_locations failed: " + ajax_result.Message);
+                            }
+                            self.ready = true;
+                            $('#uservue').show(0);
+                        }
+                    });
+                },
+
+                update_locations: function () {
+                    let self = this;
+                    let url = utils.api_url("initializelocationtypes");
+                    let postdata = this.flatten_tree();
+                    console.log("In update_locations");
+
+                    api.axios_post({
+                        url: url,
+                        verbose: true,
+                        data: postdata,
+                        onsuccess: function (ajax_result) {
+                            if (ajax_result.Success) {
+                                console.log("update_locations AjaxResult", ajax_result);
+                                self.location_types = ajax_result.Data.locationtypes;
+                                pprint(self.location_types);
+                                self.locations_initialized = true;
+                                self.refresh_locations("Your changes have been saved.");
+                                //if (self.location_types.length == 1) {
+                                //    self.add_location_tree_node({ name: self.location_types[0].Name });
+                                //}
+                                //self.root_location_initialized = (self.location_types.length > 0);
+                                //console.log("update_locations succeeded:", self.users);
+                            }
+                            else {
+                                console.log("update_locations failed: " + ajax_result.Message);
+                            }
+                        }
+                    });
+                },
+
+                process_users: function (users) {
+                    let self = this;
+                    users.forEach(function (user) {
+                        //console.log("Process user: ", user);
+                        user.IsRoot = user_has_role(user, "root");
+                        user.IsAdmin = user_has_role(user, "admin");
+                        user.IsManager = user_has_role(user, "manage");
+                        user.IsAuditor = user_has_role(user, "audit")
+                        user.IsEditor = user_has_role(user, "edit");
+                        user.IsViewer = user_has_role(user, "view");
+                        user.IsNew = false;
+                        user.IsSelected = true;
+                    });
+                    return users;
+                },
+
+                open_tree_node: function (id) {
+                    if (this.open_tree_nodes.indexOf(id) < 0) {
+                        console.log("Opening tree node " + id);
+                        this.open_tree_nodes.push(id);
+                    }
+                },
+
+
+                find_type_name: function (name) {
+                    let nameobj = this.location_type_names.filter(function (x) { return x.name == name; })[0];
+                    return nameobj;
+                },
+
+                add_type_name: function (name) {
+                    let nameobj = this.find_type_name(name);
+                    if (nameobj == undefined) {
+                        nameobj = { name: name };
+                        this.location_type_names.push(nameobj);
+                        console.log("Adding type name " + name);
+                    }
+                    return nameobj;
+                },
+
+                create_tree_node: function (name, database_id, parent_node) {
+                    console.log("create_tree_node", name, database_id, parent_node);
+                    this.new_location_count += 1;
+                    let nameobj = { name: name };
+                    if (database_id > 1) nameobj = this.add_type_name(name);
+                    result = {
+                        id: this.new_location_count,
+                        database_id: database_id,
+                        nameobj: nameobj,
+                        parent: parent_node,
+                        child_nodes: [],
+                        child_types: [],
+                    }
+                    if (parent_node) {
+                        parent_node.child_nodes.push(result);
+                        parent_node.child_types.push(name);
+                    }
+                    return result;
+                },
+
+                add_location_tree_node: function (name, database_id, parent) {
+                    console.log("In add_location_tree_node", name, parent);
+                    let node = this.create_tree_node(name, database_id, parent);
+                    console.log("    new_node", node);
+                    if (parent == undefined) this.location_tree = [node];
+                    else this.open_tree_node(parent.id);
+                    return node;
+                },
+
+                add_location_type_to_tree: function (location_type, parent) {
+                    let self = this;
+                    console.log("add_location_type_to_tree", location_type, parent);
+                    let node = this.add_location_tree_node(location_type.Name, location_type.LocationTypeID, parent);
+                    location_type.ValidChildList.forEach(function (childname) {
+                        let child_location_type = self.location_types.filter(function (x) { return x.Name == childname; })[0];
+                        if (child_location_type) {
+                            self.add_location_type_to_tree(child_location_type, node);
+                            self.set_changed(true);
+                        }
+                        else console.error("add_location_type_to_tree: child location " + childname + " not found");
+                    });
+                },
+
+                // build_tree - convert database location type data into a tree for v-treeview
+                build_tree: function (location_types) {
+                    this.location_types = location_types;
+                    this.location_tree = [];
+                    let root = location_types.filter(function (x) { return x.LocationTypeID == 1; })[0];
+                    if (root) {
+                        this.add_location_type_to_tree(root);
+                    }
+                    else console.error("build_tree - can't find root location type")
+                },
+
+                // flatten_tree - convert v-treeview tree back into database location type data
+                flatten_tree: function (result, tree) {
+                    if (result == undefined) result = {};
+                    if (tree == undefined) tree = this.location_tree[0];
+
+                    let self = this;
+                    let name = tree.nameobj.name;
+                    let entry = result[name];
+                    if (entry == undefined) {
+                        console.log("flatten_tree - initializing " + name);
+                        entry = { id: tree.database_id, children: [] };
+                        result[name] = entry;
+                    }
+                    tree.child_nodes.forEach(function (child) {
+                        if (entry.children.indexOf(child.nameobj.name) < 0) {
+                            entry.children.push(child.nameobj.name);
+                        }
+                        self.flatten_tree(result, child);
+                    });
+                    return result;
+                },
+
+                confirm: function (title, text, callback) {
+                    let self = this;
+                    this.$refs.confirm.open(text, title, function (result) {
+                        console.log("Confirm result: ", result);
+                        if (callback && result == 'confirmed') {
+                            callback();
+                        }
+                    })
+                },
+
+                set_changed: function (value) {
+                    if (value) this.set_status_message("You have unsaved changes");
+                    else this.status_text = "";
+                    this.have_unsaved_changes = value;
+                },
+
+                set_status_message: function (text, delay_ms) {
+                    console.log("set_status_message", text, delay_ms);
+                    this.status_text = text;
+                    if (delay_ms > 0) this.clear_status_message(delay_ms);
+                },
+
+                clear_status_message: function (delay_ms) {
+                    let self = this;
+                    if (delay_ms > 0) setTimeout(function () { self.status_text = ""; }, delay_ms);
+                    else this.status_text = "";
+                },
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+
+                on_location_click(item, ev) {
+                    console.log("on_location_click", item, ev);
+                    if (ev.ctrlKey && item.parent) {
+                        this.confirm("Delete Location Type", "Delete " + item.data.name + "?", function () {
+                            let ix = item.parent.ValidChildList.indexOf(item);
+                            if (ix >= 0) item.parent.ValidChildList.splice(ix, 1);
+                            else console.log("Can't find child in parent", item, parent);
+                        });
+                    }
+                },
+
+                on_delete_location_type(item) {
+                    console.log("on_delete_location_type", item);
+                    let self = this;
+                    this.confirm("Delete Location Type", "Delete " + item.nameobj.name + "?", function () {
+                        let ix = item.parent.child_nodes.indexOf(item);
+                        if (ix >= 0) {
+                            item.parent.child_nodes.splice(ix, 1);
+                            self.set_changed(true);
+                        }
+                        else console.log("Can't find child in parent", item, parent);
+                    });
+                },
+
+                on_start_drag: function (evt, item) {
+                    console.log("on_start_drag", item.name, evt)
+                    evt.dataTransfer.dropEffect = 'move';
+                    evt.dataTransfer.effectAllowed = 'move';
+                    evt.dataTransfer.setData('locname', item.name);
+                },
+
+                on_drop: function (evt, parent) {
+                    console.log("on_drop", parent, evt);
+                    const locname = evt.dataTransfer.getData('locname');
+                    if (locname) {
+                        console.log("on_drop item", locname);
+                        this.add_location_tree_node(locname, 0, parent);
+                        this.set_changed(true);
+                    }
+                    else console.log("Can't find location type named " + locname);
+                },
+
+                on_treeview_update_active: function (data) {
+                    console.log("on_treeview_update_active", data);
+                },
+
+                on_add_type_name: function () {
+                    this.add_type_name("_LOCATION TYPE");
+                },
+
+                on_process_quick_definitions: function () {
+                    console.log("on_process_quick_definitions");
+                    this.show_quick_dialog = false;
+                    let self = this;
+                    let text = this.quick_import_text;
+                    let lines = text.split('\n');
+                    let root_location_type = utils.deep_clone(this.location_types[0]);
+                    let new_location_type_names = []
+                    let new_location_types = [root_location_type];
+                    let have_root_def = false;
+
+                    lines.forEach(function (line) {
+                        line = line.trim();
+                        if (line.length > 0) {
+                            let name_and_children = line.split(':');
+                            if (!line.startsWith('#')  &&  name_and_children.length > 0) {
+                                let location_name = name_and_children[0].trim();
+                                let child_list = '';
+                                if (name_and_children.length > 1) child_list = name_and_children[1].trim();
+                                let current_type = undefined;
+                                if (location_name.length > 0) {
+                                    if (location_name.toLowerCase() == root_location_type.Name.toLowerCase()) {
+                                        current_type = root_location_type;
+                                        have_root_def = true;
+                                    }
+                                    else {
+                                        current_type = {
+                                            LocationTypeID: 0,
+                                            Name: location_name,
+                                        };
+                                        new_location_types.push(current_type);
+                                        if (new_location_type_names.filter(function (x) { return (x.name == location_name); }).length == 0) {
+                                            new_location_type_names.push({ name: location_name });
+                                        }
+                                    }
+                                    current_typeValidChildren = child_list;
+                                    current_type.ValidChildList = [];
+                                    if (child_list.length > 0) {
+                                        let children = child_list.split(',');
+                                        children.forEach(function (x) { current_type.ValidChildList.push(x.trim()); });
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    if (have_root_def) {
+                        console.log("new_location_types", new_location_types);
+                        console.log("New Location Type Names", new_location_type_names);
+                        pprint(new_location_types);
+                        console.log("-------------------------");
+                        this.location_type_names = new_location_type_names;
+                        this.build_tree(new_location_types);
+                    }
+                    else {
+                        this.notify("Import Location Types", 'You must include "Root: ...." in your location definitions');
+                    }
+                },
+            }
+        });
+
+
+
+    </script>
+
+}
+
+@section Styles {
+
+<style>
+
+    .instructions {
+        font-size: larger;
+    }
+
+</style>
+
+}

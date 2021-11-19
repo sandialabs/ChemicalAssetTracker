@@ -1,0 +1,293 @@
+﻿@using Common
+
+@{
+    ViewData["Title"] = "InventoryDetail";
+    UserRoles userroles = (UserRoles)ViewData["Permissions"];
+    string access = "readonly";
+    if (userroles.IsAdmin || userroles.IsManager || userroles.IsEditor)
+    {
+        access = "readwrite";
+    }
+}
+
+<div class="banner"><i class="fa fa-arrow-circle-left" v-on:click="go_back()"></i>&nbsp;&nbsp;Inventory Detail</div>
+<v-app data-app>
+    <div id="app">
+        <v-content>
+            <v-container fluid>
+                <v-layout>
+                    <v-flex>
+                        <itemeditor ref='itemeditor'
+                                    v-on:ready="refresh" v-on:save="on_save" v-on:cancel="on_cancel"
+                                    :readonly="is_readonly"
+                                    :groups='groups'
+                                    :owners='owners'></itemeditor>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+        <infodialog width="300px" ref="infodialog" v-on:closed="on_info_closed"></infodialog>
+    </div>
+</v-app>
+
+@section scripts
+    {
+    <script src="~/dist/location.js"></script>
+    <script src="~/dist/locationpicker.js"></script>
+    <script src="~/dist/itemeditor.js"></script>
+    <script src="~/dist/infodialog.js"></script>
+
+    <script>
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                //apiurl: utils.api_url("fetchitem"),
+                barcode: '@ViewData["Barcode"]',
+                owners: [],
+                groups: [],
+                is_readonly: ('@access' == 'readonly'),
+                itemdata: { },
+            },
+            components: {
+                'itemeditor': VueComponents.ItemEditor,
+                "infodialog": VueComponents.InfoDialog,
+            },
+            methods: {
+                refresh: function () {
+                    console.log("In InventoryDetailView.refresh");
+                    let self = this;
+                    api.axios_get({
+                        url: utils.api_url("fetchitem") + "/" + this.barcode,
+                        caller: 'InventoryDetail',
+                        verbose: true,
+                        onsuccess: function (ajax_result) {
+                            self.itemdata = ajax_result.Data.Item;
+                            self.owners = ajax_result.Data.Owners;
+                            //self.locations = ajax_result.Data.Locations;
+                            self.groups = ajax_result.Data.Groups;
+                            self.$refs['itemeditor'].initialize(self.itemdata);
+                        }
+                    })
+                },
+                go_back: function () {
+                    window.history.back();
+                },
+                on_save: function (updated_item) {
+                    console.log("In on_save", updated_item);
+                    this.status = "";
+                    let url = utils.api_url("update_item");
+                    console.log("Calling " + url);
+                    let self = this;
+                    axios({
+                        method: 'POST',
+                        url: url,
+                        data: updated_item,
+                    }).then(function (response) {
+                        console.log("Response:", response);
+                        AjaxResult = response.data;
+                        if (AjaxResult.Success) {
+                            self.status = "Update complete."
+                            self.notify("Update", self.status);
+                        }
+                        else self.status = AjaxResult.Message;
+                    }).catch(function (response) {
+                        console.log("Response:", response);
+                    });
+                },
+                on_cancel: function () {
+                    console.log("on_cancel");
+                    this.go_back();
+                },
+
+                on_info_closed: function() {
+                    console.log("on_info_closed");
+                    this.go_back();
+                },
+
+
+                notify: function (title, msg) {
+                    this.$refs['infodialog'].open(msg, title);
+                },
+
+            },
+            created: function () {
+                //this.refresh();
+            }
+        })
+
+    </script>
+}
+
+
+@section Styles {
+
+    <style>
+
+        .fixed-label {
+            width: 10em;
+        }
+
+        .inventory-item {
+            padding: 4px;
+            border: 2px solid gray;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .inventory-heading {
+            font-weight: bold;
+            background-color: lavender;
+            padding: 1% 0;
+        }
+
+        .inventory-detail {
+            font-weight: normal;
+            background-color: transparent;
+        }
+
+        .red {
+            color: white;
+            background-color: red;
+            border: 1px solid gray;
+        }
+
+        .light_red {
+            color: black;
+            background-color: lightpink;
+        }
+
+        .blue {
+            color: white;
+            background-color: blue;
+            border: 1px solid gray;
+        }
+
+        .light_blue {
+            color: black;
+            background-color: lightblue;
+        }
+
+
+        .yellow {
+            color: black;
+            background-color: yellow;
+        }
+
+        .light_yellow {
+            color: black;
+            background-color: lightgoldenrodyellow;
+        }
+
+
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+
+        tr.attributes {
+            width: 100%;
+            padding: 4px;
+        }
+
+        td.attribute {
+            width: 33%;
+            padding: 4px;
+        }
+
+        td.cwc {
+            width: 33%;
+            padding-left: 4px;
+            padding-top: 4px;
+            padding-bottom: 0px;
+        }
+
+        .field20 {
+            width: 20em;
+        }
+
+        .field11 {
+            width: 11em;
+        }
+
+        .field4 {
+            width: 4em;
+        }
+
+        .field2 {
+            width: 2em;
+        }
+
+        .active {
+            background-color: #EEE;
+        }
+
+        .security-check {
+            width: 5px !important;
+            max-width: 5px !important;
+        }
+
+        .health-check {
+            width: 20px
+        }
+
+        .physical-check {
+            width: 20px
+        }
+
+        th {
+            text-align: center;
+        }
+
+        tbody tr {
+            background-color: transparent;
+        }
+
+        .table-header-rotated {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .csstransforms .table-header-rotated td {
+            width: 30px;
+        }
+
+        .no-csstransforms .table-header-rotated th {
+            padding: 5px 10px;
+        }
+
+        .table-header-rotated td {
+            text-align: center;
+            padding: 10px 5px;
+            border: 1px solid #ccc;
+        }
+
+        .csstransforms .table-header-rotated th.rotate {
+            height: 20px;
+            white-space: nowrap;
+        }
+
+            .csstransforms .table-header-rotated th.rotate > div {
+                -webkit-transform: translate(25px, -11px) rotate(315deg);
+                transform: translate(-1px, -11px) rotate(315deg);
+                width: 20px;
+            }
+
+                .csstransforms .table-header-rotated th.rotate > div > span {
+                    border-bottom: 1px solid #ccc;
+                    padding: 5px 10px;
+                }
+
+        .table-header-rotated th.row-header {
+            padding: 0 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+
+
+
+
+}
+

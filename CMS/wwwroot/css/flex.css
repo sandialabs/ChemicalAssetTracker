@@ -1,0 +1,45 @@
+﻿.hbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.hbox-c {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.hbox-b {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.center-aligned {
+    align-items: center;
+}
+
+.hbox-item {
+    flex: 1;
+    margin: 6px;
+}
+
+.hbox-item2 {
+    flex: 2;
+}
+
+.hbox-item3 {
+    flex: 3;
+}
