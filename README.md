@@ -4,16 +4,10 @@
 
 ---
 
-### 1. MySQL (or MariaDB)
+### 1. MySQL
 
-You will need to create a user 'cms' with password 'cms'.
-
-```
-create user 'cms'@'localhost' identified by 'cms';
-
-grant all privileges on *.* to 'cms'@'localhost';
-
-```
+The community edition of MySQL is recommended. Do not use MariaDB - there are feature differences between it
+and MySQL that will break CAT.
 
 ### 2. .NET Core
 
@@ -36,15 +30,12 @@ these databases and log in to the system for the first time.
 
 ### Step 1: Build the cms database
 
-There are two options for creating the cms database: running a Python script or running an included .NET application. Both are described below.
-
-#### Creating the cms database with a Python script
-
-This method of creating a new database is suitable if there have been no changes to the database schema, because it uses SQL scripts to create the database. If the database has changed, use the second option - using the dbutil program.
+The recommended option for creating the database is with the managedb.py script in the Scripts directory. It takes two arguments: "-clean" 
+to create a clean database, and "-institution NAME", where NAME will be the top level of your location hierarchy.
 
 ```
 C> cd Scripts
-C> python managedb.py -clean
+C> python managedb.py -clean -institution ROOT
 ```
 
 > You may have to install some additional Python packages before that will work:
@@ -55,14 +46,6 @@ pip install attrdict
 pip install cryptography
 ```
 
-#### Creating the cms database with the dbutil utility
-
-This method of creating a new database relies on Entity Framework to create the database. This ensures that the database schema exactly corresponds to the database entities that are defined in the CAT code.
-
-```
-C> cd dbutil
-C> dotnet run -create
-```
 
 ### Step 2(optional): Create test data
 
@@ -148,35 +131,3 @@ In order to deploy CAT to Azure, you will need to have an Azure account with an 
         database initialization scripts
 -   Migrations - database migration scripts
 
-## Schedule
-
-### Project Schedule as of 06/13/2018
-
-[Schedule](./schedule.png)
-
-# Notes
-
-## Nov 6, 2018
-
-Tried unsuccessfully to get EF migrations to work. Upgraded Pomello to ver 2.1.2 and migrations improved, but idempotent migrations are not supported.
-
--   Ran "dotnet ef migrations script -o cms_initial_migration.sql"<br>
-    This only works if you are in the model directory.<br>
-    This works: "dotnet ef migrations script -o DatabaseMigrations\cms_initial_migration.sql --project DataModel --startup-project DataModel"
--   Created initial migrations in the Migrations folder for cms and cmsuser
-
-# Issues
-
-1.  Latest features<br>
-    a) search options in Inventory and Search<br>
-    b) additional User information
-    c) LCSS data
-    d) PDF output
-2.  Location-dependent stock check<br>
-    In very large installations a per-installation stock check is not practical. We need to have a stock check model that allows multiple stock checks to be active at the same time, covering different locations. How should we handle overlapping stock checks?
-3.  Displaying hazard information.
-    1.  Can we simplify the inventory page to just show the relevent pictograms on each line in a single column, rather than having a column for each possible hazard?
-    2.  How should the hazards be shown in the inventory detail view?
-    3.  How should additional hazard information be accessed?<br>
-        a) a single pop-up that lets you select SDS doc, hazard details, and disposal information?
-        b) put multiple links in the Inventory page where SDS currently is?
