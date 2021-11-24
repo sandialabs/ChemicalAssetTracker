@@ -46,7 +46,7 @@ def run_with_prompt(cmd, lines):
 def install_pip(askfirst):
     banner("Install pip3")
     if askfirst == False or prompt("Install pip3? "):
-        run('sudo apt install python3-pip')
+        run('sudo apt install python-pip')
 
 def install_git(askfirst):
     banner("Install GIT")
@@ -146,7 +146,7 @@ def initialize_cat(askfirst):
         os.chdir('CAT/Scripts')
         run('pip3 install -r requirements.txt')
         run('mysql -u pete -ppete CMSUsers < cmsusers-full.sql')
-        run('python3 create-cms-db.py -u pete -p pete -force -testdata -institution "Ministry of Education"')
+        run('python create-cms-db.py -u pete -p pete -force -testdata -institution "Ministry of Education"')
         os.chdir('../..')
 
 def start_cat(askfirst):

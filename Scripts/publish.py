@@ -8,7 +8,7 @@ from utils import *
 PublishDir = "C:\\Publish"
 
 def show_usage():
-    banner("Use: python3 publish.py [-help] [-dir <directory>]")
+    banner("Use:  publish.py [-help] [-dir <directory>]")
 
 if have_arg('-help'):
     show_usage()

@@ -459,7 +459,7 @@ def open_db():
 
 
 def generate_casdata(db):
-    generate_list_of_chemicals('casdata.csv')
+    generate_list_of_chemicals('Data/casdata.csv')
     # generate_casdataitems() - NO LONGER NEEDED - CASDataItems is now populated in import_ghs.py
     db.commit()
 
@@ -485,7 +485,7 @@ def generate_groups(db):
 
 
 def show_usage():
-    print("Use: python3 generate-testdata.py <OPTIONS>")
+    print("Use:  generate-testdata.py <OPTIONS>")
     print("Options:")
     print("    -help           display this message")
     print("    -for <name>     use <name> for the Institution (default IRAQ)")

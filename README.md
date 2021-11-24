@@ -1,4 +1,8 @@
-# CMS Web Application
+# Chemical Asset Tracker
+
+The Chemical Asset Tracker (CAT) is a web application that uses the .NET Core framework.  The sections
+below describe the prerequisites you will need to build CAT, how to initialize the CAT databases
+and build the application, and how to deploy CAT to various platforms.
 
 ## Prerequisites
 
@@ -21,33 +25,36 @@ Maintenance scripts are written in Python.
 
 npm is used to install some prerequisite packages.
 
-## Setup
+### 5. Visual Studio 2019 (optional)
+
+THe application can be built with the "dotnet" command line tool or with Microsoft Visual Studio - version 2019 is recommended.
+If you plan to deploy tha application to the Microsoft Azure cloud service, Visual Studio will be the easiest way to 
+do this.  This process is described below.
+
+## Building the Application
 
 ---
 
 CAT uses two MySQL databases: cms and cmsusers. The cms database holds inventory data. The cmsusers database contains user login information. The cms database can be created using a Python script or with an included utility application. Follow the steps below, in the order they are listed, to create
 these databases and log in to the system for the first time.
 
-### Step 1: Build the cms database
+### Step 1: Initialize the CAT databases
 
-The recommended option for creating the database is with the managedb.py script in the Scripts directory. It takes two arguments: "-clean" 
+The recommended option for creating the CAT databases is with the managedb.py script in the Scripts 
+directory. It takes two arguments: "-clean" 
 to create a clean database, and "-institution NAME", where NAME will be the top level of your location hierarchy.
 
 ```
 C> cd Scripts
+C> pip install -r requirements.txt
 C> python managedb.py -clean -institution ROOT
 ```
 
-> You may have to install some additional Python packages before that will work:
-
-```
-pip install pymysql
-pip install attrdict
-pip install cryptography
-```
+>*Note: if you are creating a database on a remote server, specify the server IP or URL using the -h SERVER command line option.
+ Run the managedb.py script with -help to see usage information.*
 
 
-### Step 2(optional): Create test data
+### Step 2 (optional): Create test data
 
 ```
 C> cd ..\Scripts
@@ -63,15 +70,31 @@ C> cd ..\CMS
 C> npm install
 C> npm run bundle
 C> dotnet run
+    or 
+C> start ..\ChemicalAssetTracker.sln
 ```
-If you are using Visual Studio, instead of the last step, open the solution file (ChemicalAssetTracker.sln) and run *Build All* from the *Build* menu.
+
 
 ### Step 4: Initialize predefined user accounts
 
-Open a browser and navigate to<br>
-http://localhost:5002/Admin/SeedUsers
+When the CAT application is first run, no user accounts are defined.  An initial account, "root", must be created by
+browsing to an initialization function, /Admin/SeedUsers.  This function requires a parameter that specifies the password
+for the "root" account.
 
-Navigate to http://localhost:5002/ to start using the app.
+For example, if you are running CAT on your development machine (e.g. from within Visual Studio), you would
+open a browser and navigate to a URL similar to the following:<br>
+http://localhost:5002/Admin/SeedUsers/bootstrap1234
+
+This will create the "root" account with a password of "bootstrap1234".
+
+Next, navigate to the home page by clicking on the Home icon at the top left of the app page,  to start using the app.  You will
+be taken to the login page - enter "root" and the password you specified.
+
+### Step 5: Configure the CAT location schema
+
+The first time you log in to the application, you will be taken to a configuration page where you can initialize the location schema
+that CAT will use when you define locations at your site.  Follow the instructions on this page and, once done, 
+click on the Home icon to be taken to the home screen.
 
 ## Deploying to Microsoft Azure
 
@@ -82,7 +105,7 @@ Navigate to http://localhost:5002/ to start using the app.
 In order to deploy CAT to Azure, you will need to have an Azure account with an App Service and Azure Database for MySQL instance.
 
 1.  Publish CAT to Azure<br>
-    This step must be performed in Visual Studio 2017 or later. You will need your Azure account username and password in order to download the Azure publish profile for your Web Service.
+    This step must be performed in Visual Studio 2019 or later. You will need your Azure account username and password in order to download the Azure publish profile for your Web Service.
 
     -   Right click the CMS project and select Publish from the context menu.
     -   Click the New Profile link

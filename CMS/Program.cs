@@ -9,6 +9,15 @@ namespace CMS
 {
     public class Program
     {
+        //---------------------------------------------------------------------
+        //
+        // HTTPS Control
+        //
+        //---------------------------------------------------------------------
+        
+        public const bool USE_HTTPS = false;
+        public const int LISTEN_PORT = 5000;
+        
         static bool UsingProxy = false;
         private static int _listenPort;
         private static X509Certificate2 _certificate;
@@ -18,7 +27,7 @@ namespace CMS
         public static void Main(string[] args)
         {
             List<string> webbuilder_args = new List<string>();
-            _listenPort = 5000;
+            _listenPort = LISTEN_PORT;
 
             int i = 0;
             while (i < args.Length)
@@ -52,13 +61,16 @@ namespace CMS
 
             try
             {
-                // https://stackoverflow.com/a/46336873/706747
-                using (X509Store store = new X509Store(StoreName.My))
+                if (USE_HTTPS)
                 {
-                    store.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindBySubjectName, "localhost", false);
-                    if (certs.Count > 0)
-                        _certificate = certs[0];
+                    // https://stackoverflow.com/a/46336873/706747
+                    using (X509Store store = new X509Store(StoreName.My))
+                    {
+                        store.Open(OpenFlags.ReadOnly);
+                        X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindBySubjectName, "localhost", false);
+                        if (certs.Count > 0)
+                            _certificate = certs[0];
+                    }
                 }
             }
             catch (Exception)

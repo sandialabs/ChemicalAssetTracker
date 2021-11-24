@@ -18,6 +18,8 @@ namespace CMS
 {
     public class Startup
     {
+        const bool UseHTTPS = true;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -86,10 +88,13 @@ namespace CMS
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddHttpsRedirection(options => {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = Program.ListenPort;
-            });
+            if (UseHTTPS) 
+            {
+                services.AddHttpsRedirection(options => {
+                    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                    options.HttpsPort = Program.ListenPort;
+                });
+            }
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 

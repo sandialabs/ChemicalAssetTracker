@@ -3,7 +3,7 @@ import os
 import json
 from utils import *
 import pymysql
-from attrdict import AttrDict
+from dotmap import DotMap
 import getpass
 from load_reports import *
 from import_chemicals_of_concern import *
@@ -80,7 +80,7 @@ def initialize_settings(db, hostname):
 
 def execute_nonquery(db, sql, params=None):
     rc = db.execute_nonquery(sql, params)
-    print(f'Executing "{sql}" with parameters {params} returned {rc}')
+    #print(f'Executing "{sql}" with parameters {params} returned {rc}')
 
 
 def show_usage():
@@ -170,7 +170,8 @@ run(f"mysql -u {user} -p{pswd} -h {hostname} cms < initializecmsdb.sql", verbose
 
 # run dbutil to complete initialization
 os.chdir("../dbutil")
-run(f'dotnet run -create -noprompt -hostname {hostname} -cmsuser {user} -cmspswd {pswd}', verbose=verbose, password=pswd)
+print("Running dbutil to initialize database")
+run(f'dotnet run -v q -create -noprompt -hostname {hostname} -cmsuser {user} -cmspswd {pswd} > cmsout.txt', verbose=verbose, password=pswd)
 
 print("Initialize Settings table")
 db = MySQL(hostname, user, pswd, 'cms')
@@ -181,15 +182,14 @@ os.chdir("../Scripts")
 banner("Populating tables")
 print("Populating ChemicalsOfConcern table")
 import_json(ChemicalsOfConcern)
-#run(f'python3 import-chemicals-of-concern.py -i "{ChemicalsOfConcern}" -u {user} -p {pswd} -h {hostname}', verbose=verbose)
 print("Populating pictograms in CASDataItems table")
-run(f'python3 import_ghs.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
+run(f'python import_ghs.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
 
 # The following code imported disposal information into the database
 # This data is no longer used - the original SNL paper for disposal 
 # is available from the UI
 # print("Populating disposal tables")
-# run(f'python3 import_disposal.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
+# run(f'python import_disposal.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
 
 
 #run(f'mysql -u {user} -p{pswd} cms -e "source cms-nodata.sql"', verbose)
@@ -219,5 +219,5 @@ if not create_testdata:
     exit(0)
 
 banner("Generating test data")
-run(f'python3 generate-testdata.py -for "{institution}" -locales {localecount} -buildings {bldgcount} -rooms {roomcount} -stores {storecount} -shelves {shelfcount}  -items {itemcount}', verbose)
+run(f'python generate-testdata.py -for "{institution}" -locales {localecount} -buildings {bldgcount} -rooms {roomcount} -stores {storecount} -shelves {shelfcount}  -items {itemcount}', verbose)
 load_reports()

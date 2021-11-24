@@ -25,7 +25,7 @@ def fix_autoincrement(filename):
 
 
 def show_usage():
-    print("Use: python3 snapshot.py [-u <username>] [-p <password>] [-nodata] -db <dbname> [-o <filename>]")
+    print("Use: python snapshot.py [-u <username>] [-p <password>] [-nodata] -db <dbname> [-o <filename>]")
 
 
 def do_snapshot(user, pswd, dbname, outputfile=None):

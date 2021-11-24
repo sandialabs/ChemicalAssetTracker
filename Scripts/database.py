@@ -7,7 +7,7 @@
 # what brand of database you are accessing and provides some convenience
 # functions.
 #
-# Dependencies: pyodbc and attrdict
+# Dependencies: pyodbc and dotmap
 #     If you are going to access SQL Server you will need to add their
 #     python drivers. (https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/python-sql-driver-pyodbc?view=sql-server-2017)
 #
@@ -17,7 +17,7 @@
 #    db = SQLServer().connect('(local)', 'mydbname')
 #    for row in db.query("select * from mytable"):
 #        print(row['Description'])
-#            (or if you set the UseAttrDict option)
+#            (or if you set the UseDotMap option)
 #        print(row.Description)
 #    db.execute_nonquery("drop table mytable")
 #    db.execute_nonquery("insert into mytable (x) values (?)",
@@ -43,11 +43,11 @@
 #    query is executed in the constructor.  You can then iterate on
 #    the DBQuery object to get rows.
 #
-#    AttrDict:  boolean class variable that controls whether row
+#    DotMap:  boolean class variable that controls whether row
 #               columns are attributes (e.g. row.Name) or as plain
 #               dictionaries.
 #
-#    use_attrdict: turns on AttrDict for just the current query.
+#    use_dotmap: turns on DotMap for just the current query.
 #               You have to call this before retrieving any rows.
 #    next: get the next row of data
 #    fetch: retrieve the next n rows
@@ -65,15 +65,14 @@
 ######################################################################
 
 import pyodbc
-from attrdict import AttrDict
 from time import time
 
 
 class DBQuery:
-    UseAttrdict = True
+    UseDotMap = True
 
     def __init__(self, sql, db):
-        self.m_use_attrdict = DBQuery.UseAttrdict
+        self.m_use_dotmap = DBQuery.UseDotMap
         self.m_start_time = time()
         self.m_rowcount = 0
         self.m_cursor = db.execute_query(sql)
@@ -81,8 +80,8 @@ class DBQuery:
         self.m_column_names = [c[0] for c in self.m_columns]
         # print(self.m_column_names)
 
-    def use_attrdict(self):
-        self.m_use_attrdict = True
+    def use_dotmap(self):
+        self.m_use_dotmap = True
         return self
 
     def __iter__(self):
@@ -99,8 +98,8 @@ class DBQuery:
         row = self.m_cursor.fetchone()
         if row:
             self.m_rowcount += 1
-            if self.m_use_attrdict:
-                return AttrDict(zip(self.m_column_names, row))
+            if self.m_use_dotmap:
+                return DotMap(zip(self.m_column_names, row))
             else:
                 return dict(zip(self.m_column_names, row))
         else:

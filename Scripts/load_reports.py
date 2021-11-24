@@ -1,6 +1,6 @@
 from utils import *
 from cmsdb import *
-from attrdict import AttrDict
+from dotmap import DotMap
 import getpass
 from queries import predefined_queries, predefined_reports
 

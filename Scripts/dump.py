@@ -18,7 +18,7 @@ if user and pswd and host:
     cmd = f'mysqldump -h {host} -u {user} -p{pswd} --column-statistics=0 {dbname} > {outputfile}'
     run(cmd, True)
 else:
-    banner('Use: python3 dump.py -u <username> -p <password> [h <hostname>] [-db <dbname>',
+    banner('Use: python dump.py -u <username> -p <password> [h <hostname>] [-db <dbname>',
            '',
            '<hostname> defaults to localhost',
            'dbname defaults to cms'

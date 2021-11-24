@@ -2,7 +2,7 @@ import sys
 import os
 from utils import *
 import pymysql
-from attrdict import AttrDict
+from dotmap import DotMap
 import getpass
 
 

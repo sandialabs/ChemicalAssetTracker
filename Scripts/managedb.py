@@ -27,7 +27,7 @@ def confirm(prompt):
 
 
 def show_usage():
-    banner("Use: python3 managedb.py [-help] [-clean]"
+    banner("Use:  managedb.py [-help] [-clean]"
            , ""
            , "     -help              show this message and exit"
            , "     -clean -i <NAME>   create a clean database and exit"

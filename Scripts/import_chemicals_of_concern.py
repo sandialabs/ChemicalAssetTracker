@@ -99,7 +99,7 @@ def import_spreadsheet(filepath, verbose=False):
 
 
 def show_usage():
-    banner("Use: python3 import-chemicals-of-concern.py [-help] -i <filepath>"
+    banner("Use: python import-chemicals-of-concern.py [-help] -i <filepath>"
          , " "
          , "<filepath>            path to an .xlsx or .json file"
          , " "

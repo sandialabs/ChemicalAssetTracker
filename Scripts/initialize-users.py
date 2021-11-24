@@ -6,7 +6,7 @@ from utils import *
 
 
 def show_usage():
-    banner("Use: python3 initialize-users.py [-help] [-url <caturl>] -p <pswd>",
+    banner("Use: python initialize-users.py [-help] [-url <caturl>] -p <pswd>",
            "",
            "This script will initialize the root account in CAT.",
            "",
@@ -16,7 +16,7 @@ def show_usage():
            "    -anycert         allow any HTTPS certificate",
            "    -p <pswd>        specify the password for the root account",
            "",
-           "Ex: python3 initialize-users.py -url https://mycat.azure.com -p root")
+           "Ex: python initialize-users.py -url https://mycat.azure.com -p root")
 
 
 if have_arg('-help'):
