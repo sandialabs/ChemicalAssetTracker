@@ -1,6 +1,7 @@
 import sys
 import os
 import json
+import random
 from utils import *
 import pymysql
 from dotmap import DotMap
@@ -26,6 +27,9 @@ class MySQL:
         if self.m_db:
             self.m_db.close()
             self.m_db = None
+
+    def get_cursor(self):
+        return self.m_db.cursor()
 
     def execute_nonquery(self, sql, parameters=None, commit=True, verbose=False):
         if verbose:
@@ -143,30 +147,18 @@ except Exception as ex:
     exit(1)
 
 
-# The app will create cmsdb with EnsureCreated
-# if not userdb_exists:
-#     print("*** Creating CMSUsers database")
-#     run(f'mysql -u {user} -p{pswd} -h {hostname} -e "create database CMSUsers CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"', verbose)
-#     run(f'mysql -u {user} -p{pswd} -h {hostname} CMSUsers < cmsusers-full.sql', verbose)
-#     userdb_exists = True
-
-# if db_exists:
-#     if have_arg('-force'):
-#         run(f'mysql -u {user} -p{pswd} -h {hostname} -e "drop database cms"', verbose)
-#     else:
-#         print("Database cms already exists.  Use -force to force creation")
-#         exit(1)
 
 # create empty database
 db.execute_nonquery("create database cms CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci")
+# create the cms account
+print("Setting up the cms account in MySQL")
+db.execute_nonquery("create user if not exists 'cms'@'%' identified by 'cms'")
+db.execute_nonquery("grant all privileges on cms.* to 'cms'@'%'")
+db.execute_nonquery("grant all privileges on cmsusers.* to 'cms'@'%'")
 
 # run initialization script
 os.chdir("../DataModel")
 run(f"mysql -u {user} -p{pswd} -h {hostname} cms < initializecmsdb.sql", verbose)
-
-# create the cms user account
-#run(f"mysql -u {user} -p{pswd} -h {hostname} cms -e \"create user 'cms'@'%' identified by 'cms'\"")
-#run(f"mysql -u {user} -p{pswd} -h {hostname} cms -e \"grant all privileges on cms.* to 'cms'@'%'\"")
 
 # run dbutil to complete initialization
 os.chdir("../dbutil")
@@ -185,39 +177,23 @@ import_json(ChemicalsOfConcern)
 print("Populating pictograms in CASDataItems table")
 run(f'python import_ghs.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
 
-# The following code imported disposal information into the database
-# This data is no longer used - the original SNL paper for disposal 
-# is available from the UI
-# print("Populating disposal tables")
-# run(f'python import_disposal.py -u {user} -p {pswd} -h {hostname}', verbose=verbose)
-
-
-#run(f'mysql -u {user} -p{pswd} cms -e "source cms-nodata.sql"', verbose)
-
-
 root_location = institution
 
-if not create_testdata:
-    db = MySQL(hostname, user, pswd, 'cms')
-    db.execute_nonquery(
-        "insert into Settings (SettingKey, SettingValue) values (%s, %s)", ('Institution', institution))
-    execute_nonquery(db, "insert into LocationTypes (Name, ValidChildren) Values (%s, '')", root_location)
-    root_type_id = db.queryone(f"select LocationTypeID from LocationTypes where Name = %s", root_location)["LocationTypeID"]
-    execute_nonquery(db, f"insert into StorageLocations (Name, ParentID, LocationLevel, LocationTypeID, IsLeaf) values (%s, 0, 0, {root_type_id}, 0)", institution)
-    execute_nonquery(db, "update StorageLocations set Path = GetLocationPath(LocationID)")
-    load_reports()
-    banner(
-        f'The cms database has been created on {hostname}',
-        f'The the Institution setting is "{institution}"',
-        f'An initial entry has been created in the LocationTypes table with',
-        f'    name "{root_location}"',
-        f'An initial entry has been created in the StorageLocations table with ',
-        f'    name "{institution}"'
-    )
-    run(f'mysql -h {hostname} -u {user} -p{pswd} cms -e "select User, Host from mysql.user;  select * from LocationTypes; select * from StorageLocations; select * from Settings;"', verbose=verbose)
-    db.disconnect()
-    exit(0)
-
-banner("Generating test data")
-run(f'python generate-testdata.py -for "{institution}" -locales {localecount} -buildings {bldgcount} -rooms {roomcount} -stores {storecount} -shelves {shelfcount}  -items {itemcount}', verbose)
+db = MySQL(hostname, user, pswd, 'cms')
+db.execute_nonquery(
+    "insert into Settings (SettingKey, SettingValue) values (%s, %s)", ('Institution', institution))
+execute_nonquery(db, "insert into LocationTypes (Name, ValidChildren) Values (%s, '')", root_location)
+root_type_id = db.queryone(f"select LocationTypeID from LocationTypes where Name = %s", root_location)["LocationTypeID"]
+execute_nonquery(db, f"insert into StorageLocations (Name, ParentID, LocationLevel, LocationTypeID, IsLeaf) values (%s, 0, 0, {root_type_id}, 0)", institution)
+execute_nonquery(db, "update StorageLocations set Path = GetLocationPath(LocationID)")
 load_reports()
+banner(
+    f'The cms database has been created on {hostname}',
+    f'The the Institution setting is "{institution}"',
+    f'An initial entry has been created in the LocationTypes table with',
+    f'    name "{root_location}"',
+    f'An initial entry has been created in the StorageLocations table with ',
+    f'    name "{institution}"'
+)
+run(f'mysql -h {hostname} -u {user} -p{pswd} cms -e "select User, Host from mysql.user;  select * from LocationTypes; select * from StorageLocations; select * from Settings;"', verbose=verbose)
+

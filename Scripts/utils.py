@@ -4,6 +4,7 @@ import time
 import getpass
 import re
 import datetime
+import json
 
 
 class Timer:
@@ -111,3 +112,9 @@ def run(cmd, verbose=True, password=None):
     if verbose:
         print("Run: " + nice)
     os.system(cmd)
+
+def pprint(obj):
+    if type(obj) == str:
+        print(str)
+    else:
+        print(json.dumps(obj, indent=4))

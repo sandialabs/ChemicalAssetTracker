@@ -13,9 +13,9 @@ and build the application, and how to deploy CAT to various platforms.
 The community edition of MySQL is recommended. Do not use MariaDB - there are feature differences between it
 and MySQL that will break CAT.
 
-### 2. .NET Core
+### 2. .NET Core Version 2.2 SDK
 
-This can be downloaded from Microsoft
+This can be downloaded from Microsoft at https://dotnet.microsoft.com/download/dotnet/2.2.
 
 ### 3. Python 3
 
@@ -135,22 +135,20 @@ In order to deploy CAT to Azure, you will need to have an Azure account with an 
 
 ---
 
+-   CMS<br>
+    Main .Net Core web application
 -   Common<br>
     A library of C# utility functions
+-   DatabaseClasses<br>
+    Various Python classes for reading MySQL and SQLite databases
 -   DataModel<br>
     Data model classes and Entity Framework Core DbContext (CMSDB)
 -   dbutil<br>
     Console application for database management tasks
--   CMS<br>
-    Main .Net Core web application
--   BarcodeReader<br>
-    Sample code for reading barcodes on mobile devices.
+-   ImportLib<br>
+    Classes used for importing legacy CMS data
+-   Scripts<br>
+    Python scripts for managing the database.
+    UnitTests<br>
 
-## Other Folders
-
--   DatabaseSnapshots - random database backups<br>
-    Use backupdb.bat and restoredb.bat to create/restore database backups
-    -   cms_schema.sql and cmsusers_schema.sql will have the latest clean
-        database initialization scripts
--   Migrations - database migration scripts
 
