@@ -150,8 +150,13 @@ def interactive():
             if user == None or pswd == None:
                 (user, pswd) = get_mysql_info()
             if user and pswd:
-                do_snapshot(user, pswd)
-            run(f"mysql -u {user} -p{pswd} cmsusers -e \"select UserName from aspnetusers\"")
+                run(f"mysql -u {user} -p{pswd} cmsusers -e \"select UserName from aspnetusers\"")
+        elif verb == 'stats':
+            if user == None or pswd == None:
+                (user, pswd) = get_mysql_info()
+            if user and pswd:
+                cmds = "select * from Settings; select * from LocationTypes; select count(*) as LocationCount from StorageLocations; select count(*) as InventoryCount from InventoryItems;"
+                run(f'mysql -u {user} -p{pswd} cms -e "{cmds}"')
         elif verb == 'query':
             run_python("query-test.py")
         elif verb == 'quit':

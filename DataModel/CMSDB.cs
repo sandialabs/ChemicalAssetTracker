@@ -1251,36 +1251,21 @@ namespace DataModel
             string result = null;
             StorageLocation loc = FindLocation(id);
             if (loc == null) throw new Exception($"CMSDB.GetShortLocationName - LocationID {id} does not exist");
-            switch (loc.LevelEnum)
+            switch (loc.LocationLevel)
             {
-                case ELocationLevel.INSTITUTION:
+                case 0:
                     result = GetLocationName(id);
                     break;
-                case ELocationLevel.SITE:
+                case 1:
                     result = GetLocationName(id, 1);
                     break;
-                case ELocationLevel.LOCALE:
-                    result = GetLocationName(id, 2);
-                    break;
-                case ELocationLevel.BUILDING:
-                    result = GetLocationName(id, 2);
-                    break;
-                case ELocationLevel.ROOM:
-                    result = GetLocationName(id, 2);
-                    break;
-                case ELocationLevel.STORAGE:
-                    result = GetLocationName(id, 2);
-                    break;
-                case ELocationLevel.SHELF:
-                    result = GetLocationName(id, 2);
-                    break;
                 default:
-                    result = loc.Path;
+                    result = GetLocationName(id, 2);
                     break;
             }
             if (result == null)
             {
-                throw new Exception($"CMSDB.GetShortLocationName - LocationID {id} does not refer to a shelf");
+                throw new Exception($"CMSDB.GetShortLocationName - unable to generate short name for LocationID {id}");
             }
             return result;
 

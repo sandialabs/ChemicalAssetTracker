@@ -854,6 +854,26 @@ namespace CMS.Controllers
             return result;
         }
 
+        [HttpGet("refreshlocations")]
+        public AjaxResult RefreshLocations()
+        {
+            AjaxResult result = new AjaxResult("APIController.RefreshLocations");
+            try
+            {
+                using (CMSDB db = new CMSDB())
+                {
+                    db.RefreshLocations();
+                    result.Succeed();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Fail(ex);
+            }
+            return result;
+        }
+
+
         [HttpGet("getlocations")]
         public AjaxResult GetLocations()
         {
