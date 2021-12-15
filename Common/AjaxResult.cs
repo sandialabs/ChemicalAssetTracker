@@ -63,6 +63,8 @@ namespace Common
 
         public AjaxResult Fail(Exception ex)
         {
+            string[] frames = ex.StackTrace.Split("\r\n");
+            this.Set("trace", frames);
             while (ex.InnerException != null) ex = ex.InnerException;
             Fail("Exception: " + ex.Message);
             TaskTime = String.Format("{0:0.00} ms", m_timer.ElapsedMilliseconds);

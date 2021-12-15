@@ -209,6 +209,9 @@
                                     self.status_message = "Your query did not return any data."
                                 }
                             }
+                        },
+                        onfailure: function(response) {
+                            self.notify("Run Report", response.Message);
                         }
                     })
                 },

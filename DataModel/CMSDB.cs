@@ -247,7 +247,7 @@ namespace DataModel
             foreach (string part in parts)
             {
                 string[] nameval = part.Split('=');
-                if (nameval.Length == 2) result.Add(nameval[0].ToLower(), nameval[1]);
+                if (nameval.Length == 2) result.Add(nameval[0].Trim().ToLower(), nameval[1].Trim());
             }
             return result;
         }

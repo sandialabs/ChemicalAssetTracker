@@ -115,14 +115,28 @@ namespace CMS.Controllers
                     }
                 }
             }
-            string hostname = connection_settings["server"];
-            string user = connection_settings["user"];
-            string pswd = connection_settings["password"];
+            // data source, user id, password
+            string hostname = GetConnectionSetting(connection_settings, "server", "data source");
+            string user = GetConnectionSetting(connection_settings, "user", "user id");
+            string pswd = GetConnectionSetting(connection_settings, "password");
             using (MySqlDatabase db = new MySqlDatabase(hostname, "cms", user, pswd))
             {
                 result = db.Query(sql, bindings);
             }
             return result;
+        }
+
+        private string GetConnectionSetting(Dictionary<string, string> connection_settings, params string[] keys)
+        {
+            foreach (string key in keys)
+            {
+                if (connection_settings.ContainsKey(key))
+                {
+                    return connection_settings[key];
+                }
+            }
+            string keylist = String.Join(",", keys);
+            throw new Exception($"Can't find any of \"{keylist}\" in connection settings");
         }
     }
 
