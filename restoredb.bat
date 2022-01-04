@@ -1,1 +1,1 @@
-@python3 restoredb.py %*
+@python restoredb.py %*

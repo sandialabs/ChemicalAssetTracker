@@ -3,6 +3,7 @@ import os
 import re
 import time
 import datetime
+from Scripts.utils import *
 
 BACKUPDIR = ".\\DatabaseSnapshots"
 
@@ -22,6 +23,7 @@ def ctime(file):
     return os.path.getctime(os.path.join(BACKUPDIR, file))
 
 def select_file():
+    global BACKUPDIR
     backups = [f for f in os.listdir(BACKUPDIR) if f.startswith("cms_") and f.endswith(".sql")]
     backups.sort(key=ctime)
     for i in range(len(backups)):
@@ -37,13 +39,28 @@ def select_file():
             if re.match("\\d+", ans):
                 response = int(ans)
     return backups[response-1]
+    
+def show_usage():
+    banner('Use: python3 restoredb.py [-help] [-h <host>] [-db <dbname>] [-u <user>] [-p <pswd>] [-from <path>]'
+           , ' '
+           , '   host defaults to localhost'
+           , '   user defaults to root'
+           , '   pswd defaults to root')
 
-user = get_arg('-u')
-pswd = get_arg('-p')
 
-if user and pswd:
-    selected = os.path.join(BACKUPDIR, select_file())
-    cmd = f"mysql -u {user} -p{pswd} cms < {selected}"
+
+if have_arg("-help"):
+    show_usage()
+    exit(0)
+    
+host = get_arg("-h", "localhost")
+dbname = get_arg('-db')
+backuppath = get_arg("-from")
+(user, pswd) = get_mysql_info()
+
+if host and dbname and user and pswd and backuppath:
+    cmd = f"mysql -h {host} -u {user} -p{pswd} {dbname} < {backuppath}"
+    print(cmd)
     os.system(cmd)
 else:
-    print("Use: python3 restoredb.py -u <username> -p <password>")
+    show_usage()

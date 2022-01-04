@@ -1,1 +1,1 @@
-@python3 backupdb.py
+@python backupdb.py %*
