@@ -17,6 +17,20 @@ namespace Common
         private int m_len1;
         private int m_len2;
 
+        ///----------------------------------------------------------------
+        ///
+        /// Method:         CompareStrings
+        /// Author:         Pete Humphrey
+        ///
+        /// <summary>
+        /// Compare two strings
+        /// </summary>
+        ///
+        /// <param name="value1">string #1</param>
+        /// <param name="value2">string #2</param>
+        /// <returns>a value between 0 and 1 - 1.0 is a perfect match</returns>
+        ///
+        ///----------------------------------------------------------------
         static public double CompareStrings(string value1, string value2, bool ignore_case = true)
         {
             DTW dtw = new DTW();
@@ -26,7 +40,7 @@ namespace Common
 
         ///----------------------------------------------------------------
         ///
-        /// Function:       Search
+        /// Method:         Search
         /// Author:         Pete Humphrey
         ///
         /// <summary>
