@@ -67,3 +67,26 @@ class MySQL:
 
     def column_exists(self, table_name, column_name):
         return self.row_exists(f"select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA='{self.m_dbname}' and TABLE_NAME='{table_name}' and COLUMN_NAME = '{column_name}'")
+
+
+class CMSDB(MySQL):
+
+    def __init__(self, hostname, user, pswd):
+        super().__init__(hostname, user, pswd, 'cms')
+
+
+    def queryone(self, sql, parameters=None):
+        row = super().queryone(sql, parameters)
+        return DotMap(row, _dynamic=False) if row else None
+
+    def queryall(self, sql, parameters=None):
+        result = super().queryall(sql, parameters)
+        return (DotMap(x, _dynamic=False) for x in result)
+
+
+    def get_location_by_name(self, name, parent_id):
+        return self.queryone(f"select * from StorageLocations where Name = '{name}' and ParentID = {parent_id}")
+
+    def get_location_by_id(self, location_id):
+        return self.queryone(f"select * from StorageLocations where LocationID = '{location_id}'")
+

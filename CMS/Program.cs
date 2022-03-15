@@ -16,7 +16,7 @@ namespace CMS
         //---------------------------------------------------------------------
         
         public const bool USE_HTTPS = false;
-        public const int LISTEN_PORT = 5000;
+        public const int LISTEN_PORT = 5353;
         
         static bool UsingProxy = false;
         private static int _listenPort;
