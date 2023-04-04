@@ -1,14 +1,16 @@
 import os
 import sys
 import subprocess
+import re
 
 def usage():
-    banner("publish [-dry] [-deploy <path>] [<project>|all]", 
+    banner("publish [-dry] [-update-commit] -to <path> [<project>|all]", 
                 "Build and publish win-x64 self-contained deployment files", 
-                "-dry                  Show commands but don't run them", 
-                "-deploy <path>         Copy win-x64 files to the specified path",
+                "-dry                   Show commands but don't run them", 
+                "-to <path>             Copy win-x64 files to the specified path",
                 "<project>              The project to publish: import, CMS, or barcode", 
-                "all                    Publish all projects")
+                "all                    Publish all projects",
+                "-update-commit         Just update gitcommit.txt in the target directory")
 
 def have_arg(name):
     return name in sys.argv
@@ -56,7 +58,10 @@ def get_git_commit():
     else:
         return "n/a"
 
-
+def get_subdirs(parent):
+    subdirs = [f for f in os.listdir(parent) if os.path.isdir(os.path.join(parent, f))]
+    print(subdirs)
+    return subdirs
 
 def find_file(rootdir, filename):
     filepath = os.path.join(rootdir, filename)
@@ -87,19 +92,16 @@ def deploy(project, destination, dryrun = False):
     copyfiles("./{0}/bin/Debug/netcoreapp2.2/win-x64/publish".format(project), subdir, dryrun)
 
 def update_commit_id(deploy_dir):
-    version_path = find_file(deploy_dir, "gitcommit.txt")
-    if version_path:
-        commit_id = get_git_commit()
-        banner(f'Updating gitcommit.txt with {commit_id}')
-        with open(version_path, 'w') as fp:
-            fp.writelines([commit_id])
-            fp.write('\n')
-        print("")
-        print("The output from msbuild is in msbuild.log")
-    else:
-        print("I can't find gitcommit.txt in the publish directory")
-
-
+    path = os.path.join(deploy_dir, 'wwwroot', 'assets')
+    if not os.path.isdir(path):
+        print(f"{path} does not exist")
+        return
+    path = os.path.join(path, 'gitcommit.txt')
+    commit_id = get_git_commit()
+    banner(f'Updating {path}', f'with "{commit_id}"')
+    with open(path, 'w') as fp:
+        fp.writelines([commit_id])
+        fp.write('\n')
 
 # print("Args", args.m_args)
 
@@ -109,10 +111,14 @@ if have_arg('-help'):
 
 dryrun = have_arg('-dry')
 
-deploy_dir = get_arg('-deploy', None)
+deploy_dir = get_arg('-to', None)
 if deploy_dir and not os.path.isdir(deploy_dir):
     print('The deployment directory, "{0}", does not exist.'.format(deploy_dir))
     quit()
+
+if have_arg('-update-commit'):
+    update_commit_id(deploy_dir)
+    exit(0)
 
 if deploy_dir:
     if os.path.isfile("robocopy.log"):

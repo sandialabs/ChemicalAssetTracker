@@ -96,6 +96,13 @@ The first time you log in to the application, you will be taken to a configurati
 that CAT will use when you define locations at your site.  Follow the instructions on this page and, once done, 
 click on the Home icon to be taken to the home screen.
 
+
+## Deploying for IIS on a Server
+
+1.  Create a folder publish profile and publish a framework-dependent copy to a target directory.
+2.  Copy the files in the target directory to C:\inetpub\cat on the server.<br>RoboCopy is a good option for this.
+3.  If this is the initial deployment, create a new website in IIS that points to C:\inetpub\wwwroot\cat
+
 ## Deploying to Microsoft Azure
 
 ---
